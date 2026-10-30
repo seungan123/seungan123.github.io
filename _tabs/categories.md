@@ -7,28 +7,25 @@ order: 1
 
 {% assign names = "개발|CTF/Wargame|Bug Bounty|블로그/기술문서|논문/컨퍼런스|공모전/자격증" | split: "|" %}
 
-<div class="row">
 {% for name in names %}
   {% assign posts = site.categories[name] %}
   {% assign count = posts | size %}
 
-  <div class="col-12 mb-3">
-    <div class="card">
-      <div class="card-body">
-        <h3>
-          {% if count > 0 %}
-            {% capture url %}/categories/{{ name | slugify | url_encode }}/{% endcapture %}
-            <a href="{{ url | relative_url }}">{{ name }}</a>
-          {% else %}
-            {{ name }}
-          {% endif %}
-        </h3>
-        <p class="text-muted mb-0">
-          {{ count }}개 게시글
-        </p>
-      </div>
+  <div class="card categories">
+    <div class="card-header d-flex justify-content-between hide-border-bottom">
+      <span class="ms-2">
+        <i class="far fa-folder fa-fw"></i>
+        {% if count > 0 %}
+          {% capture category_url %}/categories/{{ name | slugify | url_encode }}/{% endcapture %}
+          <a href="{{ category_url | relative_url }}" class="mx-2">{{ name }}</a>
+        {% else %}
+          <span class="mx-2" style="color: var(--link-color, #75b5ff)">{{ name }}</span>
+        {% endif %}
+        <span class="text-muted small font-weight-light">{{ count }} 포스트</span>
+      </span>
+      <span class="category-trigger hide-border-bottom disabled" aria-hidden="true">
+        <i class="fas fa-fw fa-angle-right"></i>
+      </span>
     </div>
   </div>
-
 {% endfor %}
-</div>
