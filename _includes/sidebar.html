@@ -39,10 +39,19 @@
         {% assign item = pair | split: "|" %}
         {% assign category_name = item[0] %}
         {% assign category_slug = item[1] %}
+        {% case category_slug %}
+          {% when 'development' %}{% assign category_icon = 'fa-code' %}
+          {% when 'ctf-wargame' %}{% assign category_icon = 'fa-flag' %}
+          {% when 'bug-bounty' %}{% assign category_icon = 'fa-shield-virus' %}
+          {% when 'blog-docs' %}{% assign category_icon = 'fa-file-lines' %}
+          {% when 'papers-conferences' %}{% assign category_icon = 'fa-book-open' %}
+          {% when 'contests-certifications' %}{% assign category_icon = 'fa-trophy' %}
+          {% else %}{% assign category_icon = 'fa-folder' %}
+        {% endcase %}
         {% capture category_url %}/topics/{{ category_slug }}/{% endcapture %}
         <li>
           <a href="{{ category_url | relative_url }}" {% if page.url == category_url %}aria-current="page"{% endif %}>
-            <i class="far fa-folder fa-fw" aria-hidden="true"></i>
+            <i class="fas {{ category_icon }} fa-fw" aria-hidden="true"></i>
             <span>{{ category_name }}</span>
           </a>
         </li>
