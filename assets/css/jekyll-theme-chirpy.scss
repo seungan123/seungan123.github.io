@@ -31,3 +31,10 @@
     max-width: 100%;
   }
 }
+
+/* Sidebar: keep only Home and Categories in the navigation. */
+#sidebar nav .nav-item:has(> a.nav-link[href$="/tags/"]),
+#sidebar nav .nav-item:has(> a.nav-link[href$="/archives/"]),
+#sidebar nav .nav-item:has(> a.nav-link[href$="/about/"]) {
+  display: none !important;
+}
