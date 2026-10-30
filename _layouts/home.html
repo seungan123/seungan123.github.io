@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+{% assign visible_posts = paginator.posts | where_exp: "post", "post.hidden != true" %}
+
+<section class="sa-home" aria-label="게시글 목록">
+  <h1 class="sa-home-heading">All Posts</h1>
+
+  {% if visible_posts.size > 0 %}
+    <div class="sa-post-list">
+      {% for post in visible_posts %}
+        <article class="sa-post-item">
+          <a class="sa-post-link" href="{{ post.url | relative_url }}">
+            <div class="sa-post-content">
+              <h2 class="sa-post-title">{{ post.title | escape }}</h2>
+              {% assign excerpt = post.description | default: post.excerpt %}
+              {% assign summary = excerpt | strip_html | strip_newlines | normalize_whitespace | truncate: 140 %}
+              {% if summary != "" %}
+                <p class="sa-post-excerpt">{{ summary }}</p>
+              {% endif %}
+            </div>
+            <div class="sa-post-aside">
+              <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%b %d, %Y" }}</time>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="sa-no-posts">아직 게시글이 없습니다.</p>
+  {% endif %}
+</section>
+
+{% if paginator.total_pages > 1 %}
+  {% include post-paginator.html %}
+{% endif %}

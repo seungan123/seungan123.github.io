@@ -12,297 +12,359 @@
 {%- endif -%}
 ';
 
-/* Minimal Security Log theme: keep navigation and reading functionality. */
-
-/* Show only the two user-facing sections in the sidebar. */
-#sidebar nav .nav-item:has(> a.nav-link[href$="/tags/"]),
-#sidebar nav .nav-item:has(> a.nav-link[href$="/archives/"]),
-#sidebar nav .nav-item:has(> a.nav-link[href$="/about/"]) {
-  display: none !important;
+/* S_A — clean light editorial layout, based on the user's reference. */
+:root[data-bs-theme='light'] {
+  --main-bg: #ffffff;
+  --sidebar-bg: #fafbfd;
+  --main-border-color: #e8edf4;
+  --text-color: #34445c;
+  --text-muted-color: #677891;
+  --heading-color: #152238;
+  --link-color: #236bbf;
+  --site-title-color: #152238;
+  --site-subtitle-color: #62738c;
+  --sidebar-active-color: #1866bb;
+  --sidebar-muted-color: #32445c;
+  --sidebar-hover-bg: #edf4fc;
+  --topbar-bg: rgb(255 255 255 / 95%);
+  --search-border-color: #e2e9f2;
+  --input-focus-border-color: #7fa6d8;
 }
 
-/* No placeholder profile circle or unused subtitle. */
-#sidebar #avatar:not(:has(img)) {
-  display: none !important;
+/* Reuse the theme's responsive drawer behavior. */
+#sidebar.sa-sidebar {
+  background: #fafbfd;
+  border-right: 1px solid #e6ebf2;
 }
 
-#sidebar .profile-wrapper {
-  margin-top: 2.2rem;
-  margin-bottom: 1.4rem;
+#sidebar.sa-sidebar .profile-wrapper {
+  padding: 0 1.7rem;
+  margin: 2.4rem 0 1.65rem;
+  width: 100%;
 }
 
-#sidebar .site-title {
+#sidebar.sa-sidebar #avatar {
+  display: block !important;
+  width: 10rem;
+  height: 10rem;
+  margin: 0 0 0.9rem;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  background: #f6f8fb;
+}
+#sidebar.sa-sidebar #avatar img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  transition: none;
+}
+#sidebar.sa-sidebar #avatar img:hover {
+  transform: none;
+}
+
+#sidebar.sa-sidebar .site-title {
+  display: block !important;
+  font-family: inherit;
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
+  padding: 0;
+  color: #152238;
+}
+#sidebar.sa-sidebar .site-title::before {
+  content: none !important;
+}
+#sidebar.sa-sidebar .site-subtitle {
+  display: block !important;
+  color: #62738c;
+  height: auto;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  max-width: 14.5rem;
+  font-style: normal !important;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  word-spacing: 0;
+}
+
+/* Primary navigation */
+#sidebar.sa-sidebar .sa-primary-nav {
+  flex-grow: 0;
+}
+#sidebar.sa-sidebar .sa-primary-nav ul.nav {
+  margin: 0 0.9rem 1.05rem;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-item {
+  padding: 0;
+  margin: 0.15rem 0 !important;
+  opacity: 1;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: #293b54;
+  font-weight: 500;
+  font-size: 0.98rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+#sidebar.sa-sidebar .sa-primary-nav button.nav-link {
+  font: inherit;
+  font-size: 0.98rem;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-link i {
+  display: inline-block !important;
+  width: 1.25rem;
+  margin: 0 1rem 0 0;
+  font-size: 1rem;
+  opacity: 1;
+  color: #3e526d;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-link span {
+  font-size: inherit;
   letter-spacing: 0;
 }
-
-#sidebar nav .nav-link i {
-  display: none;
+#sidebar.sa-sidebar .sa-primary-nav .nav-item.active .nav-link {
+  background: #e9f2fd;
+  color: #1468c4;
+  font-weight: 650;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-item.active .nav-link i {
+  color: #1468c4;
+}
+#sidebar.sa-sidebar .sa-primary-nav .nav-link:hover {
+  background: #edf4fb;
+  color: #1468c4;
 }
 
-#sidebar nav li.nav-item.active .nav-link {
-  background: transparent;
-  color: var(--sidebar-active-color);
+/* All six existing categories in the sidebar, not new categories. */
+#sidebar.sa-sidebar .sa-category-nav {
+  padding: 0.9rem 1.7rem 1.25rem;
+  overflow: visible;
+}
+#sidebar.sa-sidebar .sa-section-label {
+  border-top: 1px solid #e5ebf2;
+  padding: 1.5rem 0 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.7rem;
+  color: #71839b;
+  font-weight: 600;
+}
+#sidebar.sa-sidebar .sa-category-links {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+#sidebar.sa-sidebar .sa-category-links li {
+  margin: 0;
+  padding: 0;
+}
+#sidebar.sa-sidebar .sa-category-links a {
+  display: flex;
+  align-items: center;
+  padding: 0.56rem 0.1rem;
+  color: #34455e;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  text-decoration: none;
+  border-radius: 0.3rem;
+}
+#sidebar.sa-sidebar .sa-category-links a i {
+  flex: 0 0 1.2rem;
+  margin-right: 0.7rem;
+  color: #7a8a9e;
+}
+#sidebar.sa-sidebar .sa-category-links a:hover,
+#sidebar.sa-sidebar .sa-category-links a[aria-current='page'] {
+  color: #1468c4;
+}
+#sidebar.sa-sidebar .sa-category-links a:hover i,
+#sidebar.sa-sidebar .sa-category-links a[aria-current='page'] i {
+  color: #1468c4;
 }
 
-#sidebar .sidebar-bottom > a {
-  background: transparent;
-  box-shadow: none !important;
+#sidebar.sa-sidebar .sa-sidebar-bottom {
+  margin-top: auto;
+  padding: 0 1.7rem 1.6rem;
+}
+#sidebar.sa-sidebar .sa-sidebar-bottom a {
+  border-top: 1px solid #e5ebf2;
+  padding: 1.2rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #334660;
+  font-size: 0.92rem;
+}
+#sidebar.sa-sidebar .sa-sidebar-bottom .sa-external {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #798ba2;
+}
+#sidebar.sa-sidebar .sa-sidebar-bottom a:hover {
+  color: #1468c4;
 }
 
-/* Hide redundant update/tag panels; keep an article's table of contents. */
+/* Retain search, article TOC and mobile menu. Remove redundant side panel. */
 #panel-wrapper > .access {
   display: none !important;
 }
 #panel-wrapper:not(:has(#toc-wrapper)) {
   display: none !important;
 }
-
 @media (min-width: 1200px) {
   #main-wrapper main:has(+ #panel-wrapper:not(:has(#toc-wrapper))) {
     flex: 1 1 auto;
     width: 100%;
-    max-width: 880px;
+    max-width: 1100px;
     margin-inline: auto;
   }
 }
 
-/* Home: flat reading list rather than bulky blocks. */
-#post-list .card {
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+/* Editorial-style post list; no example or placeholder posts. */
+.sa-home {
+  padding: 4.1rem 0 3rem;
 }
-#post-list .card-wrapper {
-  border-bottom: 1px solid var(--main-border-color);
-  margin-bottom: 0 !important;
+.sa-home-heading {
+  color: #152238;
+  font-size: clamp(2rem, 3.2vw, 2.65rem);
+  font-weight: 770;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  margin: 0 0 2rem;
 }
-#post-list .card-body {
-  padding: 1.2rem 0.35rem !important;
+.sa-post-item {
+  border-bottom: 1px solid #e8edf4;
 }
-#post-list .card-title {
-  font-size: 1.2rem;
-  font-weight: 600;
+.sa-post-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  padding: 1.6rem 0.1rem;
+  text-decoration: none !important;
 }
-#post-list .card-wrapper:hover .card-title {
-  color: var(--link-color) !important;
+.sa-post-content {
+  flex: 1;
+  min-width: 0;
 }
-#post-list .post-meta i {
-  display: none;
+.sa-post-title {
+  color: #152238;
+  font-size: 1.3rem;
+  font-weight: 670;
+  line-height: 1.4;
+  margin: 0;
 }
-#post-list .post-meta .categories {
-  margin-left: 0.75rem;
+.sa-post-excerpt {
+  color: #687891;
+  line-height: 1.65;
+  font-size: 0.94rem;
+  margin: 0.45rem 0 0;
+}
+.sa-post-aside {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex: 0 0 auto;
+  color: #7486a0;
+  font-size: 0.86rem;
+}
+.sa-post-aside time {
+  white-space: nowrap;
+}
+.sa-post-aside i {
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+.sa-post-link:hover .sa-post-title,
+.sa-post-link:hover .sa-post-aside {
+  color: #1468c4;
+}
+.sa-no-posts {
+  color: #8894a4;
+  padding: 1rem 0;
 }
 
-/* Category index: a clean, full-width list of links. */
-.minimal-categories {
-  margin-top: 1.25rem;
-}
+/* The existing six fixed category routes remain. */
+.minimal-categories { margin: 1rem 0 2rem; }
 .minimal-categories .minimal-category {
   display: flex;
-  justify-content: space-between;
+  min-height: 3.6rem;
+  padding: 1.1rem 0.35rem;
   align-items: center;
-  padding: 1.05rem 0.25rem;
-  border-bottom: 1px solid var(--main-border-color);
-  color: var(--heading-color);
+  justify-content: space-between;
+  border-bottom: 1px solid #e8edf4;
+  color: #20314a;
+  background: transparent;
   text-decoration: none !important;
+  transition: color 160ms ease;
 }
 .minimal-categories .minimal-category:hover,
 .minimal-categories .minimal-category:focus-visible {
-  color: var(--link-color);
+  color: #1468c4;
 }
 .minimal-categories .minimal-category i {
   font-size: 0.8rem;
-  color: var(--text-muted-color);
+  color: #8b9cb0;
 }
-
-/* Category detail: post title and date, nothing else. */
 .minimal-posts {
-  list-style: none;
   padding: 0;
-  margin: 1.25rem 0;
+  margin: 1rem 0;
+  list-style: none;
 }
 .minimal-posts li {
   display: flex;
-  align-items: baseline;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 0.25rem;
-  border-bottom: 1px solid var(--main-border-color);
+  gap: 1.1rem;
+  padding: 1.1rem 0.35rem;
+  border-bottom: 1px solid #e8edf4;
 }
 .minimal-posts li a {
-  flex: 1;
-  min-width: 0;
-  font-weight: 500;
+  color: #20314a;
+  text-decoration: none !important;
+  font-weight: 540;
 }
+.minimal-posts li a:hover { color: #1468c4; }
 .minimal-posts time,
-.minimal-empty {
-  color: var(--text-muted-color);
-  font-size: 0.9rem;
-}
-.minimal-posts time {
-  white-space: nowrap;
+.minimal-empty { color: #8894a4; font-size: 0.88rem; }
+
+/* Retain compact copyright without theme credit. */
+footer { border-top: none !important; }
+footer > p:last-child { display: none !important; }
+
+.sa-primary-nav a:focus-visible,
+.sa-primary-nav button:focus-visible,
+.sa-category-links a:focus-visible,
+.sa-post-link:focus-visible {
+  outline: 2px solid #4082ce;
+  outline-offset: 3px;
 }
 
-/* Keep the copyright line, remove the redundant theme credit. */
-footer {
-  border-top: none !important;
+@media (max-width: 767px) {
+  .sa-home { padding-top: 1.7rem; }
+  .sa-post-link { align-items: flex-start; gap: 0.65rem; }
+  .sa-post-aside { display: block; text-align: right; }
+  .sa-post-aside i { display: none; }
+  .sa-post-title { font-size: 1.1rem; }
+  .sa-post-excerpt { font-size: 0.88rem; }
+  #sidebar.sa-sidebar .profile-wrapper { margin-top: 1.5rem; }
+  #sidebar.sa-sidebar #avatar { width: 8rem; height: 8rem; }
 }
-footer > p:last-child {
-  display: none !important;
+@media (max-width: 450px) {
+  .sa-post-link { flex-direction: column; align-items: stretch; }
+  .sa-post-aside { text-align: left; margin-top: 0.15rem; }
+  .minimal-posts li { flex-direction: column; gap: 0.3rem; }
 }
-
-@media (max-width: 575px) {
-  .minimal-posts li {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-}
-
-/* --- Security Log / refined minimal visual system --- */
-:root[data-bs-theme='light'] {
-  --main-bg: #ffffff;
-  --sidebar-bg: #ffffff;
-  --main-border-color: #e8ecf1;
-  --text-color: #354052;
-  --text-muted-color: #717d8d;
-  --heading-color: #202b3b;
-  --link-color: #34649b;
-  --site-title-color: #1d2737;
-  --site-subtitle-color: #667589;
-  --sidebar-active-color: #1f3046;
-  --sidebar-muted-color: #5d6b7e;
-  --sidebar-hover-bg: #f3f6fa;
-  --card-bg: #ffffff;
-  --topbar-bg: rgb(255 255 255 / 94%);
-  --search-border-color: #e3e8ee;
-  --input-focus-border-color: #7d9fc5;
-}
-
-#sidebar {
-  border-right: 1px solid #eef1f5;
-}
-
-#sidebar .profile-wrapper {
-  margin-top: 2.3rem;
-  margin-bottom: 2.3rem;
-}
-
-/* A simple, aligned avatar / name / subtitle stack. */
-#sidebar #avatar {
-  box-shadow: 0 0 0 1px #e2e8f0;
-}
-
-#sidebar #avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-#sidebar .site-title {
-  display: block !important;
-  margin-top: 1.35rem !important;
-  margin-bottom: 0 !important;
-  font-size: 1.55rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: 1.3;
-}
-
-/* Remove the decorative blue bar beside S_A. */
-#sidebar .site-title::before {
-  content: none !important;
-}
-
-#sidebar .site-subtitle {
-  display: block !important;
-  height: auto;
-  max-width: 13.5rem;
-  margin: 0.4rem 0 0;
-  padding-left: 0;
-  color: var(--site-subtitle-color);
-  font-size: 0.82rem;
-  font-style: normal !important;
-  line-height: 1.55;
-  word-spacing: normal;
-}
-
-#sidebar nav .nav-link {
-  border-radius: 0.5rem;
-  transition: background-color 160ms ease, color 160ms ease;
-}
-#sidebar nav li.nav-item.active .nav-link {
-  background: #f3f6fa;
-}
-#sidebar nav .nav-link:hover {
-  background: var(--sidebar-hover-bg);
-}
-
-#topbar-wrapper,
-#topbar-title {
-  letter-spacing: 0;
-}
-
-/* Restrained hover feedback; keyboard focus is still visible. */
-.minimal-categories .minimal-category {
-  border-radius: 0.4rem;
-  padding-inline: 0.7rem;
-  min-height: 3.6rem;
-  transition: background-color 160ms ease, color 160ms ease;
-}
-.minimal-categories .minimal-category:hover,
-.minimal-categories .minimal-category:focus-visible {
-  background: #f7f9fc;
-}
-.minimal-categories .minimal-category:focus-visible,
-#sidebar .nav-link:focus-visible {
-  outline: 2px solid var(--link-color);
-  outline-offset: 2px;
-}
-.minimal-categories .minimal-category:hover i {
-  color: var(--link-color);
-}
-
-#post-list .card-body {
-  padding-block: 1.45rem !important;
-}
-#post-list .card-title {
-  letter-spacing: -0.015em;
-}
-#post-list .card-wrapper {
-  transition: border-color 160ms ease;
-}
-#post-list .card-wrapper:hover {
-  border-color: #5475a1;
-}
-
-.minimal-posts li {
-  padding-inline: 0.7rem;
-}
-.minimal-posts li a {
-  color: var(--heading-color);
-  text-decoration: none;
-}
-.minimal-posts li a:hover,
-.minimal-posts li a:focus-visible {
-  color: var(--link-color);
-}
-
-/* Comfortable reading width on wide displays. */
-@media (min-width: 1200px) {
-  #main-wrapper main:has(+ #panel-wrapper:not(:has(#toc-wrapper))) {
-    max-width: 840px;
-  }
-}
-
-@media (max-width: 575px) {
-  #sidebar .profile-wrapper {
-    margin-top: 1.7rem;
-  }
-}
-
-/* Rebuild GitHub Pages without changing the visual design. */

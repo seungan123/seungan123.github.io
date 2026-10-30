@@ -1,0 +1,59 @@
+<!-- S_A · custom minimal sidebar using the original dinosaur avatar -->
+<aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end sa-sidebar">
+  <header class="profile-wrapper">
+    <a href="{{ '/' | relative_url }}" id="avatar" class="rounded-circle" aria-label="홈으로 이동">
+      {% if site.avatar %}
+        {% capture avatar_url %}{% include media-url.html src=site.avatar %}{% endcapture %}
+        <img src="{{ avatar_url | strip }}" width="176" height="176" alt="후드 공룡 마스코트" onerror="this.style.display='none'">
+      {% endif %}
+    </a>
+    <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+    <p class="site-subtitle mb-0">{{ site.tagline }}</p>
+  </header>
+
+  <nav aria-label="주요 메뉴" class="sa-primary-nav flex-column w-100 ps-0">
+    <ul class="nav">
+      <li class="nav-item{% if page.layout == 'home' %} active{% endif %}">
+        <a href="{{ '/' | relative_url }}" class="nav-link">
+          <i class="fas fa-house fa-fw" aria-hidden="true"></i><span>Home</span>
+        </a>
+      </li>
+      <li class="nav-item{% if page.url == '/categories/' %} active{% endif %}">
+        <a href="{{ '/categories/' | relative_url }}" class="nav-link">
+          <i class="far fa-folder fa-fw" aria-hidden="true"></i><span>Categories</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <button type="button" class="nav-link" onclick="document.getElementById('search-trigger')?.click(); document.getElementById('search-input')?.focus();">
+          <i class="fas fa-magnifying-glass fa-fw" aria-hidden="true"></i><span>Search</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <nav aria-label="카테고리 바로가기" class="sa-category-nav w-100">
+    <div class="sa-section-label">Categories</div>
+    {% assign pairs = "개발|development;CTF/Wargame|ctf-wargame;Bug Bounty|bug-bounty;블로그/기술문서|blog-docs;논문/컨퍼런스|papers-conferences;공모전/자격증|contests-certifications" | split: ";" %}
+    <ul class="sa-category-links">
+      {% for pair in pairs %}
+        {% assign item = pair | split: "|" %}
+        {% assign category_name = item[0] %}
+        {% assign category_slug = item[1] %}
+        {% capture category_url %}/topics/{{ category_slug }}/{% endcapture %}
+        <li>
+          <a href="{{ category_url | relative_url }}" {% if page.url == category_url %}aria-current="page"{% endif %}>
+            <i class="far fa-folder fa-fw" aria-hidden="true"></i>
+            <span>{{ category_name }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  <div class="sa-sidebar-bottom w-100">
+    <a href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener noreferrer">
+      <i class="fab fa-github fa-fw" aria-hidden="true"></i><span>GitHub</span>
+      <i class="fas fa-arrow-up-right-from-square sa-external" aria-hidden="true"></i>
+    </a>
+  </div>
+</aside>
