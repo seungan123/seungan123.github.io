@@ -22,8 +22,7 @@
 }
 
 /* No placeholder profile circle or unused subtitle. */
-#sidebar #avatar:not(:has(img)),
-#sidebar .site-subtitle {
+#sidebar #avatar:not(:has(img)) {
   display: none !important;
 }
 
@@ -160,5 +159,137 @@ footer > p:last-child {
   .minimal-posts li {
     flex-direction: column;
     gap: 0.25rem;
+  }
+}
+
+/* --- Security Log / refined minimal visual system --- */
+:root[data-bs-theme='dark'] {
+  --main-bg: #12161d;
+  --sidebar-bg: #161d27;
+  --main-border-color: #293340;
+  --text-color: #b9c4d1;
+  --text-muted-color: #93a0b0;
+  --heading-color: #eff4fa;
+  --link-color: #91baff;
+  --site-title-color: #f5f8fc;
+  --site-subtitle-color: #98a9bd;
+  --sidebar-active-color: #a8c9ff;
+  --sidebar-muted-color: #9caabc;
+  --sidebar-hover-bg: #202a38;
+  --card-bg: #171f29;
+  --topbar-bg: rgb(18 22 29 / 92%);
+  --search-border-color: #364456;
+  --input-focus-border-color: #91baff;
+}
+
+#sidebar .profile-wrapper {
+  margin-top: 2.6rem;
+  margin-bottom: 2.3rem;
+}
+
+#sidebar .site-title {
+  display: flex !important;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 1.48rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+#sidebar .site-title::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 1.4rem;
+  background: #83b2fb;
+  border-radius: 3px;
+  flex: none;
+}
+
+#sidebar .site-subtitle {
+  display: block !important;
+  height: auto;
+  max-width: 13.5rem;
+  margin-top: 0.8rem;
+  padding-left: 0.85rem;
+  color: var(--site-subtitle-color);
+  font-size: 0.8rem;
+  font-style: normal !important;
+  line-height: 1.6;
+  word-spacing: normal;
+}
+
+#sidebar nav .nav-link {
+  border-radius: 0.5rem;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+#sidebar nav li.nav-item.active .nav-link {
+  background: rgb(131 178 251 / 8%);
+}
+#sidebar nav .nav-link:hover {
+  background: var(--sidebar-hover-bg);
+}
+
+#topbar-wrapper,
+#topbar-title {
+  letter-spacing: 0;
+}
+
+/* Restrained hover feedback; keyboard focus is still visible. */
+.minimal-categories .minimal-category {
+  border-radius: 0.4rem;
+  padding-inline: 0.7rem;
+  min-height: 3.6rem;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.minimal-categories .minimal-category:hover,
+.minimal-categories .minimal-category:focus-visible {
+  background: rgb(131 178 251 / 6%);
+}
+.minimal-categories .minimal-category:focus-visible,
+#sidebar .nav-link:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
+.minimal-categories .minimal-category:hover i {
+  color: var(--link-color);
+}
+
+#post-list .card-body {
+  padding-block: 1.45rem !important;
+}
+#post-list .card-title {
+  letter-spacing: -0.015em;
+}
+#post-list .card-wrapper {
+  transition: border-color 160ms ease;
+}
+#post-list .card-wrapper:hover {
+  border-color: #5475a1;
+}
+
+.minimal-posts li {
+  padding-inline: 0.7rem;
+}
+.minimal-posts li a {
+  color: var(--heading-color);
+  text-decoration: none;
+}
+.minimal-posts li a:hover,
+.minimal-posts li a:focus-visible {
+  color: var(--link-color);
+}
+
+/* Comfortable reading width on wide displays. */
+@media (min-width: 1200px) {
+  #main-wrapper main:has(+ #panel-wrapper:not(:has(#toc-wrapper))) {
+    max-width: 840px;
+  }
+}
+
+@media (max-width: 575px) {
+  #sidebar .profile-wrapper {
+    margin-top: 1.7rem;
   }
 }
