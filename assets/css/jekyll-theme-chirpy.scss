@@ -1,0 +1,33 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/*
+ * Security Log: hide recent updates and popular tags.
+ * Keep the post table of contents when it exists.
+ */
+#panel-wrapper > .access {
+  display: none !important;
+}
+
+/* If a page has no table of contents, don't reserve an empty right column. */
+#panel-wrapper:not(:has(#toc-wrapper)) {
+  display: none !important;
+}
+
+@media (min-width: 1200px) {
+  #main-wrapper main:has(+ #panel-wrapper:not(:has(#toc-wrapper))) {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
