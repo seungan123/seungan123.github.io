@@ -12,29 +12,153 @@
 {%- endif -%}
 ';
 
-/*
- * Security Log: hide recent updates and popular tags.
- * Keep the post table of contents when it exists.
- */
-#panel-wrapper > .access {
+/* Minimal Security Log theme: keep navigation and reading functionality. */
+
+/* Show only the two user-facing sections in the sidebar. */
+#sidebar nav .nav-item:has(> a.nav-link[href$="/tags/"]),
+#sidebar nav .nav-item:has(> a.nav-link[href$="/archives/"]),
+#sidebar nav .nav-item:has(> a.nav-link[href$="/about/"]) {
   display: none !important;
 }
 
-/* If a page has no table of contents, don't reserve an empty right column. */
+/* No placeholder profile circle or unused subtitle. */
+#sidebar #avatar:not(:has(img)),
+#sidebar .site-subtitle {
+  display: none !important;
+}
+
+#sidebar .profile-wrapper {
+  margin-top: 2.2rem;
+  margin-bottom: 1.4rem;
+}
+
+#sidebar .site-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+#sidebar nav .nav-link i {
+  display: none;
+}
+
+#sidebar nav li.nav-item.active .nav-link {
+  background: transparent;
+  color: var(--sidebar-active-color);
+}
+
+#sidebar .sidebar-bottom > a {
+  background: transparent;
+  box-shadow: none !important;
+}
+
+/* Hide redundant update/tag panels; keep an article's table of contents. */
+#panel-wrapper > .access {
+  display: none !important;
+}
 #panel-wrapper:not(:has(#toc-wrapper)) {
   display: none !important;
 }
 
 @media (min-width: 1200px) {
   #main-wrapper main:has(+ #panel-wrapper:not(:has(#toc-wrapper))) {
-    flex: 0 0 100%;
-    max-width: 100%;
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: 880px;
+    margin-inline: auto;
   }
 }
 
-/* Sidebar: keep only Home and Categories in the navigation. */
-#sidebar nav .nav-item:has(> a.nav-link[href$="/tags/"]),
-#sidebar nav .nav-item:has(> a.nav-link[href$="/archives/"]),
-#sidebar nav .nav-item:has(> a.nav-link[href$="/about/"]) {
+/* Home: flat reading list rather than bulky blocks. */
+#post-list .card {
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#post-list .card-wrapper {
+  border-bottom: 1px solid var(--main-border-color);
+  margin-bottom: 0 !important;
+}
+#post-list .card-body {
+  padding: 1.2rem 0.35rem !important;
+}
+#post-list .card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+#post-list .card-wrapper:hover .card-title {
+  color: var(--link-color) !important;
+}
+#post-list .post-meta i {
+  display: none;
+}
+#post-list .post-meta .categories {
+  margin-left: 0.75rem;
+}
+
+/* Category index: a clean, full-width list of links. */
+.minimal-categories {
+  margin-top: 1.25rem;
+}
+.minimal-categories .minimal-category {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.05rem 0.25rem;
+  border-bottom: 1px solid var(--main-border-color);
+  color: var(--heading-color);
+  text-decoration: none !important;
+}
+.minimal-categories .minimal-category:hover,
+.minimal-categories .minimal-category:focus-visible {
+  color: var(--link-color);
+}
+.minimal-categories .minimal-category i {
+  font-size: 0.8rem;
+  color: var(--text-muted-color);
+}
+
+/* Category detail: post title and date, nothing else. */
+.minimal-posts {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0;
+}
+.minimal-posts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0.25rem;
+  border-bottom: 1px solid var(--main-border-color);
+}
+.minimal-posts li a {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+.minimal-posts time,
+.minimal-empty {
+  color: var(--text-muted-color);
+  font-size: 0.9rem;
+}
+.minimal-posts time {
+  white-space: nowrap;
+}
+
+/* Keep the copyright line, remove the redundant theme credit. */
+footer {
+  border-top: none !important;
+}
+footer > p:last-child {
   display: none !important;
+}
+
+@media (max-width: 575px) {
+  .minimal-posts li {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 }
