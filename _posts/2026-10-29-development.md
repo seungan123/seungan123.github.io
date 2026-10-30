@@ -5,6 +5,3 @@ categories: ["개발"]
 tags: [development]
 ---
 
-# 개발 공부 기록
-
-개발
