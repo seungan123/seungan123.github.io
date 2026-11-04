@@ -6,24 +6,31 @@ layout: default
 {% assign visible_posts = current_page_posts | where_exp: "post", "post.hidden != true" %}
 {% if paginator.page == nil or paginator.page == 1 %}
 <section class="sa-hero" aria-labelledby="sa-welcome">
-  <p class="sa-eyebrow">SECURITY STUDY LOG</p>
-  <h1 id="sa-welcome">Hi there!<br>I'm <span>{{ site.title | escape }}.</span></h1>
-  <p class="sa-hero-description">{{ site.tagline | escape }}</p>
-  <img class="sa-hero-art" src="{{ '/assets/img/sa-study-studio.webp' | relative_url }}" width="640" height="242" alt="보라색 작업 화면과 책, 머그컵, 돋보기로 꾸민 공부 공간 일러스트" fetchpriority="high">
+  <div class="sa-hero-copy">
+    <p class="sa-eyebrow"><span aria-hidden="true">✳</span> SECURITY STUDY LOG</p>
+    <h1 id="sa-welcome">Learn it.<br><span>Log it.</span></h1>
+    <p class="sa-hero-description">{{ site.tagline | escape }}</p>
+    <a class="sa-hero-cta" href="#sa-posts">기록 둘러보기 <i class="fas fa-arrow-down" aria-hidden="true"></i></a>
+  </div>
+  <figure class="sa-hero-figure">
+    <img class="sa-hero-art" src="{{ '/assets/img/sa-lab-neobrutal.svg' | relative_url }}" width="760" height="560" alt="터미널, 잠금 토큰과 데이터 큐브로 구성한 S_A 보안 연구실 일러스트" fetchpriority="high">
+    <figcaption><span>EXPLORE / UNDERSTAND / RECORD</span><span aria-hidden="true">↗</span></figcaption>
+  </figure>
 </section>
 <section id="sa-categories" class="sa-categories-section" aria-labelledby="sa-categories-heading">
-  <div class="sa-section-heading"><h2 id="sa-categories-heading">카테고리</h2><span>Explore the notes.</span></div>
+  <div class="sa-section-heading"><h2 id="sa-categories-heading"><span class="sa-section-number" aria-hidden="true">01</span>카테고리</h2><span>Pick a subject. Go deeper.</span></div>
   {% include sa-category-grid.html %}
 </section>
 {% endif %}
 <section id="sa-posts" class="sa-posts-section" aria-labelledby="sa-posts-heading">
-  <div class="sa-section-heading"><h2 id="sa-posts-heading">최근 게시글</h2><span>Learn. Explore. Record.</span></div>
+  <div class="sa-section-heading"><h2 id="sa-posts-heading"><span class="sa-section-number" aria-hidden="true">02</span>최근 게시글</h2><span>{{ site.posts.size }}개의 기록</span></div>
   {% if visible_posts.size > 0 %}
     <div class="sa-post-list">
       {% for post in visible_posts %}
         <article class="sa-post-item">
           <a class="sa-post-link" href="{{ post.url | relative_url }}">
             <div class="sa-post-content">
+              {% if post.categories.size > 0 %}<span class="sa-post-category">{{ post.categories | first | escape }}</span>{% endif %}
               <h3 class="sa-post-title">{{ post.title | escape }}</h3>
               {% assign excerpt = post.description | default: post.excerpt %}
               {% assign summary = excerpt | strip_html | strip_newlines | normalize_whitespace | truncate: 150 %}
@@ -35,7 +42,7 @@ layout: default
       {% endfor %}
     </div>
   {% else %}
-    <div class="sa-empty-posts"><i class="far fa-file-lines" aria-hidden="true"></i><p>아직 게시글이 없습니다.</p></div>
+    <div class="sa-empty-posts"><span class="sa-empty-mark" aria-hidden="true">[ ]</span><p>아직 게시글이 없습니다.</p></div>
   {% endif %}
   {% if paginator.total_pages > 1 %}{% include post-paginator.html %}{% endif %}
 </section>
