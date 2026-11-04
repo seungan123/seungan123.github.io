@@ -1,0 +1,12 @@
+{% assign category_items = "개발|development|fa-code|yellow;CTF/Wargame|ctf-wargame|fa-flag|purple;Bug Bounty|bug-bounty|fa-shield-virus|pink;블로그/기술문서|blog-docs|fa-file-lines|blue;논문/컨퍼런스|papers-conferences|fa-book-open|mint;공모전/자격증|contests-certifications|fa-trophy|peach" | split: ";" %}
+<nav class="sa-category-grid" aria-label="카테고리 6개">
+  {% for category_item in category_items %}
+    {% assign category_parts = category_item | split: "|" %}
+    {% capture category_url %}/topics/{{ category_parts[1] }}/{% endcapture %}
+    <a class="sa-category-card sa-tone-{{ category_parts[3] }}" href="{{ category_url | relative_url }}"{% if page.url == category_url %} aria-current="page"{% endif %}>
+      <span class="sa-category-icon"><i class="fas {{ category_parts[2] }}" aria-hidden="true"></i></span>
+      <span class="sa-category-name">{{ category_parts[0] }}</span>
+      <i class="fas fa-arrow-right sa-category-arrow" aria-hidden="true"></i>
+    </a>
+  {% endfor %}
+</nav>

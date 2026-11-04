@@ -1,38 +1,41 @@
 ---
 layout: default
 ---
-
-{% assign visible_posts = paginator.posts | where_exp: "post", "post.hidden != true" %}
-
-<section class="sa-home" aria-label="게시글 목록">
-  <h1 class="sa-home-heading">All Posts</h1>
-
+{% include lang.html %}
+{% assign current_page_posts = paginator.posts | default: site.posts %}
+{% assign visible_posts = current_page_posts | where_exp: "post", "post.hidden != true" %}
+{% if paginator.page == nil or paginator.page == 1 %}
+<section class="sa-hero" aria-labelledby="sa-welcome">
+  <p class="sa-eyebrow">SECURITY STUDY LOG</p>
+  <h1 id="sa-welcome">Hi there!<br>I'm <span>{{ site.title | escape }}.</span></h1>
+  <p class="sa-hero-description">{{ site.tagline | escape }}</p>
+  <img class="sa-hero-art" src="{{ '/assets/img/sa-study-studio.webp' | relative_url }}" width="640" height="242" alt="보라색 작업 화면과 책, 머그컵, 돋보기로 꾸민 공부 공간 일러스트" fetchpriority="high">
+</section>
+<section id="sa-categories" class="sa-categories-section" aria-labelledby="sa-categories-heading">
+  <div class="sa-section-heading"><h2 id="sa-categories-heading">카테고리</h2><span>Explore the notes.</span></div>
+  {% include sa-category-grid.html %}
+</section>
+{% endif %}
+<section id="sa-posts" class="sa-posts-section" aria-labelledby="sa-posts-heading">
+  <div class="sa-section-heading"><h2 id="sa-posts-heading">최근 게시글</h2><span>Learn. Explore. Record.</span></div>
   {% if visible_posts.size > 0 %}
     <div class="sa-post-list">
       {% for post in visible_posts %}
         <article class="sa-post-item">
           <a class="sa-post-link" href="{{ post.url | relative_url }}">
             <div class="sa-post-content">
-              <h2 class="sa-post-title">{{ post.title | escape }}</h2>
+              <h3 class="sa-post-title">{{ post.title | escape }}</h3>
               {% assign excerpt = post.description | default: post.excerpt %}
-              {% assign summary = excerpt | strip_html | strip_newlines | normalize_whitespace | truncate: 140 %}
-              {% if summary != "" %}
-                <p class="sa-post-excerpt">{{ summary }}</p>
-              {% endif %}
+              {% assign summary = excerpt | strip_html | strip_newlines | normalize_whitespace | truncate: 150 %}
+              {% if summary != "" %}<p class="sa-post-excerpt">{{ summary | escape }}</p>{% endif %}
             </div>
-            <div class="sa-post-aside">
-              <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%b %d, %Y" }}</time>
-              <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </div>
+            <div class="sa-post-aside"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time><i class="fas fa-arrow-right" aria-hidden="true"></i></div>
           </a>
         </article>
       {% endfor %}
     </div>
   {% else %}
-    <p class="sa-no-posts">아직 게시글이 없습니다.</p>
+    <div class="sa-empty-posts"><i class="far fa-file-lines" aria-hidden="true"></i><p>아직 게시글이 없습니다.</p></div>
   {% endif %}
+  {% if paginator.total_pages > 1 %}{% include post-paginator.html %}{% endif %}
 </section>
-
-{% if paginator.total_pages > 1 %}
-  {% include post-paginator.html %}
-{% endif %}
