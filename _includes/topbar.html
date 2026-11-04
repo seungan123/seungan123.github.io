@@ -12,9 +12,8 @@
         <a class="sa-github" href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub 새 탭에서 열기"><i class="fab fa-github" aria-hidden="true"></i><span>GitHub</span></a>
       </nav>
     </div>
-    <button type="button" id="search-trigger" class="btn sa-search-button" aria-label="게시글 검색">
-      <i class="fas fa-search" aria-hidden="true"></i><span>검색</span><kbd>Ctrl K</kbd>
-    </button>
+    <!-- Keep the search hook for keyboard navigation, without a visible button. -->
+    <button type="button" id="search-trigger" hidden aria-hidden="true" tabindex="-1" style="display: none !important;"></button>
     <search id="search" aria-label="블로그 검색">
       <i class="fas fa-search" aria-hidden="true"></i>
       <input id="search-input" class="form-control" type="search" aria-label="게시글 검색어" autocomplete="off" placeholder="제목이나 키워드로 검색...">
