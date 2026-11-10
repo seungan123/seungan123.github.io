@@ -1,0 +1,27 @@
+---
+layout: page
+---
+{% assign category_posts = site.posts | where_exp: "post", "post.categories contains page.category" %}
+<section class="sa-topic-page">
+  <header>
+    <span class="sa-topic-icon"><i class="{{ page.icon }}" aria-hidden="true"></i></span>
+    <div>
+      <p>SUBJECT LOG</p>
+      <h1>{{ page.title }}</h1>
+      <span>{{ page.description }}</span>
+    </div>
+  </header>
+
+  {% if category_posts.size > 0 %}
+  <div class="sa-topic-posts">
+    {% for post in category_posts %}
+    <a href="{{ post.url | relative_url }}">
+      <div><h2>{{ post.title }}</h2><p>{{ post.description | default: post.excerpt | strip_html | truncate: 120 }}</p></div>
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="sa-topic-empty">아직 이 카테고리의 게시글이 없습니다.</div>
+  {% endif %}
+</section>
