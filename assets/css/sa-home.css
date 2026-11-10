@@ -1,7 +1,7 @@
 /* Only the independent home layout loads this stylesheet. */
 .sa-home {
   --sa-ink: #17192e;
-  --sa-lavender: #c6b6eb;
+  --sa-lavender: #b9b2f4;
   --sa-ivory: #fff8eb;
   --sa-yellow: #ffe34f;
   --sa-pixel-corner: polygon(
@@ -32,9 +32,44 @@
 /* Desktop composition follows the 1672 × 941 reference canvas. */
 .sa-home .sa-hero {
   position: relative;
+  isolation: isolate;
   width: 100%;
   aspect-ratio: 1672 / 941;
   background: var(--sa-lavender);
+}
+
+/* Decorative layers stay independent of the HTML interface. */
+.sa-home .sa-scene {
+  position: absolute;
+  inset: 9% 0 10%;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.sa-home .sa-scene-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center bottom;
+  image-rendering: pixelated;
+}
+
+.sa-home .sa-rifle-layer { position: absolute; inset: 0; }
+.sa-home .sa-rifle {
+  position: absolute;
+  right: 12%;
+  bottom: -1.5%;
+  display: block;
+  width: 35%;
+  max-height: 42%;
+  object-fit: contain;
+  object-position: right bottom;
+  image-rendering: pixelated;
 }
 
 .sa-home .sa-header {
@@ -172,6 +207,7 @@
   justify-content: space-between;
   padding: 0 4%;
   border-block: 3px solid var(--sa-ink);
+  background: var(--sa-ivory);
   font-size: clamp(22px, 2.1vw, 36px);
   font-weight: 900;
   letter-spacing: -.045em;
@@ -189,6 +225,9 @@
 
 @media (max-width: 800px) {
   .sa-home .sa-hero { aspect-ratio: auto; }
+  .sa-home .sa-scene { top: 68px; bottom: 72px; }
+  .sa-home .sa-scene-background { object-position: 45% bottom; }
+  .sa-home .sa-rifle { right: 5%; width: 58%; max-height: 160px; }
   .sa-home .sa-header { position: relative; inset: auto; height: 68px; margin: 0 5%; gap: 15px; }
   .sa-home .sa-logo { font-size: 28px; }
   .sa-home .sa-navigation { gap: 20px; font-size: 14px; }
@@ -200,7 +239,7 @@
   .sa-home .sa-description { margin-top: 30px; font-size: 16px; }
   .sa-home .sa-owner { margin-top: 10px; font-size: 12px; }
   .sa-home .sa-cta { margin-top: 24px; padding: 15px 22px; font-size: 16px; }
-  .sa-home .sa-categories { position: relative; left: auto; top: auto; width: auto; margin: 44px 5% 48px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; scroll-margin-top: 20px; }
+  .sa-home .sa-categories { position: relative; left: auto; top: auto; width: auto; margin: 44px 5% 0; padding-bottom: clamp(140px, 32vw, 200px); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; scroll-margin-top: 20px; }
   .sa-home .sa-category-card { min-height: 112px; aspect-ratio: 1.65; padding: 16px 7px; gap: 10px; font-size: clamp(13px, 3.5vw, 19px); }
   .sa-home .sa-category-card .sa-icon { width: 32px; height: 32px; }
   .sa-home .sa-all-post { position: relative; top: auto; height: 72px; padding: 0 5%; font-size: 26px; }
