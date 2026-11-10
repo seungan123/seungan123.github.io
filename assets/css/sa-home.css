@@ -5,7 +5,7 @@
   --sa-ivory: #fff8eb;
   --sa-yellow: #ffe34f;
   --sa-gutter: clamp(1rem, 4vw, 6rem);
-  --sa-scene-focus: 72% bottom;
+  --sa-scene-focus: center center;
   --sa-pixel-corner: polygon(
     8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px,
     calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
@@ -71,7 +71,7 @@
 .sa-home .sa-world-distant { transform: translate3d(0, var(--sa-far-y, 0px), 0) scale(1.1); }
 .sa-home .sa-world-field {
   transform: translate3d(0, var(--sa-field-y, 0px), 0) scale(1.1);
-  /* Restrict the overlapping depth layer to grass, keeping tree silhouettes single. */
+  /* Restrict the overlapping depth layer to ground, keeping structure silhouettes single. */
   mask-image: linear-gradient(to bottom, transparent 90%, #000 96%);
 }
 
@@ -314,11 +314,6 @@
   .sa-home .sa-hero { grid-template-columns: minmax(0, 34fr) minmax(0, 64fr); }
   .sa-home .sa-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sa-home .sa-rifle { width: min(36vw, 48svh); }
-}
-
-/* Keep the sunset focal point in frame when a tall viewport crops the landscape. */
-@media (max-aspect-ratio: 4/3) {
-  .sa-home { --sa-scene-focus: 52% bottom; }
 }
 
 @media (max-width: 40rem) {
