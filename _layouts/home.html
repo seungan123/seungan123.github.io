@@ -15,6 +15,7 @@ layout: default
   <img
     id="sa-reference-image"
     class="sa-reference-image"
+    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
     alt="연보라색 픽셀 풍경, Learn it. Log it. 문구, 여섯 개 카테고리 타깃과 오른쪽 아래 총이 배치된 S_A 블로그 홈 화면"
     width="1672"
     height="941"
@@ -51,8 +52,6 @@ layout: default
       {% endfor %}
     ];
 
-    image.addEventListener('load', () => hero.classList.add('is-ready'), { once: true });
-
     Promise.all(
       chunkUrls.map((url) =>
         fetch(url, { cache: 'force-cache' }).then((response) => {
@@ -62,8 +61,13 @@ layout: default
       )
     )
       .then((chunks) => {
+        const reveal = () => hero.classList.add('is-ready');
         const base64 = chunks.join('').replace(/\s+/g, '');
+        image.addEventListener('load', reveal, { once: true });
         image.src = `data:image/webp;base64,${base64}`;
+        if (image.complete && image.naturalWidth > 1) {
+          window.requestAnimationFrame(reveal);
+        }
       })
       .catch((error) => {
         console.error(error);
