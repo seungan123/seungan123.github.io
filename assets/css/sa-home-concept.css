@@ -1,0 +1,77 @@
+/* Local semi-2D art direction. Pointer, recoil and scroll transforms stay in sa-home.css. */
+.sa-home {
+  --sa-ink: #20263d;
+  --sa-ivory: #fff9ef;
+  --sa-yellow: #ffdf62;
+  --sa-pixel-corner: polygon(9px 0, calc(100% - 9px) 0, 100% 9px,
+    100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%,
+    0 calc(100% - 9px), 0 9px);
+  font-family: "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+.sa-home .sa-world-distant,
+.sa-home .sa-world-field,
+.sa-home .sa-rifle { image-rendering: auto; }
+.sa-home .sa-header { border-bottom-width: 1px; }
+.sa-home .sa-logo { letter-spacing: -.045em; }
+.sa-home .sa-navigation { font-weight: 650; }
+.sa-home .sa-navigation [aria-current="page"] { text-decoration-thickness: 2px; }
+.sa-home .sa-description { font-size: clamp(.875rem, 1.25vw, 1.4rem); font-weight: 600; line-height: 1.75; letter-spacing: -.035em; }
+.sa-home .sa-owner { font-weight: 500; opacity: .85; }
+
+.sa-home .sa-cta,
+.sa-home .sa-category-card { filter: drop-shadow(3px 4px 0 rgb(32 38 61 / .28)); }
+.sa-home .sa-cta::after,
+.sa-home .sa-category-card::after {
+  inset: 2px;
+  background: linear-gradient(145deg, #fffcf5, var(--sa-ivory));
+}
+.sa-home .sa-cta::after,
+.sa-home .sa-category-card.is-selected::after { background: linear-gradient(145deg, #fff0ac, var(--sa-yellow)); }
+.sa-home .sa-category-card { font-weight: 700; letter-spacing: -.035em; gap: clamp(.7rem, 1vw, 1.1rem); }
+.sa-home .sa-category-card .sa-icon { stroke-width: 1.8; }
+.sa-home .sa-card-corners { position: absolute; inset: 9px; pointer-events: none; opacity: .22; }
+.sa-home .sa-card-corners::before,
+.sa-home .sa-card-corners::after {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border: solid currentColor;
+}
+.sa-home .sa-card-corners::before { top: 0; left: 0; border-width: 2px 0 0 2px; box-shadow: -3px -3px 0 -2px currentColor; }
+.sa-home .sa-card-corners::after { right: 0; bottom: 0; border-width: 0 2px 2px 0; box-shadow: 3px 3px 0 -2px currentColor; }
+.sa-home .is-selected .sa-card-corners { opacity: .65; }
+.sa-home .sa-aim { width: 36px; height: 36px; stroke-width: 2px; }
+
+.sa-home .sa-all-post-link {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: clamp(3.75rem, 8svh, 5rem);
+  margin-inline: calc(-1 * var(--sa-gutter));
+  padding: 1rem var(--sa-gutter);
+  border-top: 1px solid rgb(32 38 61 / .3);
+  background: rgb(241 222 206 / .2);
+  color: var(--sa-scene-ink, var(--sa-ink));
+  font-size: clamp(.875rem, 1.2vw, 1.125rem);
+  font-weight: 750;
+  letter-spacing: .065em;
+}
+.sa-home .sa-all-post-link:hover { background: rgb(255 239 204 / .3); }
+.sa-home .sa-all-post-link .sa-icon { width: 22px; height: 22px; }
+.sa-home .sa-posts-heading h2 { font-weight: 800; text-shadow: 1px 2px 0 rgb(32 38 61 / .6); }
+.sa-home .sa-empty-posts { text-shadow: 1px 1px 0 rgb(32 38 61 / .7); }
+:root[data-daypart="night"] .sa-home .sa-all-post-link { background: rgb(14 22 48 / .25); border-top-color: rgb(234 235 251 / .25); }
+
+@media (max-width: 40rem) {
+  .sa-home .sa-navigation .sa-nav-home,
+  .sa-home .sa-navigation .sa-nav-github { display: flex; }
+  .sa-home .sa-navigation { gap: clamp(.65rem, 3vw, 1rem); }
+  .sa-home .sa-nav-github .sa-icon { display: none; }
+  .sa-home .sa-description { font-size: clamp(.875rem, 3.8vw, 1.1rem); }
+  .sa-home .sa-all-post-link { align-self: stretch; margin-top: auto; }
+}

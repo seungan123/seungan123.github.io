@@ -7,11 +7,11 @@ const source = fs.readFileSync(path.join(__dirname, '../assets/js/sa-home-theme.
 const parts = ['dawn', 'day', 'evening', 'night'];
 const tick = () => new Promise((resolve) => setImmediate(resolve));
 
-function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, storageBlocked = false, deferred = null, failed = null } = {}) {
+function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, preview = undefined, storageBlocked = false, deferred = null, failed = null } = {}) {
   let now = Date.parse(at);
   let decodeCount = 0;
   const events = () => ({ listeners: {}, addEventListener(name, fn) { (this.listeners[name] ||= []).push(fn); }, emit(name, value) { for (const fn of this.listeners[name] || []) fn(value); } });
-  const root = { dataset: {}, hasAttribute: (name) => name === 'data-scene-ready' && 'sceneReady' in root.dataset };
+  const root = { dataset: preview ? { scenePreview: preview } : {}, hasAttribute: (name) => name === 'data-scene-ready' && 'sceneReady' in root.dataset };
   const tooltip = { textContent: '' };
   const status = { textContent: '' };
   const button = { ...events(), disabled: true, attributes: {}, setAttribute(name, value) { this.attributes[name] = value; }, querySelector: () => tooltip };
@@ -62,6 +62,9 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, storageBlocked 
   assert.equal(utc.root.dataset.daypart, 'dawn', 'UTC previous date must still use Seoul 05:00');
   for (const saved of parts) assert.equal(setup({ saved }).root.dataset.daypart, saved, 'Saved preview overrides time before paint');
   assert.equal(setup({ saved: 'invalid' }).root.dataset.themeMode, 'auto');
+  assert.equal(setup({ preview: 'evening' }).root.dataset.daypart, 'evening', 'A local preview may start at sunset');
+  assert.equal(setup({ preview: 'evening', saved: 'day' }).root.dataset.daypart, 'day', 'Saved choices still override the preview default');
+  assert.equal(setup({ preview: 'invalid' }).root.dataset.themeMode, 'auto');
 
   const h = setup();
   await h.boot();

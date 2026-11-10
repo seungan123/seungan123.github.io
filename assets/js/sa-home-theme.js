@@ -18,8 +18,12 @@
     if (hour >= 17 && hour < 20) return 'evening';
     return 'night';
   };
-  let mode = 'auto';
-  try { mode = validMode(localStorage.getItem(storageKey)); } catch { /* Private/storage-disabled browsing still works. */ }
+  // An optional local preview config chooses the initial scene; normal builds use auto.
+  let mode = validMode(root.dataset.scenePreview);
+  try {
+    const saved = localStorage.getItem(storageKey);
+    if (saved !== null) mode = validMode(saved);
+  } catch { /* Private/storage-disabled browsing still works. */ }
 
   // Runs in the head before CSS paints: no evening flash on a saved night theme.
   root.dataset.themeMode = mode;
