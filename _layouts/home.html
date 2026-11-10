@@ -2,19 +2,25 @@
 layout: compress
 ---
 <!doctype html>
-<html lang="{{ site.lang | default: 'en' | escape }}"{% if site.sa_scene_preview %} data-scene-preview="{{ site.sa_scene_preview | escape }}"{% endif %}>
+<html lang="{{ site.lang | default: 'en' | escape }}" data-home-version="ver1"{% if site.sa_scene_preview %} data-scene-preview="{{ site.sa_scene_preview | escape }}"{% endif %}>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% seo %}
+    {% assign home_asset_version = site.time | date: '%s' %}
     {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
-    {% for part in scene_parts %}
-      <link rel="preload" as="image" href="{{ '/assets/img/sa-home/semi-2d/scene-' | append: part | append: '.webp' | relative_url }}" data-scene-preload="{{ part }}">
+    {% assign home_versions = 'ver1,ver2' | split: ',' %}
+    {% for version in home_versions %}
+      {% assign scene_path = '/assets/img/sa-home/' %}
+      {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
+      {% for part in scene_parts %}
+        <link rel="preload" as="image" href="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}" data-scene-preload="{{ part }}" data-version="{{ version }}">
+      {% endfor %}
     {% endfor %}
-    <script src="{{ '/assets/js/sa-home-theme.js' | relative_url }}"></script>
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home.css' | relative_url }}">
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home-theme.css' | relative_url }}">
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home-concept.css' | relative_url }}">
+    <script src="{{ '/assets/js/sa-home-theme.js' | relative_url }}?v={{ home_asset_version }}"></script>
+    <link rel="stylesheet" href="{{ '/assets/css/sa-home.css' | relative_url }}?v={{ home_asset_version }}">
+    <link rel="stylesheet" href="{{ '/assets/css/sa-home-theme.css' | relative_url }}?v={{ home_asset_version }}">
+    <link rel="stylesheet" href="{{ '/assets/css/sa-home-concept.css' | relative_url }}?v={{ home_asset_version }}">
   </head>
   <body class="sa-home">
     <main id="sa-home-main" class="sa-world">
@@ -23,6 +29,6 @@ layout: compress
       {{ content }}
       {% include sa-home/aim.html %}
     </main>
-    <script src="{{ '/assets/js/sa-home.js' | relative_url }}" defer></script>
+    <script src="{{ '/assets/js/sa-home.js' | relative_url }}?v={{ home_asset_version }}" defer></script>
   </body>
 </html>

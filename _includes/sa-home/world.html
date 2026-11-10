@@ -1,11 +1,16 @@
 <div class="sa-world-backdrop" aria-hidden="true">
   <div class="sa-world-viewport">
     {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
+    {% assign home_versions = 'ver1,ver2' | split: ',' %}
+    {% for version in home_versions %}
+    {% assign scene_path = '/assets/img/sa-home/' %}
+    {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
+    <div class="sa-scene-bank" data-version="{{ version }}">
     {% for part in scene_parts %}
-      <div class="sa-scene-frame" data-scene="{{ part }}">
+      <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}">
         <img
           class="sa-world-distant"
-          src="{{ '/assets/img/sa-home/semi-2d/scene-' | append: part | append: '.webp' | relative_url }}"
+          src="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}"
           alt=""
           width="1672"
           height="941"
@@ -14,7 +19,7 @@
         >
         <img
           class="sa-world-field"
-          src="{{ '/assets/img/sa-home/semi-2d/scene-' | append: part | append: '.webp' | relative_url }}"
+          src="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}"
           alt=""
           width="1672"
           height="941"
@@ -22,6 +27,8 @@
           draggable="false"
         >
       </div>
+    {% endfor %}
+    </div>
     {% endfor %}
     {% include sa-home/scene.html %}
   </div>

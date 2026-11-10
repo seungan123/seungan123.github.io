@@ -1,4 +1,13 @@
 /* Color/opacity only: the existing home owns every layout and motion rule. */
+.sa-home .sa-scene-bank { position: absolute; inset: 0; opacity: 0; }
+:root[data-home-version="ver1"] .sa-scene-bank[data-version="ver1"],
+:root[data-home-version="ver2"] .sa-scene-bank[data-version="ver2"] { opacity: 1; }
+.sa-home .sa-rifle { aspect-ratio: 3 / 2; }
+.sa-home .sa-rifle img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
+:root[data-home-version="ver1"] [data-rifle-version="ver1"],
+:root[data-home-version="ver2"] [data-rifle-version="ver2"] { opacity: 1; }
+:root[data-home-version="ver2"] .sa-card-corners,
+:root[data-home-version="ver2"] .sa-all-post-link { display: none; }
 .sa-home .sa-scene-frame { position: absolute; inset: 0; opacity: 0; }
 :root:not([data-daypart]) .sa-scene-frame[data-scene="evening"],
 :root[data-daypart="dawn"] .sa-scene-frame[data-scene="dawn"],
@@ -24,7 +33,9 @@
 :root[data-daypart="night"] .sa-home button:focus-visible { outline-color: var(--sa-yellow); }
 
 /* Fade already-decoded images. Initial paint uses the selected palette directly. */
-:root[data-scene-ready] .sa-scene-frame { transition: opacity 1s ease; }
+:root[data-scene-ready] .sa-scene-frame,
+:root[data-scene-ready] .sa-scene-bank,
+:root[data-scene-ready] .sa-rifle img { transition: opacity 1s ease; }
 :root[data-scene-ready] .sa-home,
 :root[data-scene-ready] .sa-world { transition: background-color 1s ease; }
 :root[data-scene-ready] .sa-header,
@@ -32,23 +43,34 @@
 :root[data-scene-ready] .sa-posts-heading > .sa-icon,
 :root[data-scene-ready] .sa-pagination { transition: color 1s ease, border-color 1s ease; }
 
-/* The gear keeps its original dimensions; its label never participates in layout. */
-.sa-home .sa-theme-tooltip {
+/* An anchored disclosure keeps the existing header and hero geometry intact. */
+.sa-home .sa-header { z-index: 2; }
+.sa-home .sa-settings-wrap { position: relative; flex-shrink: 0; }
+.sa-home .sa-settings[aria-expanded="true"] { background: rgb(255 227 79 / .18); }
+.sa-home .sa-settings-panel {
   position: absolute;
-  top: 100%;
+  top: calc(100% + .75rem);
   right: 0;
-  z-index: 20;
-  padding: .4rem .6rem;
+  z-index: 2;
+  width: min(20rem, calc(100vw - 2 * var(--sa-gutter)));
+  padding: 1.1rem;
   border: 2px solid var(--sa-ink);
+  box-shadow: 4px 4px 0 rgb(23 25 46 / .3);
   color: var(--sa-ink);
   background: var(--sa-ivory);
-  font-size: .75rem;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
+  font-size: .875rem;
 }
-.sa-home .sa-settings:hover .sa-theme-tooltip,
-.sa-home .sa-settings:focus-visible .sa-theme-tooltip { opacity: 1; }
+.sa-home .sa-settings-panel[hidden] { display: none; }
+.sa-home .sa-settings-panel fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.sa-home .sa-settings-panel fieldset + fieldset { margin-top: 1.2rem; }
+.sa-home .sa-settings-panel legend { margin-bottom: .65rem; padding: 0; font-weight: 800; }
+.sa-home .sa-settings-panel legend span { margin-left: .5rem; font-size: .75rem; font-weight: 400; }
+.sa-home .sa-version-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.sa-home .sa-time-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .3rem; }
+.sa-home .sa-settings-panel button { min-height: 44px; padding: .5rem .25rem; border: 1px solid rgb(23 25 46 / .35); color: inherit; background: transparent; font-weight: 700; }
+.sa-home .sa-settings-panel button span { display: block; margin-top: .2rem; font-size: .75rem; font-weight: 400; }
+.sa-home .sa-settings-panel button[aria-pressed="true"] { border-color: var(--sa-ink); background: var(--sa-yellow); box-shadow: 2px 2px 0 var(--sa-ink); }
+.sa-home .sa-settings-panel button:focus-visible { outline: 3px solid var(--sa-ink); outline-offset: 2px; }
 .sa-home .sa-theme-status {
   position: absolute;
   width: 1px;
@@ -60,6 +82,8 @@
   white-space: nowrap;
 }
 @media (prefers-reduced-motion: reduce) {
+  :root[data-scene-ready] .sa-scene-bank,
+  :root[data-scene-ready] .sa-rifle img,
   :root[data-scene-ready] .sa-scene-frame,
   :root[data-scene-ready] .sa-home,
   :root[data-scene-ready] .sa-world,

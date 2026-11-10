@@ -6,8 +6,8 @@ lang: ko-KR
 timezone: Asia/Seoul
 
 title: "S_A"
-tagline: "Notes on security, CTFs & code."
-description: "Personal notes on cybersecurity, CTFs, software development, and research."
+tagline: "배움과 실험을 담은 개인 스터디 기록"
+description: "보안 · CTF · 개발 · 연구 — 배움과 실험을 담은 개인 스터디 기록"
 url: "https://seungan123.github.io"
 baseurl: ""
 

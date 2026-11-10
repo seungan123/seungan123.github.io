@@ -1,13 +1,15 @@
 (() => {
   'use strict';
-
   const root = document.documentElement;
   if (root.dataset.saThemeInitialized) return;
   root.dataset.saThemeInitialized = 'true';
   const storageKey = 'sa-home-scene-mode';
+  const versionKey = 'sa-home-design-version';
   const modes = ['auto', 'dawn', 'day', 'evening', 'night'];
+  const versions = ['ver1', 'ver2'];
   const labels = { auto: '자동', dawn: '새벽', day: '낮', evening: '저녁', night: '밤' };
   const validMode = (value) => modes.includes(value) ? value : 'auto';
+  const validVersion = (value) => versions.includes(value) ? value : 'ver1';
   const seoulHour = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Seoul', hour: '2-digit', hourCycle: 'h23'
   });
@@ -18,95 +20,114 @@
     if (hour >= 17 && hour < 20) return 'evening';
     return 'night';
   };
-  // An optional local preview config chooses the initial scene; normal builds use auto.
   let mode = validMode(root.dataset.scenePreview);
+  let version = 'ver1';
   try {
     const saved = localStorage.getItem(storageKey);
     if (saved !== null) mode = validMode(saved);
+    version = validVersion(localStorage.getItem(versionKey));
   } catch { /* Private/storage-disabled browsing still works. */ }
 
-  // Runs in the head before CSS paints: no evening flash on a saved night theme.
+  // Restore both choices before CSS paints, including the saved design's typography.
+  root.dataset.homeVersion = version;
   root.dataset.themeMode = mode;
   root.dataset.daypart = mode === 'auto' ? automaticPart() : mode;
   for (const link of document.querySelectorAll('[data-scene-preload]')) {
-    link.fetchPriority = link.dataset.scenePreload === root.dataset.daypart ? 'high' : 'low';
+    link.fetchPriority = link.dataset.version === version && link.dataset.scenePreload === root.dataset.daypart ? 'high' : 'low';
   }
 
   const initialize = () => {
     const button = document.querySelector('.sa-settings');
+    const wrap = document.querySelector('.sa-settings-wrap');
+    const panel = document.querySelector('#sa-settings-panel');
     const status = document.querySelector('#sa-theme-status');
-    const tooltip = button?.querySelector('.sa-theme-tooltip');
-    const scenes = new Map([...document.querySelectorAll('[data-scene]')].map((scene) => [scene.dataset.scene, scene]));
-    if (!button || !status || scenes.size !== 4) return;
+    const versionButtons = [...document.querySelectorAll('[data-home-choice]')];
+    const timeButtons = [...document.querySelectorAll('[data-time-choice]')];
+    const scenes = new Map([...document.querySelectorAll('[data-scene]')].map((scene) => [`${scene.dataset.version}:${scene.dataset.scene}`, scene]));
+    const rifles = new Map([...document.querySelectorAll('[data-rifle-version]')].map((img) => [img.dataset.rifleVersion, img]));
+    if (!button || !wrap || !panel || !status || scenes.size !== 8 || rifles.size !== 2) return;
     let revision = 0;
-    let displayed = null;
+    let displayed = false;
     let timer = null;
     const loading = new Map();
+    const images = new WeakMap();
 
-    const preload = (part) => {
-      if (loading.has(part)) return loading.get(part);
-      const promise = Promise.all([...scenes.get(part).querySelectorAll('img')].map((img) => {
-        const loaded = new Promise((resolve, reject) => {
-          if (img.complete) {
-            if (img.naturalWidth) resolve();
-            else reject(new Error('Scene image unavailable'));
-            return;
-          }
-          img.addEventListener('load', resolve, { once: true });
-          img.addEventListener('error', reject, { once: true });
-        });
-        return loaded.then(() => typeof img.decode === 'function' ? img.decode() : undefined);
-      }));
-      loading.set(part, promise);
-      promise.catch(() => loading.delete(part));
+    const decode = (img) => {
+      if (images.has(img)) return images.get(img);
+      const promise = new Promise((resolve, reject) => {
+        if (img.complete) {
+          if (img.naturalWidth) resolve();
+          else reject(new Error('Scene image unavailable'));
+          return;
+        }
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', reject, { once: true });
+      }).then(() => typeof img.decode === 'function' ? img.decode() : undefined);
+      images.set(img, promise);
+      promise.catch(() => images.delete(img));
       return promise;
     };
-
-    const describe = (suffix = '') => {
-      const next = modes[(modes.indexOf(mode) + 1) % modes.length];
-      const selected = mode === 'auto' ? `자동 · 서울 ${labels[root.dataset.daypart]}` : `${labels[mode]} 미리보기`;
-      const text = `${selected}${suffix}`;
-      button.setAttribute('aria-label', `시간대 설정: ${text}. 다음: ${labels[next]}`);
-      button.title = `${text} — 클릭하면 ${labels[next]}`;
-      if (tooltip) tooltip.textContent = text;
-      status.textContent = text;
+    const preload = (design, part) => {
+      const key = `${design}:${part}`;
+      if (loading.has(key)) return loading.get(key);
+      const promise = Promise.all([...scenes.get(key).querySelectorAll('img'), rifles.get(design)].map(decode));
+      loading.set(key, promise);
+      promise.catch(() => loading.delete(key));
+      return promise;
     };
-
+    const describe = (suffix = '') => {
+      const selected = mode === 'auto' ? `자동 · 서울 ${labels[root.dataset.daypart]}` : `${labels[mode]} 미리보기`;
+      button.title = `${root.dataset.homeVersion} · ${selected}`;
+      status.textContent = `${root.dataset.homeVersion} · ${selected}${suffix}`;
+      for (const choice of versionButtons) choice.setAttribute('aria-pressed', String(choice.dataset.homeChoice === root.dataset.homeVersion));
+      for (const choice of timeButtons) choice.setAttribute('aria-pressed', String(choice.dataset.timeChoice === mode));
+    };
     const apply = async () => {
       const request = ++revision;
+      const design = version;
       const part = mode === 'auto' ? automaticPart() : mode;
       root.dataset.themeMode = mode;
+      panel.setAttribute('aria-busy', 'true');
       describe();
       try {
-        await preload(part);
+        await preload(design, part);
         if (request !== revision) return;
+        // Switch art and CSS together only after the scene and rifle have decoded.
+        root.dataset.homeVersion = design;
         root.dataset.daypart = part;
-        displayed = part;
+        displayed = true;
         describe();
-        // Initial selection is painted directly, subsequent changes crossfade.
         if (!root.hasAttribute('data-scene-ready')) {
           requestAnimationFrame(() => requestAnimationFrame(() => { root.dataset.sceneReady = 'true'; }));
         }
       } catch {
         if (request !== revision) return;
-        // Keep the last decoded scene on a network failure, never blank it out.
         if (!displayed) {
           try {
-            await preload('evening');
+            await preload(design, 'evening');
             if (request !== revision) return;
+            root.dataset.homeVersion = design;
             root.dataset.daypart = 'evening';
-            displayed = 'evening';
+            displayed = true;
           } catch { /* The selected solid sky color remains as the last fallback. */ }
         }
         describe(' · 이미지 로드 실패');
+      } finally {
+        if (request === revision) panel.setAttribute('aria-busy', 'false');
       }
     };
-
+    const setOpen = (open, restoreFocus = false) => {
+      panel.hidden = !open;
+      button.setAttribute('aria-expanded', String(open));
+      if (restoreFocus) button.focus();
+    };
+    const save = (key, value) => {
+      try { localStorage.setItem(key, value); } catch { /* Keep choices in memory. */ }
+    };
     const scheduleClock = () => {
       if (timer !== null) clearTimeout(timer);
       timer = null;
       if (document.hidden) return;
-      // Check at minute boundaries, including a tab left open across a daypart.
       timer = setTimeout(() => {
         timer = null;
         if (mode === 'auto') void apply();
@@ -115,14 +136,33 @@
     };
 
     button.disabled = false;
-    button.addEventListener('click', () => {
-      mode = modes[(modes.indexOf(mode) + 1) % modes.length];
-      try { localStorage.setItem(storageKey, mode); } catch { /* Keep the current preview in memory. */ }
+    button.addEventListener('click', () => setOpen(panel.hidden));
+    for (const choice of versionButtons) choice.addEventListener('click', () => {
+      version = validVersion(choice.dataset.homeChoice);
+      save(versionKey, version);
       void apply();
     });
+    for (const choice of timeButtons) choice.addEventListener('click', () => {
+      mode = validMode(choice.dataset.timeChoice);
+      save(storageKey, mode);
+      void apply();
+    });
+    document.addEventListener('pointerdown', (event) => {
+      if (!panel.hidden && !wrap.contains(event.target)) setOpen(false);
+    });
+    wrap.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) {
+        event.preventDefault();
+        setOpen(false, true);
+      }
+    });
+    wrap.addEventListener('focusout', (event) => {
+      if (event.relatedTarget && !wrap.contains(event.relatedTarget)) setOpen(false);
+    });
     window.addEventListener('storage', (event) => {
-      if (event.key !== storageKey && event.key !== null) return;
-      mode = validMode(event.newValue);
+      if (event.key !== storageKey && event.key !== versionKey && event.key !== null) return;
+      if (event.key === storageKey || event.key === null) mode = validMode(event.newValue);
+      if (event.key === versionKey || event.key === null) version = validVersion(event.newValue);
       void apply();
     });
     document.addEventListener('visibilitychange', () => {
@@ -131,12 +171,11 @@
     });
     window.addEventListener('pagehide', () => { clearTimeout(timer); timer = null; });
     window.addEventListener('pageshow', () => { if (mode === 'auto') void apply(); scheduleClock(); });
-    // All four sources are requested by preload links and decoded before switching.
-    for (const part of scenes.keys()) void preload(part).catch(() => {});
+    // Preload every daypart of both designs without changing the interaction loop.
+    for (const design of versions) for (const part of modes.slice(1)) void preload(design, part).catch(() => {});
     void apply();
     scheduleClock();
   };
-
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
   else initialize();
 })();
