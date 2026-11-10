@@ -1,0 +1,31 @@
+{% assign current_page_posts = paginator.posts | default: site.posts %}
+{% assign visible_posts = current_page_posts | where_exp: 'post', 'post.hidden != true' %}
+<section class="sa-posts" id="sa-posts" aria-label="전체 게시글">
+  {% if visible_posts.size > 0 %}
+    <ul class="sa-post-list">
+      {% for post in visible_posts %}
+        <li>
+          <article>
+            <a href="{{ post.url | relative_url }}">
+              <h2>{{ post.title | escape }}</h2>
+              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>
+            </a>
+          </article>
+        </li>
+      {% endfor %}
+    </ul>
+    {% if paginator.total_pages > 1 %}
+      <nav class="sa-pagination" aria-label="게시글 페이지">
+        {% if paginator.previous_page %}
+          <a href="{{ paginator.previous_page_path | relative_url }}">이전</a>
+        {% endif %}
+        <span>{{ paginator.page }} / {{ paginator.total_pages }}</span>
+        {% if paginator.next_page %}
+          <a href="{{ paginator.next_page_path | relative_url }}">다음</a>
+        {% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <p class="sa-empty-posts">아직 게시글이 없습니다.</p>
+  {% endif %}
+</section>

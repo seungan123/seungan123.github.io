@@ -1,0 +1,26 @@
+<nav class="sa-categories" id="sa-categories" aria-label="주제별 기록">
+  <a class="sa-category-card" href="{{ '/topics/development/' | relative_url }}">
+    {% include sa-home/icon.html name="code" %}
+    <span>개발</span>
+  </a>
+  <a class="sa-category-card is-selected" href="{{ '/topics/ctf-wargame/' | relative_url }}">
+    {% include sa-home/icon.html name="flag" %}
+    <span>CTF/Wargame</span>
+  </a>
+  <a class="sa-category-card" href="{{ '/topics/bug-bounty/' | relative_url }}">
+    {% include sa-home/icon.html name="bug" %}
+    <span>Bug Bounty</span>
+  </a>
+  <a class="sa-category-card" href="{{ '/topics/blog-docs/' | relative_url }}">
+    {% include sa-home/icon.html name="file" %}
+    <span>블로그/기술문서</span>
+  </a>
+  <a class="sa-category-card" href="{{ '/topics/papers-conferences/' | relative_url }}">
+    {% include sa-home/icon.html name="book" %}
+    <span>논문/컨퍼런스</span>
+  </a>
+  <a class="sa-category-card" href="{{ '/topics/contests-certifications/' | relative_url }}">
+    {% include sa-home/icon.html name="trophy" %}
+    <span>공모전/자격증</span>
+  </a>
+</nav>

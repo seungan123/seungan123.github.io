@@ -1,0 +1,14 @@
+<header class="sa-header">
+  <a class="sa-logo" href="{{ '/' | relative_url }}" aria-label="S_A 홈">S_A</a>
+  <nav class="sa-navigation" aria-label="주요 메뉴">
+    <a class="sa-nav-home" href="{{ '/' | relative_url }}" aria-current="page">홈</a>
+    <a href="#sa-categories">카테고리</a>
+    <a href="#sa-posts">연구노트</a>
+    <a class="sa-nav-github" href="https://github.com/{{ site.github.username | escape }}" target="_blank" rel="noopener noreferrer">
+      GitHub {% include sa-home/icon.html name="github" %}
+    </a>
+  </nav>
+  <button class="sa-settings" type="button" aria-label="설정" disabled>
+    {% include sa-home/icon.html name="settings" %}
+  </button>
+</header>
