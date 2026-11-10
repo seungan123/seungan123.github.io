@@ -3,10 +3,10 @@
 
   const hero = document.querySelector('.sa-hero');
   const world = document.querySelector('.sa-world');
-  const aim = hero?.querySelector('.sa-aim');
+  const aim = world?.querySelector('.sa-aim');
   const rifle = world?.querySelector('.sa-rifle');
-  if (!hero || !world || !aim || !rifle || hero.dataset.saInteractionInitialized) return;
-  hero.dataset.saInteractionInitialized = 'true';
+  if (!hero || !world || !aim || !rifle || world.dataset.saInteractionInitialized) return;
+  world.dataset.saInteractionInitialized = 'true';
 
   const worldViewport = world.querySelector('.sa-world-viewport');
   const heroScroll = world.querySelector('.sa-hero-scroll');
@@ -20,6 +20,7 @@
   let scrollEnabled = false;
   let inside = false;
   let showDefault = false;
+  let hasPointer = false;
   let pointer = null;
   let positioned = false;
   let frame = null;
@@ -38,7 +39,10 @@
       leave();
       return;
     }
+    // Re-entry starts at the new position, never at the default/previous aim.
+    if (!inside) positioned = false;
     pointer = { x: event.clientX, y: event.clientY };
+    hasPointer = true;
     inside = true;
     showDefault = false;
     schedule();
@@ -66,6 +70,7 @@
     const worldBounds = world?.getBoundingClientRect();
     const scrollBounds = heroScroll?.getBoundingClientRect();
     const viewportHeight = Math.max(window.innerHeight || bounds.height, 1);
+    const viewportWidth = Math.max(window.innerWidth || bounds.width, 1);
     // Content must fit before pinning; short windows and zoomed text keep native flow.
     const canScroll = Boolean(enabled && !reduce && scrollBounds && bounds.height <= viewportHeight + 1);
     const scrollModeChanged = scrollEnabled !== canScroll;
@@ -73,39 +78,40 @@
     const progress = canScroll && heroScrollDistance > 0 ? clamp(-scrollBounds.top / heroScrollDistance, 0, 1) : 0;
     // Hold the opening pose briefly, then ease both ends of the transition.
     const transition = clamp((progress - 0.1) / 0.9, 0, 1);
-    const aimProgress = transition * transition * (3 - 2 * transition);
-    const rifleScrollY = Math.min(120, viewportHeight * 0.14) * aimProgress;
-    // Preserve the aim's screen destination as the released hero starts scrolling away.
-    const scrollAimY = clamp(viewportHeight * 0.6 - bounds.top, 20, Math.max(bounds.height - 20, 20));
+    const uiTransition = transition * transition * (3 - 2 * transition);
     const travel = worldBounds ? clamp(-worldBounds.top, 0, Math.max(worldBounds.height - viewportHeight, 0)) : 0;
     const farY = reduce ? 0 : -Math.min(travel * 0.06, viewportHeight * 0.02);
     const fieldY = reduce ? 0 : -Math.min(travel * 0.16, viewportHeight * 0.045);
-    if (inside && pointer && (pointer.x < bounds.left || pointer.x > bounds.left + bounds.width ||
-      pointer.y < bounds.top || pointer.y > bounds.top + bounds.height)) {
+    if (inside && pointer && (pointer.x < 0 || pointer.x > viewportWidth ||
+      pointer.y < 0 || pointer.y > viewportHeight)) {
       inside = false;
       showDefault = false;
+      pointer = null;
+      positioned = false;
       pendingRecoil = false;
       recoilStart = null;
     }
     let targetAimX = current.aimX;
     let targetAimY = current.aimY;
-    if (!positioned) {
-      const card = selectedCard?.getBoundingClientRect();
-      current.aimX = card ? card.left + card.width / 2 - bounds.left : bounds.width / 2;
-      current.aimY = card ? card.top + card.height / 2 - bounds.top : bounds.height / 2;
+    if (!positioned && (inside || showDefault)) {
+      const card = !inside ? selectedCard?.getBoundingClientRect() : null;
+      current.aimX = pointer ? pointer.x : card ? card.left + card.width / 2 : viewportWidth / 2;
+      current.aimY = pointer ? pointer.y : card ? card.top + card.height / 2 : viewportHeight / 2;
+      if (!inside && (current.aimY < 0 || current.aimY > viewportHeight)) showDefault = false;
       targetAimX = current.aimX;
       targetAimY = current.aimY;
       positioned = true;
     }
     if (inside && pointer) {
-      targetAimX = clamp(pointer.x - bounds.left, 0, bounds.width);
-      targetAimY = clamp(pointer.y - bounds.top, 0, bounds.height);
+      targetAimX = clamp(pointer.x, 0, viewportWidth);
+      targetAimY = clamp(pointer.y, 0, viewportHeight);
     }
     const aimVisible = enabled && (inside || showDefault) &&
-      bounds.top + bounds.height > 0 && bounds.top < viewportHeight;
+      worldBounds.top + worldBounds.height > 0 && worldBounds.top < viewportHeight;
     const moveGun = enabled && inside && !reduce;
-    const nx = moveGun ? clamp(targetAimX / Math.max(bounds.width, 1) * 2 - 1, -1, 1) : 0;
-    const ny = moveGun ? clamp(targetAimY / Math.max(bounds.height, 1) * 2 - 1, -1, 1) : 0;
+    // Viewport coordinates keep the same gun pose as hero and posts scroll past.
+    const nx = moveGun ? clamp(targetAimX / viewportWidth * 2 - 1, -1, 1) : 0;
+    const ny = moveGun ? clamp(targetAimY / viewportHeight * 2 - 1, -1, 1) : 0;
     const target = { aimX: targetAimX, aimY: targetAimY, gunX: nx * 24, gunY: ny * 14, angle: nx * 2.5 };
     let unsettled = false;
     for (const key of Object.keys(current)) {
@@ -125,19 +131,17 @@
       if (progress === 1) recoilStart = null;
     } else recoilStart = null;
 
-    hero.classList.toggle('sa-interaction-enabled', enabled);
     world.classList.toggle('sa-interaction-enabled', enabled);
     scrollEnabled = canScroll;
     world.classList.toggle('sa-scroll-enabled', scrollEnabled);
     world.style.setProperty('--scroll-progress', progress.toFixed(4));
-    world.style.setProperty('--rifle-scroll-y', `${rifleScrollY.toFixed(3)}px`);
-    world.style.setProperty('--rifle-scroll-scale', (1 - 0.04 * aimProgress).toFixed(4));
-    world.style.setProperty('--ui-opacity', (1 - 0.75 * aimProgress).toFixed(4));
-    world.style.setProperty('--aim-progress', aimProgress.toFixed(4));
-    hero.classList.toggle('sa-aim-visible', aimVisible);
-    // Scroll guides the aim toward the lower center; mouse tracking itself stays intact.
-    aim.style.setProperty('--sa-aim-x', `${(current.aimX + (bounds.width * 0.5 - current.aimX) * aimProgress).toFixed(3)}px`);
-    aim.style.setProperty('--sa-aim-y', `${(current.aimY + (scrollAimY - current.aimY) * aimProgress).toFixed(3)}px`);
+    world.style.setProperty('--rifle-scroll-y', '0px');
+    world.style.setProperty('--rifle-scroll-scale', '1');
+    world.style.setProperty('--ui-opacity', (1 - 0.75 * uiTransition).toFixed(4));
+    world.style.setProperty('--aim-progress', '0');
+    world.classList.toggle('sa-aim-visible', aimVisible);
+    aim.style.setProperty('--sa-aim-x', `${current.aimX.toFixed(3)}px`);
+    aim.style.setProperty('--sa-aim-y', `${current.aimY.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-x', `${current.gunX.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-y', `${current.gunY.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-angle', `${current.angle.toFixed(3)}deg`);
@@ -155,7 +159,7 @@
   const configure = () => {
     enabled = desktopMouse.matches && (navigator.maxTouchPoints || 0) === 0;
     inside = false;
-    showDefault = enabled;
+    showDefault = enabled && !hasPointer;
     pointer = null;
     positioned = false;
     pendingRecoil = false;
@@ -164,19 +168,20 @@
     schedule();
   };
 
-  hero.addEventListener('pointerenter', recordPointer, { passive: true });
-  hero.addEventListener('pointermove', recordPointer, { passive: true });
-  hero.addEventListener('pointerleave', leave, { passive: true });
-  hero.addEventListener('pointercancel', leave, { passive: true });
-  hero.addEventListener('pointerdown', (event) => {
+  world.addEventListener('pointerenter', recordPointer, { passive: true });
+  world.addEventListener('pointermove', recordPointer, { passive: true });
+  world.addEventListener('pointerleave', leave, { passive: true });
+  world.addEventListener('pointercancel', leave, { passive: true });
+  world.addEventListener('pointerdown', (event) => {
     recordPointer(event);
+    positioned = false;
     if (enabled && event.pointerType === 'mouse' && event.button === 0 && !reducedMotion.matches) {
       pendingRecoil = true;
       schedule();
     }
     // Native anchor navigation is never prevented or delayed.
   }, { passive: true });
-  hero.addEventListener('focusin', () => {
+  world.addEventListener('focusin', () => {
     if (document.activeElement?.matches(':focus-visible')) leave();
   });
   desktopMouse.addEventListener('change', configure);

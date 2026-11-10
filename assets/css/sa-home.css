@@ -275,7 +275,7 @@
 
 /* Pointer feedback is enabled only after the home script initializes. */
 .sa-home .sa-aim-layer {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 10;
   overflow: hidden;
@@ -299,9 +299,9 @@
 .sa-home .sa-category-card:focus-visible::after { background: #fff1b0; }
 
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
-  .sa-home .sa-hero.sa-interaction-enabled,
-  .sa-home .sa-hero.sa-interaction-enabled * { cursor: none; }
-  .sa-home .sa-hero.sa-interaction-enabled.sa-aim-visible .sa-aim { display: block; }
+  .sa-home .sa-world.sa-interaction-enabled.sa-aim-visible,
+  .sa-home .sa-world.sa-interaction-enabled.sa-aim-visible * { cursor: none; }
+  .sa-home .sa-world.sa-interaction-enabled.sa-aim-visible .sa-aim { display: block; }
   .sa-home .sa-world.sa-interaction-enabled .sa-rifle {
     transform: translate3d(var(--sa-rifle-x, 0px), var(--sa-rifle-y, 0px), 0)
       rotate(var(--sa-rifle-angle, 0deg))
@@ -319,7 +319,6 @@
   .sa-home .sa-world.sa-scroll-enabled .sa-hero { position: sticky; top: 0; }
   .sa-home .sa-world.sa-scroll-enabled .sa-intro,
   .sa-home .sa-world.sa-scroll-enabled .sa-categories { opacity: var(--ui-opacity); }
-  .sa-home .sa-world.sa-scroll-enabled .sa-rifle-layer { will-change: transform; }
   /* Keyboard navigation keeps the focused group legible throughout the transition. */
   .sa-home .sa-world.sa-scroll-enabled .sa-intro:has(:focus-visible),
   .sa-home .sa-world.sa-scroll-enabled .sa-categories:has(:focus-visible) { opacity: 1; }
