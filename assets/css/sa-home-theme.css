@@ -1,0 +1,70 @@
+/* Color/opacity only: the existing home owns every layout and motion rule. */
+.sa-home .sa-scene-frame { position: absolute; inset: 0; opacity: 0; }
+:root:not([data-daypart]) .sa-scene-frame[data-scene="evening"],
+:root[data-daypart="dawn"] .sa-scene-frame[data-scene="dawn"],
+:root[data-daypart="day"] .sa-scene-frame[data-scene="day"],
+:root[data-daypart="evening"] .sa-scene-frame[data-scene="evening"],
+:root[data-daypart="night"] .sa-scene-frame[data-scene="night"] { opacity: 1; }
+
+:root[data-daypart="dawn"] .sa-home { --sa-lavender: #9aaee8; }
+:root[data-daypart="day"] .sa-home { --sa-lavender: #90c2fb; }
+:root[data-daypart="night"] .sa-home {
+  --sa-lavender: #101a49;
+  --sa-scene-ink: #f1f0ff;
+  --sa-ivory: #e9ecf5;
+}
+.sa-home .sa-header,
+.sa-home .sa-intro,
+.sa-home .sa-posts-heading > .sa-icon,
+.sa-home .sa-pagination { color: var(--sa-scene-ink, var(--sa-ink)); }
+.sa-home .sa-header { border-color: var(--sa-scene-ink, var(--sa-ink)); }
+.sa-home .sa-settings { position: relative; color: inherit; }
+.sa-home .sa-cta { color: var(--sa-ink); }
+:root[data-daypart="night"] .sa-home a:focus-visible,
+:root[data-daypart="night"] .sa-home button:focus-visible { outline-color: var(--sa-yellow); }
+
+/* Fade already-decoded images. Initial paint uses the selected palette directly. */
+:root[data-scene-ready] .sa-scene-frame { transition: opacity 1s ease; }
+:root[data-scene-ready] .sa-home,
+:root[data-scene-ready] .sa-world { transition: background-color 1s ease; }
+:root[data-scene-ready] .sa-header,
+:root[data-scene-ready] .sa-intro,
+:root[data-scene-ready] .sa-posts-heading > .sa-icon,
+:root[data-scene-ready] .sa-pagination { transition: color 1s ease, border-color 1s ease; }
+
+/* The gear keeps its original dimensions; its label never participates in layout. */
+.sa-home .sa-theme-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 20;
+  padding: .4rem .6rem;
+  border: 2px solid var(--sa-ink);
+  color: var(--sa-ink);
+  background: var(--sa-ivory);
+  font-size: .75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+}
+.sa-home .sa-settings:hover .sa-theme-tooltip,
+.sa-home .sa-settings:focus-visible .sa-theme-tooltip { opacity: 1; }
+.sa-home .sa-theme-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-scene-ready] .sa-scene-frame,
+  :root[data-scene-ready] .sa-home,
+  :root[data-scene-ready] .sa-world,
+  :root[data-scene-ready] .sa-header,
+  :root[data-scene-ready] .sa-intro,
+  :root[data-scene-ready] .sa-posts-heading > .sa-icon,
+  :root[data-scene-ready] .sa-pagination { transition: none; }
+}

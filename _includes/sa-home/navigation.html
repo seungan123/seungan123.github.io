@@ -8,7 +8,9 @@
       GitHub {% include sa-home/icon.html name="github" %}
     </a>
   </nav>
-  <button class="sa-settings" type="button" aria-label="설정" disabled>
+  <button class="sa-settings" type="button" aria-label="시간대 설정" aria-describedby="sa-theme-status" disabled>
     {% include sa-home/icon.html name="settings" %}
+    <span class="sa-theme-tooltip" aria-hidden="true">자동</span>
   </button>
+  <span id="sa-theme-status" class="sa-theme-status" role="status" aria-live="polite" aria-atomic="true"></span>
 </header>

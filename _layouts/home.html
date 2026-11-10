@@ -7,7 +7,13 @@ layout: compress
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% seo %}
+    {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
+    {% for part in scene_parts %}
+      <link rel="preload" as="image" href="{{ '/assets/img/sa-home/scene-' | append: part | append: '.webp' | relative_url }}" data-scene-preload="{{ part }}">
+    {% endfor %}
+    <script src="{{ '/assets/js/sa-home-theme.js' | relative_url }}"></script>
     <link rel="stylesheet" href="{{ '/assets/css/sa-home.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/css/sa-home-theme.css' | relative_url }}">
   </head>
   <body class="sa-home">
     <main id="sa-home-main" class="sa-world">
