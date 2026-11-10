@@ -28,12 +28,13 @@ function setup({ desktop = true, reduce = false, touchPoints = 0 } = {}) {
   const card = element({ left: 400, top: 200, width: 200, height: 100 });
   const world = element({ left: 100, top: 0, width: 1000, height: 1600 });
   const worldViewport = element({});
-  for (const el of [hero, aim, rifle, card, world, worldViewport]) {
+  const heroScroll = element({ left: 100, top: 50, width: 1000, height: 900 });
+  for (const el of [hero, aim, rifle, card, world, worldViewport, heroScroll]) {
     el.style.owner = el;
     el.classList.owner = el;
   }
   hero.querySelector = (s) => ({ '.sa-aim': aim, '.sa-category-card.is-selected': card })[s];
-  world.querySelector = (s) => ({ '.sa-world-viewport': worldViewport, '.sa-rifle': rifle })[s];
+  world.querySelector = (s) => ({ '.sa-world-viewport': worldViewport, '.sa-rifle': rifle, '.sa-hero-scroll': heroScroll })[s];
   const desktopMedia = { ...emitter(), matches: desktop };
   const reducedMedia = { ...emitter(), matches: reduce };
   const win = { ...emitter(), innerHeight: 600, matchMedia: (q) => q.includes('reduced-motion') ? reducedMedia : desktopMedia };
@@ -60,7 +61,7 @@ function setup({ desktop = true, reduce = false, touchPoints = 0 } = {}) {
   const listenCount = () => [hero, win, doc, desktopMedia, reducedMedia].reduce((n, e) => n + Object.values(e.listeners).flat().length, 0);
   load();
   settle();
-  return { hero, aim, rifle, world, worldViewport, win, doc, desktopMedia, reducedMedia, queue, load, step, settle, mouse, value, listenCount, counts: () => ({ reads, writes }) };
+  return { hero, aim, rifle, world, worldViewport, heroScroll, win, doc, desktopMedia, reducedMedia, queue, load, step, settle, mouse, value, listenCount, counts: () => ({ reads, writes }) };
 }
 
 const h = setup();
@@ -180,7 +181,7 @@ scrolling.world.rect.top = -1600;
 scrolling.win.emit('scroll');
 scrolling.settle();
 assert(Math.abs(scrolling.value(scrolling.worldViewport, '--sa-field-y')) <= scrolling.win.innerHeight * 0.045);
-assert.deepEqual(scrolling.rifle.values, stationaryRifle, 'No scroll recoil or exit transform beyond the hero');
+assert.deepEqual(scrolling.rifle.values, stationaryRifle, 'Scroll must not overwrite pointer/recoil transforms');
 assert(!scrolling.hero.classes.has('sa-aim-visible'), 'Offscreen hero must not show aim');
 scrolling.reducedMedia.matches = true;
 scrolling.reducedMedia.emit('change');
@@ -194,4 +195,76 @@ mobileScroll.win.emit('scroll');
 mobileScroll.settle();
 assert(mobileScroll.value(mobileScroll.worldViewport, '--sa-field-y') < 0, 'Native mobile scroll also moves scenery');
 assert(!mobileScroll.hero.classes.has('sa-interaction-enabled'), 'Touch pointer effects remain off');
-console.log('PASS: aim/recoil/accessibility/lifecycle regression checks; shared RAF, native scrolling, layer depth, persistent rifle, mobile scrolling and reduced motion.');
+
+// A real sticky interval: 900px wrapper - 600px hero = 300px of native travel.
+const pinned = setup();
+assert(pinned.world.classes.has('sa-scroll-enabled'));
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 0);
+const scrollTo = (y) => {
+  pinned.heroScroll.rect.top = -y;
+  pinned.world.rect.top = -y;
+  pinned.hero.rect.top = -Math.max(y - 300, 0);
+  pinned.win.emit('scroll');
+  pinned.settle();
+};
+scrollTo(30);
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 0.1);
+assert.equal(pinned.value(pinned.world, '--ui-opacity'), 1, 'Opening pose holds briefly');
+assert.equal(pinned.value(pinned.world, '--rifle-scroll-y'), 0);
+scrollTo(150);
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 0.5);
+assert(pinned.value(pinned.world, '--ui-opacity') > 0.25 && pinned.value(pinned.world, '--ui-opacity') < 1);
+assert(pinned.value(pinned.world, '--rifle-scroll-y') > 0 && pinned.value(pinned.world, '--rifle-scroll-y') < 120);
+assert(pinned.value(pinned.aim, '--sa-aim-x') > 400 && pinned.value(pinned.aim, '--sa-aim-x') < 500);
+assert(pinned.value(pinned.aim, '--sa-aim-y') > 200 && pinned.value(pinned.aim, '--sa-aim-y') < 360);
+scrollTo(300);
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 1);
+assert.equal(pinned.value(pinned.world, '--ui-opacity'), 0.25, 'UI never disappears');
+assert.equal(pinned.value(pinned.world, '--rifle-scroll-scale'), 0.96);
+assert.equal(pinned.value(pinned.world, '--aim-progress'), 1);
+assert.equal(pinned.value(pinned.aim, '--sa-aim-x'), 500);
+assert.equal(pinned.value(pinned.aim, '--sa-aim-y'), 360);
+const finalDrop = pinned.value(pinned.world, '--rifle-scroll-y');
+scrollTo(400);
+assert.equal(pinned.value(pinned.aim, '--sa-aim-y') + pinned.hero.rect.top, 360, 'Aim stays toward the screen center as posts enter');
+scrollTo(3000);
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 1);
+assert.equal(pinned.value(pinned.world, '--rifle-scroll-y'), finalDrop, 'Rifle movement stays bounded past the hero');
+assert(finalDrop <= 120);
+scrollTo(0);
+assert.equal(pinned.value(pinned.world, '--ui-opacity'), 1, 'Scrolling back restores the first screen');
+assert.equal(pinned.value(pinned.world, '--rifle-scroll-y'), 0);
+assert.equal(pinned.value(pinned.aim, '--sa-aim-x'), 400);
+assert.equal(pinned.value(pinned.aim, '--sa-aim-y'), 200);
+
+scrollTo(150);
+pinned.hero.rect.height = 800;
+pinned.win.emit('resize');
+pinned.settle();
+assert(!pinned.world.classes.has('sa-scroll-enabled'), 'Tall content must not be trapped in a short viewport');
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 0);
+assert.equal(pinned.value(pinned.world, '--ui-opacity'), 1);
+pinned.hero.rect.height = 600;
+pinned.win.emit('resize');
+pinned.settle();
+assert(pinned.world.classes.has('sa-scroll-enabled'));
+assert.equal(pinned.value(pinned.world, '--scroll-progress'), 0.5, 'Resize recomputes the real scroll interval');
+pinned.reducedMedia.matches = true;
+pinned.reducedMedia.emit('change');
+pinned.settle();
+assert(!pinned.world.classes.has('sa-scroll-enabled'));
+assert.equal(pinned.value(pinned.world, '--rifle-scroll-y'), 0);
+assert.equal(pinned.value(pinned.world, '--aim-progress'), 0);
+
+for (const options of [{ desktop: false }, { touchPoints: 1 }, { reduce: true }]) {
+  const plain = setup(options);
+  plain.heroScroll.rect.top = -300;
+  plain.win.emit('scroll');
+  plain.settle();
+  assert(!plain.world.classes.has('sa-scroll-enabled'));
+  assert.equal(plain.value(plain.world, '--scroll-progress'), 0);
+  assert.equal(plain.value(plain.world, '--rifle-scroll-y'), 0);
+  assert.equal(plain.value(plain.world, '--ui-opacity'), 1);
+  assert.equal(plain.value(plain.world, '--aim-progress'), 0);
+}
+console.log('PASS: pointer/recoil regressions, native RAF scrolling, sticky progress/reversal, bounded rifle/UI/aim, resize fallback, mobile/touch and reduced motion.');

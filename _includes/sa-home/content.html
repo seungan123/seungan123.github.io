@@ -1,19 +1,21 @@
-<section class="sa-hero" aria-labelledby="sa-hero-title">
-  {% include sa-home/navigation.html %}
+<div class="sa-hero-scroll">
+  <section class="sa-hero" aria-labelledby="sa-hero-title">
+    {% include sa-home/navigation.html %}
 
-  <div class="sa-intro">
-    <h1 id="sa-hero-title">Learn it.<br><span>Log it.</span></h1>
-    <p class="sa-description">보안 · CTF · 개발 · 연구까지<br>기록하는 개인 스터디 블로그입니다.</p>
-    <p class="sa-owner">조선대학교 정보보안학과 신승안</p>
-    <a class="sa-cta" href="#all-posts">
-      <span>기록 보러가기</span>
-      {% include sa-home/icon.html name="arrow-right" %}
-    </a>
-  </div>
+    <div class="sa-intro">
+      <h1 id="sa-hero-title">Learn it.<br><span>Log it.</span></h1>
+      <p class="sa-description">보안 · CTF · 개발 · 연구까지<br>기록하는 개인 스터디 블로그입니다.</p>
+      <p class="sa-owner">조선대학교 정보보안학과 신승안</p>
+      <a class="sa-cta" href="#all-posts">
+        <span>기록 보러가기</span>
+        {% include sa-home/icon.html name="arrow-right" %}
+      </a>
+    </div>
 
-  {% include sa-home/categories.html %}
+    {% include sa-home/categories.html %}
 
-  {% include sa-home/aim.html %}
-</section>
+    {% include sa-home/aim.html %}
+  </section>
+</div>
 
 {% include sa-home/posts.html %}

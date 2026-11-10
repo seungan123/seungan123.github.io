@@ -33,6 +33,11 @@
 
 /* One scenery viewport belongs to the whole, naturally scrolling world. */
 .sa-home .sa-world {
+  --scroll-progress: 0;
+  --rifle-scroll-y: 0px;
+  --rifle-scroll-scale: 1;
+  --ui-opacity: 1;
+  --aim-progress: 0;
   position: relative;
   isolation: isolate;
   min-height: 100svh;
@@ -75,6 +80,9 @@
   mask-image: linear-gradient(to bottom, transparent 90%, #000 96%);
 }
 
+/* Without enhancement, or when content is taller than the viewport, flow normally. */
+.sa-home .sa-hero-scroll { position: relative; }
+
 /* Grid content can grow beyond the viewport; only decorative layers are clipped. */
 .sa-home .sa-hero {
   position: relative;
@@ -95,6 +103,8 @@
   inset: 0;
   pointer-events: none;
   user-select: none;
+  transform: translate3d(0, var(--rifle-scroll-y), 0) scale(var(--rifle-scroll-scale));
+  transform-origin: right bottom;
 }
 
 .sa-home .sa-rifle {
@@ -303,7 +313,20 @@
   .sa-home .sa-category-card.is-selected:hover::after { background: #ffeb7a; }
 }
 
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* A half-viewport of native scrolling pins the first screen, then releases it. */
+  .sa-home .sa-world.sa-scroll-enabled .sa-hero-scroll { min-height: 150svh; }
+  .sa-home .sa-world.sa-scroll-enabled .sa-hero { position: sticky; top: 0; }
+  .sa-home .sa-world.sa-scroll-enabled .sa-intro,
+  .sa-home .sa-world.sa-scroll-enabled .sa-categories { opacity: var(--ui-opacity); }
+  .sa-home .sa-world.sa-scroll-enabled .sa-rifle-layer { will-change: transform; }
+  /* Keyboard navigation keeps the focused group legible throughout the transition. */
+  .sa-home .sa-world.sa-scroll-enabled .sa-intro:has(:focus-visible),
+  .sa-home .sa-world.sa-scroll-enabled .sa-categories:has(:focus-visible) { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .sa-home .sa-rifle-layer { transform: none; }
   .sa-home .sa-world.sa-interaction-enabled .sa-rifle { transform: none; will-change: auto; }
   .sa-home .sa-world-distant,
   .sa-home .sa-world-field { transform: scale(1.1); will-change: auto; }

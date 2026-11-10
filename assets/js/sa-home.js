@@ -9,6 +9,7 @@
   hero.dataset.saInteractionInitialized = 'true';
 
   const worldViewport = world.querySelector('.sa-world-viewport');
+  const heroScroll = world.querySelector('.sa-hero-scroll');
   const selectedCard = hero.querySelector('.sa-category-card.is-selected');
   const desktopMouse = window.matchMedia('(min-width: 801px) and (hover: hover) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -16,6 +17,7 @@
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
   const current = { aimX: 0, aimY: 0, gunX: 0, gunY: 0, angle: 0 };
   let enabled = false;
+  let scrollEnabled = false;
   let inside = false;
   let showDefault = false;
   let pointer = null;
@@ -62,7 +64,19 @@
     // is read before writes, using current content/viewport sizes rather than a fixed canvas.
     const bounds = hero.getBoundingClientRect();
     const worldBounds = world?.getBoundingClientRect();
+    const scrollBounds = heroScroll?.getBoundingClientRect();
     const viewportHeight = Math.max(window.innerHeight || bounds.height, 1);
+    // Content must fit before pinning; short windows and zoomed text keep native flow.
+    const canScroll = Boolean(enabled && !reduce && scrollBounds && bounds.height <= viewportHeight + 1);
+    const scrollModeChanged = scrollEnabled !== canScroll;
+    const heroScrollDistance = scrollBounds ? Math.max(scrollBounds.height - bounds.height, 0) : 0;
+    const progress = canScroll && heroScrollDistance > 0 ? clamp(-scrollBounds.top / heroScrollDistance, 0, 1) : 0;
+    // Hold the opening pose briefly, then ease both ends of the transition.
+    const transition = clamp((progress - 0.1) / 0.9, 0, 1);
+    const aimProgress = transition * transition * (3 - 2 * transition);
+    const rifleScrollY = Math.min(120, viewportHeight * 0.14) * aimProgress;
+    // Preserve the aim's screen destination as the released hero starts scrolling away.
+    const scrollAimY = clamp(viewportHeight * 0.6 - bounds.top, 20, Math.max(bounds.height - 20, 20));
     const travel = worldBounds ? clamp(-worldBounds.top, 0, Math.max(worldBounds.height - viewportHeight, 0)) : 0;
     const farY = reduce ? 0 : -Math.min(travel * 0.06, viewportHeight * 0.02);
     const fieldY = reduce ? 0 : -Math.min(travel * 0.16, viewportHeight * 0.045);
@@ -113,9 +127,17 @@
 
     hero.classList.toggle('sa-interaction-enabled', enabled);
     world.classList.toggle('sa-interaction-enabled', enabled);
+    scrollEnabled = canScroll;
+    world.classList.toggle('sa-scroll-enabled', scrollEnabled);
+    world.style.setProperty('--scroll-progress', progress.toFixed(4));
+    world.style.setProperty('--rifle-scroll-y', `${rifleScrollY.toFixed(3)}px`);
+    world.style.setProperty('--rifle-scroll-scale', (1 - 0.04 * aimProgress).toFixed(4));
+    world.style.setProperty('--ui-opacity', (1 - 0.75 * aimProgress).toFixed(4));
+    world.style.setProperty('--aim-progress', aimProgress.toFixed(4));
     hero.classList.toggle('sa-aim-visible', aimVisible);
-    aim.style.setProperty('--sa-aim-x', `${current.aimX.toFixed(3)}px`);
-    aim.style.setProperty('--sa-aim-y', `${current.aimY.toFixed(3)}px`);
+    // Scroll guides the aim toward the lower center; mouse tracking itself stays intact.
+    aim.style.setProperty('--sa-aim-x', `${(current.aimX + (bounds.width * 0.5 - current.aimX) * aimProgress).toFixed(3)}px`);
+    aim.style.setProperty('--sa-aim-y', `${(current.aimY + (scrollAimY - current.aimY) * aimProgress).toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-x', `${current.gunX.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-y', `${current.gunY.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-angle', `${current.angle.toFixed(3)}deg`);
@@ -125,7 +147,8 @@
       worldViewport.style.setProperty('--sa-field-y', `${fieldY.toFixed(3)}px`);
     }
 
-    if (unsettled || recoilStart !== null) schedule();
+    // Changing the sticky mode changes its wrapper height; measure it next frame.
+    if (unsettled || recoilStart !== null || scrollModeChanged) schedule();
     else lastTime = null;
   }
 
