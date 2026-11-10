@@ -76,10 +76,8 @@
       const selected = mode === 'auto' ? `자동 · 서울 ${labels[root.dataset.daypart]}` : `${labels[mode]} 미리보기`;
       const nextVersion = versions[(versions.indexOf(version) + 1) % versions.length];
       const nextMode = modes[(modes.indexOf(mode) + 1) % modes.length];
-      button.title = `디자인: ${root.dataset.homeVersion} · 클릭하면 ${nextVersion}`;
-      button.setAttribute('aria-label', button.title);
-      timeButton.title = `시간대: ${selected} · 클릭하면 ${labels[nextMode]}`;
-      timeButton.setAttribute('aria-label', timeButton.title);
+      button.setAttribute('aria-label', `디자인: ${root.dataset.homeVersion} · 클릭하면 ${nextVersion}`);
+      timeButton.setAttribute('aria-label', `시간대: ${selected} · 클릭하면 ${labels[nextMode]}`);
       status.textContent = `${root.dataset.homeVersion} · ${selected}${suffix}`;
     };
     const apply = async () => {
