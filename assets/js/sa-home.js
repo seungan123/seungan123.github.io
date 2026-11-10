@@ -7,6 +7,9 @@
   if (!hero || !aim || !rifle || hero.dataset.saInteractionInitialized) return;
   hero.dataset.saInteractionInitialized = 'true';
 
+  const world = document.querySelector('.sa-world');
+  const worldViewport = world?.querySelector('.sa-world-viewport');
+  const rifleLayer = hero.querySelector('.sa-rifle-layer');
   const selectedCard = hero.querySelector('.sa-category-card.is-selected');
   const desktopMouse = window.matchMedia('(min-width: 801px) and (hover: hover) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -56,9 +59,25 @@
     lastTime = time;
     const reduce = reducedMotion.matches;
 
-    // Read geometry before updating transforms. Client coordinates remain correct
-    // after ordinary page navigation/scrolling; no scroll effect or listener exists.
+    // Native document scrolling drives decorative transforms only. All geometry
+    // is read before writes, using current content/viewport sizes rather than a fixed canvas.
     const bounds = hero.getBoundingClientRect();
+    const worldBounds = world?.getBoundingClientRect();
+    const viewportHeight = Math.max(window.innerHeight || bounds.height, 1);
+    const travel = worldBounds ? clamp(-worldBounds.top, 0, Math.max(worldBounds.height - viewportHeight, 0)) : 0;
+    const heroProgress = clamp(-bounds.top / Math.max(bounds.height, 1), 0, 1);
+    const farY = reduce ? 0 : -Math.min(travel * 0.06, viewportHeight * 0.035);
+    const fieldY = reduce ? 0 : -Math.min(travel * 0.16, viewportHeight * 0.065);
+    const fadeProgress = clamp(heroProgress / 0.32, 0, 1);
+    const rifleOpacity = reduce ? 1 : 1 - fadeProgress * fadeProgress * (3 - 2 * fadeProgress);
+    const rifleExitY = reduce ? 0 : heroProgress * bounds.height * 0.5;
+    if (inside && pointer && (pointer.x < bounds.left || pointer.x > bounds.left + bounds.width ||
+      pointer.y < bounds.top || pointer.y > bounds.top + bounds.height)) {
+      inside = false;
+      showDefault = false;
+      pendingRecoil = false;
+      recoilStart = null;
+    }
     let targetAimX = current.aimX;
     let targetAimY = current.aimY;
     if (!positioned) {
@@ -73,7 +92,8 @@
       targetAimX = clamp(pointer.x - bounds.left, 0, bounds.width);
       targetAimY = clamp(pointer.y - bounds.top, 0, bounds.height);
     }
-    const aimVisible = enabled && (inside || showDefault);
+    const aimVisible = enabled && (inside || showDefault) &&
+      bounds.top + bounds.height > 0 && bounds.top < viewportHeight;
     const moveGun = enabled && inside && !reduce;
     const nx = moveGun ? clamp(targetAimX / Math.max(bounds.width, 1) * 2 - 1, -1, 1) : 0;
     const ny = moveGun ? clamp(targetAimY / Math.max(bounds.height, 1) * 2 - 1, -1, 1) : 0;
@@ -104,6 +124,14 @@
     rifle.style.setProperty('--sa-rifle-y', `${current.gunY.toFixed(3)}px`);
     rifle.style.setProperty('--sa-rifle-angle', `${current.angle.toFixed(3)}deg`);
     rifle.style.setProperty('--sa-recoil', `${recoil.toFixed(3)}px`);
+    if (worldViewport) {
+      worldViewport.style.setProperty('--sa-far-y', `${farY.toFixed(3)}px`);
+      worldViewport.style.setProperty('--sa-field-y', `${fieldY.toFixed(3)}px`);
+    }
+    if (rifleLayer) {
+      rifleLayer.style.setProperty('--sa-rifle-exit-y', `${rifleExitY.toFixed(3)}px`);
+      rifleLayer.style.setProperty('--sa-rifle-opacity', rifleOpacity.toFixed(3));
+    }
 
     if (unsettled || recoilStart !== null) schedule();
     else lastTime = null;
@@ -139,6 +167,7 @@
   desktopMouse.addEventListener('change', configure);
   reducedMotion.addEventListener('change', configure);
   window.addEventListener('resize', () => { positioned = false; schedule(); }, { passive: true });
+  window.addEventListener('scroll', schedule, { passive: true });
   window.addEventListener('blur', leave);
   window.addEventListener('pagehide', () => {
     if (frame !== null) cancelAnimationFrame(frame);

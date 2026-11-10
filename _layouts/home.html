@@ -10,7 +10,8 @@ layout: compress
     <link rel="stylesheet" href="{{ '/assets/css/sa-home.css' | relative_url }}">
   </head>
   <body class="sa-home">
-    <main id="sa-home-main">
+    <main id="sa-home-main" class="sa-world">
+      {% include sa-home/world.html %}
       {% include sa-home/content.html %}
       {{ content }}
     </main>

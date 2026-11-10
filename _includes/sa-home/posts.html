@@ -1,13 +1,17 @@
 {% assign current_page_posts = paginator.posts | default: site.posts %}
 {% assign visible_posts = current_page_posts | where_exp: 'post', 'post.hidden != true' %}
-<section class="sa-posts" id="sa-posts" aria-label="전체 게시글">
+<section class="sa-posts" id="all-posts" aria-labelledby="sa-posts-title">
+  <header class="sa-posts-heading">
+    <h2 id="sa-posts-title">ALL POST</h2>
+    {% include sa-home/icon.html name="arrow-down" %}
+  </header>
   {% if visible_posts.size > 0 %}
     <ul class="sa-post-list">
       {% for post in visible_posts %}
         <li>
           <article>
             <a href="{{ post.url | relative_url }}">
-              <h2>{{ post.title | escape }}</h2>
+              <h3>{{ post.title | escape }}</h3>
               <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>
             </a>
           </article>
