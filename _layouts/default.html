@@ -6,7 +6,8 @@ layout: compress
 {% include lang.html %}
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" data-bs-theme="{{ site.theme_mode | default: 'light' }}">
   {% include head.html lang=lang %}
-  <body class="sa-centered-layout">
+  <link rel="stylesheet" href="{{ '/assets/css/sa-reference.css' | relative_url }}">
+  <body class="sa-centered-layout{% if page.layout == 'home' %} sa-home-page{% endif %}">
     <a class="sa-skip-link" href="#main-content">본문으로 건너뛰기</a>
     <div id="main-wrapper">
       <div class="container d-flex flex-column">
