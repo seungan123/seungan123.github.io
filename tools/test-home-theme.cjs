@@ -13,10 +13,7 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   const events = () => ({ listeners: {}, addEventListener(name, fn) { (this.listeners[name] ||= []).push(fn); }, emit(name, value) { for (const fn of this.listeners[name] || []) fn(value); } });
   const element = (dataset = {}) => ({ ...events(), dataset, attributes: {}, setAttribute(name, value) { this.attributes[name] = value; }, focus() { this.focused = true; } });
   const root = { dataset: { homeVersion: 'ver1', ...(preview ? { scenePreview: preview } : {}) }, hasAttribute: (name) => name === 'data-scene-ready' && 'sceneReady' in root.dataset };
-  const status = { textContent: '' }, button = element(), panel = { ...element(), hidden: true };
-  const versionButtons = versions.map((v) => element({ homeChoice: v }));
-  const timeButtons = ['auto', ...parts].map((v) => element({ timeChoice: v }));
-  const wrap = { ...element(), contains: (target) => [button, panel, ...versionButtons, ...timeButtons].includes(target) };
+  const status = { textContent: '' }, button = element(), timeButton = element();
   let resolveDecode;
   const delayed = new Promise((resolve) => { resolveDecode = resolve; });
   const image = (key, broken) => ({ complete: true, naturalWidth: broken ? 0 : 1672,
@@ -29,8 +26,8 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   const rifles = versions.map((version) => ({ ...image(`${version}:rifle`, failedRifle === version), dataset: { rifleVersion: version } }));
   const preloads = versions.flatMap((version) => parts.map((part) => ({ dataset: { version, scenePreload: part } })));
   const doc = { ...events(), documentElement: root, hidden: false, readyState: 'loading',
-    querySelectorAll: (s) => ({ '[data-scene]': scenes, '[data-rifle-version]': rifles, '[data-scene-preload]': preloads, '[data-home-choice]': versionButtons, '[data-time-choice]': timeButtons })[s],
-    querySelector: (s) => ({ '.sa-settings': button, '.sa-settings-wrap': wrap, '#sa-settings-panel': panel, '#sa-theme-status': status })[s] };
+    querySelectorAll: (s) => ({ '[data-scene]': scenes, '[data-rifle-version]': rifles, '[data-scene-preload]': preloads })[s],
+    querySelector: (s) => ({ '.sa-version-toggle': button, '.sa-time-toggle': timeButton, '#sa-theme-status': status })[s] };
   const win = events(), timers = new Map(), rafs = [];
   let nextTimer = 0;
   const storage = { values: { 'sa-home-scene-mode': saved, 'sa-home-design-version': savedVersion },
@@ -44,9 +41,8 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   const flush = async () => { await tick(); while (rafs.length) rafs.shift()(); await tick(); };
   const boot = async () => { doc.emit('DOMContentLoaded'); await flush(); };
   load();
-  return { root, button, panel, wrap, doc, win, storage, status, timers, preloads, load, flush, boot, resolveDecode, versionButtons, timeButtons,
-    chooseTime: (part) => timeButtons.find((b) => b.dataset.timeChoice === part).emit('click'),
-    chooseVersion: (version) => versionButtons.find((b) => b.dataset.homeChoice === version).emit('click'),
+  return { root, button, timeButton, doc, win, storage, status, timers, preloads, load, flush, boot, resolveDecode,
+    chooseTime(part) { for (let i = 0; i < 5 && root.dataset.themeMode !== part; i++) timeButton.emit('click'); },
     setTime: (time) => { now = Date.parse(time); }, decodes: () => decodeCount,
     runTimer() { const [id, task] = timers.entries().next().value; timers.delete(id); task.fn(); } };
 }
@@ -72,37 +68,37 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   const h = setup(); await h.boot();
   assert.equal(h.decodes(), 18, 'Eight scenes and both independent rifles decode in advance');
   assert.equal(h.root.dataset.sceneReady, 'true'); assert.equal(h.button.disabled, false);
-  h.button.emit('click'); assert.equal(h.panel.hidden, false); assert.equal(h.root.dataset.themeMode, 'auto', 'Opening settings never changes theme');
+  assert.equal(h.timeButton.disabled, false);
+  h.button.emit('click'); await h.flush(); assert.equal(h.root.dataset.homeVersion, 'ver2', 'One gear click changes the design immediately');
+  assert.equal(h.root.dataset.themeMode, 'auto', 'Gear never changes the time');
+  h.button.emit('click'); await h.flush(); assert.equal(h.root.dataset.homeVersion, 'ver1', 'Second gear click returns to ver1');
   for (const expected of ['dawn', 'day', 'evening', 'night', 'auto']) {
-    h.chooseTime(expected); await h.flush();
+    h.timeButton.emit('click'); await h.flush();
+    assert.equal(h.root.dataset.homeVersion, 'ver1', 'Time cycle never changes the design');
     assert.equal(h.root.dataset.themeMode, expected); assert.equal(h.storage.values['sa-home-scene-mode'], expected);
     assert.equal(h.root.dataset.daypart, expected === 'auto' ? 'day' : expected);
   }
-  h.chooseTime('night'); h.chooseVersion('ver2'); await h.flush();
+  h.chooseTime('night'); h.button.emit('click'); await h.flush();
   assert.equal(h.root.dataset.homeVersion, 'ver2'); assert.equal(h.root.dataset.daypart, 'night', 'Version switch preserves selected time');
   assert.equal(h.storage.values['sa-home-design-version'], 'ver2');
-  assert.equal(h.versionButtons[1].attributes['aria-pressed'], 'true');
+  assert.match(h.button.attributes['aria-label'], /ver2.*ver1/);
+  assert.match(h.timeButton.attributes['aria-label'], /밤.*자동/);
   h.load(); assert.equal(h.button.listeners.click.length, 1); assert.equal(h.timers.size, 1);
-  let prevented = false;
-  h.wrap.emit('keydown', { key: 'Escape', preventDefault() { prevented = true; } });
-  assert.ok(h.panel.hidden && h.button.focused && prevented, 'Escape closes disclosure and returns focus');
-  h.button.emit('click'); h.doc.emit('pointerdown', { target: h.timeButtons[0] }); assert.equal(h.panel.hidden, false);
-  h.doc.emit('pointerdown', { target: {} }); assert.equal(h.panel.hidden, true);
-  h.button.emit('click'); h.wrap.emit('focusout', { relatedTarget: {} }); assert.equal(h.panel.hidden, true);
+  assert.equal(h.timeButton.listeners.click.length, 1, 'Time cycle also initializes only once');
 
   const rapid = setup({ deferred: 'ver2:day' }); await rapid.boot();
-  rapid.chooseVersion('ver2'); await rapid.flush(); assert.equal(rapid.root.dataset.homeVersion, 'ver1', 'Keep previous art and CSS while decoding');
-  rapid.chooseVersion('ver1'); rapid.chooseTime('night'); await rapid.flush();
+  rapid.button.emit('click'); await rapid.flush(); assert.equal(rapid.root.dataset.homeVersion, 'ver1', 'Keep previous art and CSS while decoding');
+  rapid.button.emit('click'); rapid.chooseTime('night'); await rapid.flush();
   rapid.resolveDecode(); await rapid.flush();
   assert.equal(rapid.root.dataset.homeVersion, 'ver1'); assert.equal(rapid.root.dataset.daypart, 'night', 'Late image cannot override a newer choice');
   for (const options of [{ failed: 'ver2:day' }, { failedRifle: 'ver2' }]) {
-    const broken = setup(options); await broken.boot(); broken.chooseVersion('ver2'); await broken.flush();
+    const broken = setup(options); await broken.boot(); broken.button.emit('click'); await broken.flush();
     assert.equal(broken.root.dataset.homeVersion, 'ver1', 'Scene or rifle failure retains complete previous design');
-    assert.match(broken.status.textContent, /로드 실패/); assert.equal(broken.panel.attributes['aria-busy'], 'false');
+    assert.match(broken.status.textContent, /로드 실패/);
   }
   const initialFailure = setup({ saved: 'night', failed: 'ver1:night' }); await initialFailure.boot();
   assert.equal(initialFailure.root.dataset.daypart, 'evening');
-  const blocked = setup({ storageBlocked: true }); await blocked.boot(); blocked.chooseTime('dawn'); blocked.chooseVersion('ver2'); await blocked.flush();
+  const blocked = setup({ storageBlocked: true }); await blocked.boot(); blocked.chooseTime('dawn'); blocked.button.emit('click'); await blocked.flush();
   assert.equal(blocked.root.dataset.daypart, 'dawn'); assert.equal(blocked.root.dataset.homeVersion, 'ver2');
 
   const clock = setup({ at: '2026-11-11T08:59:59.500+09:00' }); await clock.boot();
@@ -118,5 +114,5 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   assert.equal(clock.root.dataset.themeMode, 'auto'); assert.equal(clock.root.dataset.daypart, 'day'); assert.equal(clock.root.dataset.homeVersion, 'ver1');
   clock.win.emit('pagehide'); assert.equal(clock.timers.size, 0);
   clock.win.emit('pageshow'); await clock.flush(); assert.equal(clock.timers.size, 1);
-  console.log('PASS: both designs, persisted settings, keyboard/outside dismissal, Seoul boundaries, preload races/failures, storage failures and clock lifecycle.');
+  console.log('PASS: one-click design toggle, five-state time cycle, independent persisted choices, Seoul boundaries, preload races/failures, storage failures and clock lifecycle.');
 })().catch((error) => { console.error(error); process.exitCode = 1; });

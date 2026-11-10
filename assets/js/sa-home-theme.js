@@ -37,15 +37,12 @@
   }
 
   const initialize = () => {
-    const button = document.querySelector('.sa-settings');
-    const wrap = document.querySelector('.sa-settings-wrap');
-    const panel = document.querySelector('#sa-settings-panel');
+    const button = document.querySelector('.sa-version-toggle');
+    const timeButton = document.querySelector('.sa-time-toggle');
     const status = document.querySelector('#sa-theme-status');
-    const versionButtons = [...document.querySelectorAll('[data-home-choice]')];
-    const timeButtons = [...document.querySelectorAll('[data-time-choice]')];
     const scenes = new Map([...document.querySelectorAll('[data-scene]')].map((scene) => [`${scene.dataset.version}:${scene.dataset.scene}`, scene]));
     const rifles = new Map([...document.querySelectorAll('[data-rifle-version]')].map((img) => [img.dataset.rifleVersion, img]));
-    if (!button || !wrap || !panel || !status || scenes.size !== 8 || rifles.size !== 2) return;
+    if (!button || !timeButton || !status || scenes.size !== 8 || rifles.size !== 2) return;
     let revision = 0;
     let displayed = false;
     let timer = null;
@@ -77,17 +74,19 @@
     };
     const describe = (suffix = '') => {
       const selected = mode === 'auto' ? `자동 · 서울 ${labels[root.dataset.daypart]}` : `${labels[mode]} 미리보기`;
-      button.title = `${root.dataset.homeVersion} · ${selected}`;
+      const nextVersion = versions[(versions.indexOf(version) + 1) % versions.length];
+      const nextMode = modes[(modes.indexOf(mode) + 1) % modes.length];
+      button.title = `디자인: ${root.dataset.homeVersion} · 클릭하면 ${nextVersion}`;
+      button.setAttribute('aria-label', button.title);
+      timeButton.title = `시간대: ${selected} · 클릭하면 ${labels[nextMode]}`;
+      timeButton.setAttribute('aria-label', timeButton.title);
       status.textContent = `${root.dataset.homeVersion} · ${selected}${suffix}`;
-      for (const choice of versionButtons) choice.setAttribute('aria-pressed', String(choice.dataset.homeChoice === root.dataset.homeVersion));
-      for (const choice of timeButtons) choice.setAttribute('aria-pressed', String(choice.dataset.timeChoice === mode));
     };
     const apply = async () => {
       const request = ++revision;
       const design = version;
       const part = mode === 'auto' ? automaticPart() : mode;
       root.dataset.themeMode = mode;
-      panel.setAttribute('aria-busy', 'true');
       describe();
       try {
         await preload(design, part);
@@ -112,14 +111,7 @@
           } catch { /* The selected solid sky color remains as the last fallback. */ }
         }
         describe(' · 이미지 로드 실패');
-      } finally {
-        if (request === revision) panel.setAttribute('aria-busy', 'false');
       }
-    };
-    const setOpen = (open, restoreFocus = false) => {
-      panel.hidden = !open;
-      button.setAttribute('aria-expanded', String(open));
-      if (restoreFocus) button.focus();
     };
     const save = (key, value) => {
       try { localStorage.setItem(key, value); } catch { /* Keep choices in memory. */ }
@@ -136,28 +128,16 @@
     };
 
     button.disabled = false;
-    button.addEventListener('click', () => setOpen(panel.hidden));
-    for (const choice of versionButtons) choice.addEventListener('click', () => {
-      version = validVersion(choice.dataset.homeChoice);
+    timeButton.disabled = false;
+    button.addEventListener('click', () => {
+      version = versions[(versions.indexOf(version) + 1) % versions.length];
       save(versionKey, version);
       void apply();
     });
-    for (const choice of timeButtons) choice.addEventListener('click', () => {
-      mode = validMode(choice.dataset.timeChoice);
+    timeButton.addEventListener('click', () => {
+      mode = modes[(modes.indexOf(mode) + 1) % modes.length];
       save(storageKey, mode);
       void apply();
-    });
-    document.addEventListener('pointerdown', (event) => {
-      if (!panel.hidden && !wrap.contains(event.target)) setOpen(false);
-    });
-    wrap.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !panel.hidden) {
-        event.preventDefault();
-        setOpen(false, true);
-      }
-    });
-    wrap.addEventListener('focusout', (event) => {
-      if (event.relatedTarget && !wrap.contains(event.relatedTarget)) setOpen(false);
     });
     window.addEventListener('storage', (event) => {
       if (event.key !== storageKey && event.key !== versionKey && event.key !== null) return;

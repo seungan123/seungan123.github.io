@@ -7,29 +7,17 @@
       GitHub {% include sa-home/icon.html name="github" %}
     </a>
   </nav>
-  <div class="sa-settings-wrap">
-    <button class="sa-settings" type="button" aria-label="화면 설정" aria-controls="sa-settings-panel" aria-expanded="false" disabled>
+  <div class="sa-home-controls">
+    <button class="sa-settings sa-version-toggle" type="button" aria-label="디자인 변경" disabled>
       {% include sa-home/icon.html name="settings" %}
     </button>
-    <div id="sa-settings-panel" class="sa-settings-panel" hidden>
-      <fieldset>
-        <legend>홈 디자인</legend>
-        <div class="sa-version-options">
-          <button type="button" data-home-choice="ver1" aria-pressed="true">ver1 <span>2D</span></button>
-          <button type="button" data-home-choice="ver2" aria-pressed="false">ver2 <span>픽셀</span></button>
-        </div>
-      </fieldset>
-      <fieldset>
-        <legend>시간대 <span>서울 기준</span></legend>
-        <div class="sa-time-options">
-          <button type="button" data-time-choice="auto" aria-pressed="true">자동</button>
-          <button type="button" data-time-choice="dawn" aria-pressed="false">새벽</button>
-          <button type="button" data-time-choice="day" aria-pressed="false">낮</button>
-          <button type="button" data-time-choice="evening" aria-pressed="false">저녁</button>
-          <button type="button" data-time-choice="night" aria-pressed="false">밤</button>
-        </div>
-      </fieldset>
-    </div>
+    <button class="sa-settings sa-time-toggle" type="button" aria-label="시간대 변경" disabled>
+      <span data-time-icon="auto">{% include sa-home/icon.html name="clock" %}</span>
+      <span data-time-icon="dawn">{% include sa-home/icon.html name="sunrise" %}</span>
+      <span data-time-icon="day">{% include sa-home/icon.html name="sun" %}</span>
+      <span data-time-icon="evening">{% include sa-home/icon.html name="sunset" %}</span>
+      <span data-time-icon="night">{% include sa-home/icon.html name="moon" %}</span>
+    </button>
   </div>
   <span id="sa-theme-status" class="sa-theme-status" role="status" aria-live="polite" aria-atomic="true"></span>
 </header>

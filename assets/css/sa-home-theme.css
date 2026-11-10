@@ -43,34 +43,17 @@
 :root[data-scene-ready] .sa-posts-heading > .sa-icon,
 :root[data-scene-ready] .sa-pagination { transition: color 1s ease, border-color 1s ease; }
 
-/* An anchored disclosure keeps the existing header and hero geometry intact. */
+/* Two independent one-click controls retain the header's existing icon sizing. */
 .sa-home .sa-header { z-index: 2; }
-.sa-home .sa-settings-wrap { position: relative; flex-shrink: 0; }
-.sa-home .sa-settings[aria-expanded="true"] { background: rgb(255 227 79 / .18); }
-.sa-home .sa-settings-panel {
-  position: absolute;
-  top: calc(100% + .75rem);
-  right: 0;
-  z-index: 2;
-  width: min(20rem, calc(100vw - 2 * var(--sa-gutter)));
-  padding: 1.1rem;
-  border: 2px solid var(--sa-ink);
-  box-shadow: 4px 4px 0 rgb(23 25 46 / .3);
-  color: var(--sa-ink);
-  background: var(--sa-ivory);
-  font-size: .875rem;
-}
-.sa-home .sa-settings-panel[hidden] { display: none; }
-.sa-home .sa-settings-panel fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
-.sa-home .sa-settings-panel fieldset + fieldset { margin-top: 1.2rem; }
-.sa-home .sa-settings-panel legend { margin-bottom: .65rem; padding: 0; font-weight: 800; }
-.sa-home .sa-settings-panel legend span { margin-left: .5rem; font-size: .75rem; font-weight: 400; }
-.sa-home .sa-version-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
-.sa-home .sa-time-options { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .3rem; }
-.sa-home .sa-settings-panel button { min-height: 44px; padding: .5rem .25rem; border: 1px solid rgb(23 25 46 / .35); color: inherit; background: transparent; font-weight: 700; }
-.sa-home .sa-settings-panel button span { display: block; margin-top: .2rem; font-size: .75rem; font-weight: 400; }
-.sa-home .sa-settings-panel button[aria-pressed="true"] { border-color: var(--sa-ink); background: var(--sa-yellow); box-shadow: 2px 2px 0 var(--sa-ink); }
-.sa-home .sa-settings-panel button:focus-visible { outline: 3px solid var(--sa-ink); outline-offset: 2px; }
+.sa-home .sa-home-controls { display: flex; align-items: center; gap: clamp(.25rem, .5vw, .5rem); flex-shrink: 0; }
+.sa-home .sa-home-controls .sa-settings:hover { background: rgb(255 227 79 / .18); }
+.sa-home [data-time-icon] { display: none; }
+:root:not([data-theme-mode]) [data-time-icon="auto"],
+:root[data-theme-mode="auto"] [data-time-icon="auto"],
+:root[data-theme-mode="dawn"] [data-time-icon="dawn"],
+:root[data-theme-mode="day"] [data-time-icon="day"],
+:root[data-theme-mode="evening"] [data-time-icon="evening"],
+:root[data-theme-mode="night"] [data-time-icon="night"] { display: block; }
 .sa-home .sa-theme-status {
   position: absolute;
   width: 1px;
