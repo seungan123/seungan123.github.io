@@ -1,0 +1,35 @@
+<header id="topbar-wrapper" class="flex-shrink-0" aria-label="상단 메뉴">
+  <div id="topbar" class="d-flex align-items-center justify-content-between px-lg-3 h-100">
+    {% comment %}Hidden compatibility target for Chirpy's existing search controls.{% endcomment %}
+    <button id="sidebar-trigger" type="button" hidden tabindex="-1" aria-hidden="true"></button>
+
+    <nav id="topbar-title" class="sa-page-nav" aria-label="주요 메뉴">
+      <a href="{{ '/' | relative_url }}">홈</a>
+      {% assign ordered_tabs = site.tabs | sort: 'order' %}
+      {% for tab in ordered_tabs %}
+        {% assign tab_key = tab.title | downcase %}
+        <a href="{{ tab.url | relative_url }}"{% if page.url == tab.url %} aria-current="page"{% endif %}>
+          {{- site.data.locales[include.lang].tabs[tab_key] | default: tab.title -}}
+        </a>
+      {% endfor %}
+    </nav>
+
+    <button type="button" id="search-trigger" class="btn btn-link" aria-label="검색">
+      <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+    </button>
+    <search id="search" class="align-items-center ms-3 ms-lg-0">
+      <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+      <input
+        class="form-control"
+        id="search-input"
+        type="search"
+        aria-label="검색"
+        autocomplete="off"
+        placeholder="{{ site.data.locales[include.lang].search.hint | capitalize }}..."
+      >
+    </search>
+    <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">
+      {{- site.data.locales[include.lang].search.cancel -}}
+    </button>
+  </div>
+</header>

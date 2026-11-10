@@ -1,0 +1,24 @@
+/* Shared Chirpy content pages use a compact top menu instead of a sidebar. */
+#sidebar[hidden],
+#sidebar-trigger[hidden] { display: none !important; }
+
+body #main-wrapper { margin-left: 0; }
+body[sidebar-display] #main-wrapper { transform: none; }
+
+body #topbar-wrapper { height: auto; min-height: 3rem; }
+body #topbar { min-height: 3rem; gap: .75rem; padding-inline: .75rem; }
+#topbar #topbar-title.sa-page-nav {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .25rem clamp(.5rem, 1.5vw, 1.25rem);
+  width: auto;
+  min-width: 0;
+  padding-block: .5rem;
+  font-size: .875rem;
+  text-align: left;
+}
+#topbar .sa-page-nav a { color: var(--text-color); white-space: nowrap; }
+#topbar .sa-page-nav a[aria-current="page"] { font-weight: 700; text-decoration: underline; text-underline-offset: .25rem; }
+#topbar .sa-page-nav a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
