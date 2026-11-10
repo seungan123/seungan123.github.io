@@ -1,0 +1,281 @@
+/* Exact reference-image homepage. The artwork supplies all visible hero UI. */
+.sa-home-page {
+  overflow-x: hidden;
+  background: #fff8fb;
+}
+
+.sa-home-page #topbar-wrapper,
+.sa-home-page #sidebar,
+.sa-home-page #sidebar-trigger {
+  display: none !important;
+}
+
+.sa-home-page #main-wrapper {
+  margin-left: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+
+.sa-home-page #main-wrapper > .container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.sa-home-page #main-wrapper > .container > .row,
+.sa-home-page .sa-content-row,
+.sa-home-page .sa-tail-row {
+  margin: 0 !important;
+}
+
+.sa-home-page .sa-main {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+  padding: 0 !important;
+}
+
+.sa-reference-hero {
+  position: relative;
+  width: 100vw;
+  aspect-ratio: 1672 / 941;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 52% 74%, #fff2b6 0 5%, transparent 17%),
+    linear-gradient(180deg, #c4b0f1 0%, #f6c9d1 58%, #a4bb82 100%);
+}
+
+.sa-reference-image {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.sa-reference-hero.is-ready .sa-reference-image {
+  opacity: 1;
+}
+
+.sa-reference-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  color: #18213a;
+  font: 700 0.82rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.08em;
+}
+
+.sa-reference-hero.is-ready .sa-reference-loader {
+  display: none;
+}
+
+.sa-hotspot {
+  position: absolute;
+  z-index: 5;
+  display: block;
+  overflow: hidden;
+  border: 0 !important;
+  outline: 0;
+  background: transparent !important;
+  color: transparent !important;
+  text-decoration: none !important;
+  text-indent: -9999px;
+  cursor: pointer;
+}
+
+.sa-hotspot-card,
+.sa-hotspot-cta {
+  cursor: crosshair;
+}
+
+.sa-hotspot:hover {
+  box-shadow: inset 0 0 0 3px rgb(255 230 79 / 45%);
+}
+
+.sa-hotspot:focus-visible {
+  outline: 4px solid #536cf4;
+  outline-offset: -4px;
+  box-shadow: inset 0 0 0 3px #ffe64f;
+}
+
+/* Top navigation, measured against the 1672 × 941 reference artwork. */
+.sa-hotspot-home       { left: 19.1%; top: 1.0%; width: 7.0%; height: 7.2%; }
+.sa-hotspot-categories { left: 28.8%; top: 1.0%; width: 11.7%; height: 7.2%; }
+.sa-hotspot-notes      { left: 41.5%; top: 1.0%; width: 10.1%; height: 7.2%; }
+.sa-hotspot-github     { left: 53.3%; top: 1.0%; width: 10.0%; height: 7.2%; }
+
+/* Hero CTA. */
+.sa-hotspot-cta { left: 3.45%; top: 54.0%; width: 17.6%; height: 7.8%; }
+
+/* Six category targets. */
+.sa-hotspot-development { left: 30.0%; top: 26.6%; width: 16.6%; height: 16.9%; }
+.sa-hotspot-ctf         { left: 47.2%; top: 25.4%; width: 17.3%; height: 18.6%; }
+.sa-hotspot-bounty      { left: 65.0%; top: 26.6%; width: 16.7%; height: 16.9%; }
+.sa-hotspot-blog        { left: 30.0%; top: 45.3%; width: 16.7%; height: 16.5%; }
+.sa-hotspot-paper       { left: 47.2%; top: 45.3%; width: 17.3%; height: 16.5%; }
+.sa-hotspot-contest     { left: 65.0%; top: 45.3%; width: 16.7%; height: 16.5%; }
+
+.sa-hotspot-all-post { left: 0; top: 90.0%; width: 100%; height: 10%; }
+
+.sa-home-page .sa-posts-section {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 54px 0 64px;
+  color: #18213a;
+}
+
+.sa-home-page .sa-posts-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 18px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #18213a;
+}
+
+.sa-home-page .sa-posts-heading h2 {
+  margin: 0;
+  color: #18213a;
+  font-size: clamp(1.65rem, 3vw, 2.35rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+}
+
+.sa-home-page .sa-posts-heading span {
+  color: #626b80;
+  font-size: 0.82rem;
+}
+
+.sa-home-page .sa-post-list {
+  border: 2px solid #18213a;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #fffaf8;
+}
+
+.sa-home-page .sa-post-item + .sa-post-item {
+  border-top: 1px solid #bcc3d0;
+}
+
+.sa-home-page .sa-post-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px;
+  color: #18213a !important;
+  text-decoration: none !important;
+}
+
+.sa-home-page .sa-post-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.sa-home-page .sa-post-category {
+  display: inline-block;
+  margin-bottom: 7px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #ffe64f;
+  color: #18213a;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.sa-home-page .sa-post-title {
+  margin: 0;
+  color: #18213a;
+  font-size: 1.18rem;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+}
+
+.sa-home-page .sa-post-excerpt {
+  margin: 7px 0 0;
+  color: #626b80;
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.sa-home-page .sa-post-aside {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #626b80;
+  font: 0.76rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: nowrap;
+}
+
+.sa-home-page .sa-post-link:hover {
+  background: #fff6cb;
+}
+
+.sa-home-page .sa-empty-posts {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #18213a;
+  border-radius: 7px;
+  background: #fffaf8;
+  color: #626b80;
+}
+
+.sa-home-page .sa-empty-posts p {
+  margin: 0;
+}
+
+.sa-home-page #tail-wrapper {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  padding: 0 !important;
+}
+
+.sa-home-page .sa-footer {
+  border-top: 2px solid #18213a;
+}
+
+@media (max-width: 720px) {
+  .sa-reference-hero {
+    min-width: 720px;
+  }
+
+  .sa-home-page {
+    overflow-x: auto;
+  }
+
+  .sa-home-page .sa-posts-section,
+  .sa-home-page #tail-wrapper {
+    width: min(680px, calc(100% - 28px));
+  }
+
+  .sa-home-page .sa-post-link {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .sa-home-page .sa-post-aside {
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-reference-image {
+    transition: none;
+  }
+}
