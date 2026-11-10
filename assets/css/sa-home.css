@@ -223,6 +223,50 @@
 .sa-home .sa-post-list time { flex-shrink: 0; font-size: 14px; }
 .sa-home .sa-pagination { display: flex; justify-content: center; gap: 24px; padding-top: 24px; }
 
+/* Pointer feedback is enabled only after the home script initializes. */
+.sa-home .sa-aim-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sa-home .sa-aim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 40px;
+  height: 40px;
+  stroke: var(--sa-yellow);
+  stroke-width: 3px;
+  filter: drop-shadow(1px 1px 0 var(--sa-ink));
+  transform: translate3d(var(--sa-aim-x, 0px), var(--sa-aim-y, 0px), 0) translate(-50%, -50%);
+  will-change: transform;
+}
+
+.sa-home .sa-category-card:focus-visible::after { background: #fff1b0; }
+
+@media (min-width: 801px) and (hover: hover) and (pointer: fine) {
+  .sa-home .sa-hero.sa-interaction-enabled,
+  .sa-home .sa-hero.sa-interaction-enabled * { cursor: none; }
+  .sa-home .sa-hero.sa-interaction-enabled.sa-aim-visible .sa-aim { display: block; }
+  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle {
+    transform: translate3d(var(--sa-rifle-x, 0px), var(--sa-rifle-y, 0px), 0)
+      rotate(var(--sa-rifle-angle, 0deg))
+      translate3d(calc(var(--sa-recoil, 0px) * .6), calc(var(--sa-recoil, 0px) * .8), 0);
+    transform-origin: 75% 85%;
+    will-change: transform;
+  }
+  .sa-home .sa-category-card:hover::after { background: #fff1d5; }
+  .sa-home .sa-category-card.is-selected:hover::after { background: #ffeb7a; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle { transform: none; will-change: auto; }
+}
+
 @media (max-width: 800px) {
   .sa-home .sa-hero { aspect-ratio: auto; }
   .sa-home .sa-scene { top: 68px; bottom: 72px; }
