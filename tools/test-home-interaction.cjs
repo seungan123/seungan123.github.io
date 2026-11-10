@@ -28,13 +28,12 @@ function setup({ desktop = true, reduce = false, touchPoints = 0 } = {}) {
   const card = element({ left: 400, top: 200, width: 200, height: 100 });
   const world = element({ left: 100, top: 0, width: 1000, height: 1600 });
   const worldViewport = element({});
-  const rifleLayer = element({});
-  for (const el of [hero, aim, rifle, card, world, worldViewport, rifleLayer]) {
+  for (const el of [hero, aim, rifle, card, world, worldViewport]) {
     el.style.owner = el;
     el.classList.owner = el;
   }
-  hero.querySelector = (s) => ({ '.sa-aim': aim, '.sa-rifle': rifle, '.sa-rifle-layer': rifleLayer, '.sa-category-card.is-selected': card })[s];
-  world.querySelector = (s) => s === '.sa-world-viewport' ? worldViewport : null;
+  hero.querySelector = (s) => ({ '.sa-aim': aim, '.sa-category-card.is-selected': card })[s];
+  world.querySelector = (s) => ({ '.sa-world-viewport': worldViewport, '.sa-rifle': rifle })[s];
   const desktopMedia = { ...emitter(), matches: desktop };
   const reducedMedia = { ...emitter(), matches: reduce };
   const win = { ...emitter(), innerHeight: 600, matchMedia: (q) => q.includes('reduced-motion') ? reducedMedia : desktopMedia };
@@ -61,7 +60,7 @@ function setup({ desktop = true, reduce = false, touchPoints = 0 } = {}) {
   const listenCount = () => [hero, win, doc, desktopMedia, reducedMedia].reduce((n, e) => n + Object.values(e.listeners).flat().length, 0);
   load();
   settle();
-  return { hero, aim, rifle, world, worldViewport, rifleLayer, win, doc, desktopMedia, reducedMedia, queue, load, step, settle, mouse, value, listenCount, counts: () => ({ reads, writes }) };
+  return { hero, aim, rifle, world, worldViewport, win, doc, desktopMedia, reducedMedia, queue, load, step, settle, mouse, value, listenCount, counts: () => ({ reads, writes }) };
 }
 
 const h = setup();
@@ -159,6 +158,7 @@ assert(!('wheel' in h.win.listeners), 'Native scrolling must not be intercepted'
 assert(h.win.listenerOptions.scroll.every((options) => options.passive));
 
 const scrolling = setup();
+const stationaryRifle = { ...scrolling.rifle.values };
 before = scrolling.counts();
 scrolling.hero.rect.top = -120;
 scrolling.world.rect.top = -120;
@@ -169,26 +169,24 @@ scrolling.settle();
 const far = scrolling.value(scrolling.worldViewport, '--sa-far-y');
 const near = scrolling.value(scrolling.worldViewport, '--sa-field-y');
 assert(far < 0 && near < far, 'Near field must move faster than distant scenery');
-assert(scrolling.value(scrolling.rifleLayer, '--sa-rifle-exit-y') > 0);
-assert(scrolling.value(scrolling.rifleLayer, '--sa-rifle-opacity') > 0 && scrolling.value(scrolling.rifleLayer, '--sa-rifle-opacity') < 1);
+assert.deepEqual(scrolling.rifle.values, stationaryRifle, 'Scrolling must preserve the rifle resting pose');
 scrolling.hero.rect.top = -300;
 scrolling.world.rect.top = -300;
 scrolling.win.emit('scroll');
 scrolling.settle();
-assert.equal(scrolling.value(scrolling.rifleLayer, '--sa-rifle-opacity'), 0, 'Rifle must exit before posts become the main view');
+assert.deepEqual(scrolling.rifle.values, stationaryRifle, 'Rifle must remain available while entering posts');
 scrolling.hero.rect.top = -1600;
 scrolling.world.rect.top = -1600;
 scrolling.win.emit('scroll');
 scrolling.settle();
-assert(Math.abs(scrolling.value(scrolling.worldViewport, '--sa-field-y')) <= scrolling.win.innerHeight * 0.065);
+assert(Math.abs(scrolling.value(scrolling.worldViewport, '--sa-field-y')) <= scrolling.win.innerHeight * 0.045);
+assert.deepEqual(scrolling.rifle.values, stationaryRifle, 'No scroll recoil or exit transform beyond the hero');
 assert(!scrolling.hero.classes.has('sa-aim-visible'), 'Offscreen hero must not show aim');
 scrolling.reducedMedia.matches = true;
 scrolling.reducedMedia.emit('change');
 scrolling.settle();
 assert.equal(scrolling.value(scrolling.worldViewport, '--sa-far-y'), 0);
 assert.equal(scrolling.value(scrolling.worldViewport, '--sa-field-y'), 0);
-assert.equal(scrolling.value(scrolling.rifleLayer, '--sa-rifle-exit-y'), 0);
-assert.equal(scrolling.value(scrolling.rifleLayer, '--sa-rifle-opacity'), 1);
 const mobileScroll = setup({ desktop: false, touchPoints: 1 });
 mobileScroll.hero.rect.top = -120;
 mobileScroll.world.rect.top = -120;
@@ -196,4 +194,4 @@ mobileScroll.win.emit('scroll');
 mobileScroll.settle();
 assert(mobileScroll.value(mobileScroll.worldViewport, '--sa-field-y') < 0, 'Native mobile scroll also moves scenery');
 assert(!mobileScroll.hero.classes.has('sa-interaction-enabled'), 'Touch pointer effects remain off');
-console.log('PASS: aim/recoil/accessibility/lifecycle regression checks; shared RAF, passive native scroll, layer depth, rifle exit, mobile scrolling and reduced motion.');
+console.log('PASS: aim/recoil/accessibility/lifecycle regression checks; shared RAF, native scrolling, layer depth, persistent rifle, mobile scrolling and reduced motion.');

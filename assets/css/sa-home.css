@@ -4,6 +4,8 @@
   --sa-lavender: #b9b2f4;
   --sa-ivory: #fff8eb;
   --sa-yellow: #ffe34f;
+  --sa-gutter: clamp(1rem, 4vw, 6rem);
+  --sa-scene-focus: 72% bottom;
   --sa-pixel-corner: polygon(
     8px 0, calc(100% - 8px) 0, calc(100% - 8px) 4px,
     calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
@@ -61,14 +63,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center bottom;
+  object-position: var(--sa-scene-focus);
   image-rendering: pixelated;
   will-change: transform;
 }
 
-.sa-home .sa-world-distant { transform: translate3d(0, var(--sa-far-y, 0px), 0) scale(1.16); }
+.sa-home .sa-world-distant { transform: translate3d(0, var(--sa-far-y, 0px), 0) scale(1.1); }
 .sa-home .sa-world-field {
-  transform: translate3d(0, var(--sa-field-y, 0px), 0) scale(1.16);
+  transform: translate3d(0, var(--sa-field-y, 0px), 0) scale(1.1);
   /* Restrict the overlapping depth layer to grass, keeping tree silhouettes single. */
   mask-image: linear-gradient(to bottom, transparent 90%, #000 96%);
 }
@@ -78,39 +80,30 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 26% 56% 1fr;
-  grid-template-rows: auto auto minmax(clamp(180px, 24svh, 300px), 1fr);
+  grid-template-columns: 26% 60% 1fr;
+  grid-template-rows: auto auto minmax(clamp(8rem, 24svh, 20rem), 1fr);
   column-gap: 2.2%;
   width: 100%;
   min-height: 100svh;
-  padding: 0 4%;
+  padding: 0 var(--sa-gutter);
 }
 
-/* Scroll exit belongs to the wrapper; pointer/recoil transforms stay on the image. */
-.sa-home .sa-rifle-clip {
+/* The shared sticky viewport carries the rifle through the entire pixel world.
+   UI paints above this decorative, non-interactive layer. */
+.sa-home .sa-rifle-layer {
   position: absolute;
   inset: 0;
-  z-index: -1;
-  overflow: clip;
   pointer-events: none;
   user-select: none;
 }
 
-.sa-home .sa-rifle-layer {
-  position: absolute;
-  inset: 0;
-  transform: translate3d(0, var(--sa-rifle-exit-y, 0px), 0);
-  opacity: var(--sa-rifle-opacity, 1);
-  will-change: transform, opacity;
-}
-
 .sa-home .sa-rifle {
   position: absolute;
-  right: 12%;
-  bottom: -1.5%;
+  right: var(--sa-gutter);
+  bottom: -1.5svh;
   display: block;
-  width: 35%;
-  max-height: 38%;
+  width: min(38vw, 58svh);
+  height: auto;
   object-fit: contain;
   object-position: right bottom;
   image-rendering: pixelated;
@@ -147,11 +140,11 @@
 .sa-home .sa-nav-github .sa-icon { width: 19px; height: 19px; }
 .sa-home .sa-settings { display: grid; place-items: center; width: 44px; height: 44px; padding: 8px; border: 0; border-radius: 0; color: var(--sa-ink); background: transparent; opacity: 1; }
 
-.sa-home .sa-intro { grid-column: 1; grid-row: 2; min-width: 0; align-self: start; padding-top: clamp(40px, 8svh, 110px); }
+.sa-home .sa-intro { grid-column: 1; grid-row: 2; min-width: 0; align-self: start; padding-top: clamp(2rem, min(8svh, 6vw), 7rem); }
 .sa-home .sa-intro h1 {
   margin: 0;
   font-family: "Arial Black", Arial, sans-serif;
-  font-size: clamp(44px, 5.55vw, 104px);
+  font-size: clamp(2.5rem, min(5.55vw, 10svh), 6.5rem);
   font-weight: 900;
   font-style: italic;
   line-height: .98;
@@ -171,8 +164,8 @@
   clip-path: polygon(0 12%, 85% 0, 85% 20%, 100% 20%, 100% 55%, 93% 55%, 93% 80%, 0 100%, 3% 60%);
 }
 
-.sa-home .sa-description { margin: 2.5vw 0 0; font-size: clamp(13px, 1.35vw, 24px); font-weight: 700; line-height: 1.65; letter-spacing: -.045em; word-break: keep-all; }
-.sa-home .sa-owner { margin: 12px 0 0; font-size: clamp(11px, .95vw, 17px); font-weight: 600; letter-spacing: -.035em; line-height: 1.6; word-break: keep-all; }
+.sa-home .sa-description { margin: clamp(1.25rem, 2.5vw, 3rem) 0 0; font-size: clamp(.875rem, 1.35vw, 1.5rem); font-weight: 700; line-height: 1.65; letter-spacing: -.045em; word-break: keep-all; overflow-wrap: anywhere; }
+.sa-home .sa-owner { margin: clamp(.5rem, .8vw, 1rem) 0 0; font-size: clamp(.75rem, .95vw, 1.0625rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.6; word-break: keep-all; }
 
 .sa-home .sa-cta,
 .sa-home .sa-category-card {
@@ -201,9 +194,10 @@
 .sa-home .sa-cta {
   display: inline-flex;
   align-items: center;
-  gap: 22px;
+  gap: clamp(.5rem, 1.5vw, 1.5rem);
   margin-top: clamp(22px, 2vw, 36px);
-  padding: 15px 24px;
+  max-width: 100%;
+  padding: clamp(.75rem, 1vw, 1rem) clamp(.875rem, 1.65vw, 1.75rem);
   font-size: clamp(14px, 1.35vw, 23px);
   font-weight: 800;
 }
@@ -214,10 +208,10 @@
   grid-row: 2;
   min-width: 0;
   align-self: start;
-  margin-top: clamp(64px, 17svh, 190px);
+  margin-top: clamp(3rem, min(17svh, 12vw), 12rem);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(16px, 1.7vw, 30px);
+  gap: clamp(.75rem, 1.7vw, 2rem);
 }
 
 .sa-home .sa-category-card {
@@ -229,7 +223,7 @@
   min-width: 0;
   width: 100%;
   aspect-ratio: 1.85;
-  padding: 14px 8px;
+  padding: clamp(.75rem, 1vw, 1.25rem) clamp(.375rem, .55vw, .75rem);
   font-size: clamp(13px, 1.35vw, 24px);
   font-weight: 800;
   line-height: 1.3;
@@ -260,13 +254,13 @@
 }
 
 .sa-home .sa-posts-heading .sa-icon { width: 30px; height: 30px; }
-.sa-home .sa-posts { position: relative; padding: clamp(32px, 6svh, 80px) 4% clamp(80px, 20svh, 240px); scroll-margin-top: 24px; }
-.sa-home .sa-empty-posts { margin: 0; color: var(--sa-ivory); font-size: 15px; line-height: 1.7; text-shadow: -1px -1px 0 var(--sa-ink), 1px -1px 0 var(--sa-ink), -1px 1px 0 var(--sa-ink), 1px 1px 0 var(--sa-ink); }
+.sa-home .sa-posts { position: relative; padding: clamp(2rem, 6svh, 5rem) var(--sa-gutter) clamp(5rem, 20svh, 15rem); scroll-margin-top: 1.5rem; }
+.sa-home .sa-empty-posts { margin: 0; color: var(--sa-ivory); font-size: clamp(.875rem, 1vw, 1rem); line-height: 1.7; text-shadow: -1px -1px 0 var(--sa-ink), 1px -1px 0 var(--sa-ink), -1px 1px 0 var(--sa-ink), 1px 1px 0 var(--sa-ink); }
 .sa-home .sa-post-list { display: grid; gap: 22px; max-width: 58rem; margin: 0; padding: 0; list-style: none; }
 .sa-home .sa-post-list article { border: 3px solid var(--sa-ink); background: rgb(255 248 235 / .68); box-shadow: 4px 4px 0 var(--sa-ink); }
 .sa-home .sa-post-list a { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: clamp(18px, 2vw, 30px); }
-.sa-home .sa-post-list h3 { margin: 0; font-size: 22px; overflow-wrap: anywhere; }
-.sa-home .sa-post-list time { flex-shrink: 0; font-size: 14px; }
+.sa-home .sa-post-list h3 { margin: 0; font-size: clamp(1rem, 1.5vw, 1.375rem); overflow-wrap: anywhere; }
+.sa-home .sa-post-list time { flex-shrink: 0; font-size: clamp(.75rem, 1vw, .875rem); }
 .sa-home .sa-pagination { display: flex; justify-content: center; gap: 24px; padding-top: 24px; }
 
 /* Pointer feedback is enabled only after the home script initializes. */
@@ -295,12 +289,10 @@
 .sa-home .sa-category-card:focus-visible::after { background: #fff1b0; }
 
 @media (min-width: 801px) and (hover: hover) and (pointer: fine) {
-  /* Let the weapon sink through the viewport edge while its hero fades out. */
-  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle-clip { position: fixed; }
   .sa-home .sa-hero.sa-interaction-enabled,
   .sa-home .sa-hero.sa-interaction-enabled * { cursor: none; }
   .sa-home .sa-hero.sa-interaction-enabled.sa-aim-visible .sa-aim { display: block; }
-  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle {
+  .sa-home .sa-world.sa-interaction-enabled .sa-rifle {
     transform: translate3d(var(--sa-rifle-x, 0px), var(--sa-rifle-y, 0px), 0)
       rotate(var(--sa-rifle-angle, 0deg))
       translate3d(calc(var(--sa-recoil, 0px) * .6), calc(var(--sa-recoil, 0px) * .8), 0);
@@ -312,33 +304,39 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle-clip { position: absolute; }
-  .sa-home .sa-hero.sa-interaction-enabled .sa-rifle { transform: none; will-change: auto; }
+  .sa-home .sa-world.sa-interaction-enabled .sa-rifle { transform: none; will-change: auto; }
   .sa-home .sa-world-distant,
-  .sa-home .sa-world-field { transform: scale(1.16); will-change: auto; }
-  .sa-home .sa-rifle-layer { transform: none; opacity: 1; will-change: auto; }
+  .sa-home .sa-world-field { transform: scale(1.1); will-change: auto; }
 }
 
-@media (max-width: 800px) {
-  .sa-home .sa-hero { display: flex; flex-direction: column; padding: 0 5%; }
-  .sa-home .sa-world-distant,
-  .sa-home .sa-world-field { object-position: 45% bottom; }
-  .sa-home .sa-rifle { right: 5%; width: 58%; max-height: 160px; }
-  .sa-home .sa-header { min-height: 68px; gap: 15px; }
-  .sa-home .sa-logo { font-size: 28px; }
-  .sa-home .sa-navigation { gap: 20px; font-size: 14px; }
+/* Content breakpoints: three readable cards no longer fit beside the intro. */
+@media (max-width: 60rem) {
+  .sa-home .sa-hero { grid-template-columns: minmax(0, 34fr) minmax(0, 64fr); }
+  .sa-home .sa-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sa-home .sa-rifle { width: min(36vw, 48svh); }
+}
+
+/* Keep the sunset focal point in frame when a tall viewport crops the landscape. */
+@media (max-aspect-ratio: 4/3) {
+  .sa-home { --sa-scene-focus: 52% bottom; }
+}
+
+@media (max-width: 40rem) {
+  .sa-home .sa-hero { display: flex; flex-direction: column; }
+  .sa-home .sa-rifle { width: min(46vw, 32svh); }
+  .sa-home .sa-header { min-height: clamp(3.75rem, 9svh, 4.5rem); gap: clamp(.5rem, 3vw, 1rem); }
+  .sa-home .sa-logo { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .sa-home .sa-navigation { gap: clamp(.75rem, 4vw, 1.5rem); font-size: clamp(.75rem, 3.5vw, .9375rem); }
   .sa-home .sa-navigation .sa-nav-home,
   .sa-home .sa-navigation .sa-nav-github { display: none; }
-  .sa-home .sa-settings { width: 34px; height: 40px; padding: 5px; }
-  .sa-home .sa-intro { padding: 48px 0 0; }
-  .sa-home .sa-intro h1 { font-size: clamp(54px, 10vw, 78px); }
-  .sa-home .sa-description { margin-top: 30px; font-size: 16px; }
-  .sa-home .sa-owner { margin-top: 10px; font-size: 12px; }
-  .sa-home .sa-cta { margin-top: 24px; padding: 15px 22px; font-size: 16px; }
-  .sa-home .sa-categories { align-self: stretch; margin: 44px 0 0; padding-bottom: clamp(140px, 32vw, 200px); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; scroll-margin-top: 20px; }
-  .sa-home .sa-category-card { min-height: 112px; aspect-ratio: 1.65; padding: 16px 7px; gap: 10px; font-size: clamp(13px, 3.5vw, 19px); }
-  .sa-home .sa-category-card .sa-icon { width: 32px; height: 32px; }
-  .sa-home .sa-posts-heading h2 { font-size: 26px; }
-  .sa-home .sa-posts { padding-inline: 5%; }
-  .sa-home .sa-post-list a { flex-direction: column; gap: 10px; }
+  .sa-home .sa-settings { width: clamp(2rem, 8vw, 2.5rem); height: clamp(2.5rem, 10vw, 2.75rem); padding: .3125rem; }
+  .sa-home .sa-intro { padding: clamp(2rem, 6svh, 3rem) 0 0; }
+  .sa-home .sa-intro h1 { font-size: clamp(2.75rem, 12vw, 4.5rem); }
+  .sa-home .sa-description { margin-top: clamp(1.25rem, 4vw, 1.875rem); font-size: clamp(.875rem, 3.8vw, 1.125rem); }
+  .sa-home .sa-owner { font-size: clamp(.75rem, 2.8vw, .875rem); }
+  .sa-home .sa-cta { font-size: clamp(.875rem, 3.8vw, 1.125rem); }
+  .sa-home .sa-categories { align-self: stretch; margin: clamp(2rem, 6svh, 3rem) 0 0; padding-bottom: clamp(6rem, 26vw, 10rem); gap: clamp(.75rem, 3.5vw, 1.25rem); scroll-margin-top: 1.25rem; }
+  .sa-home .sa-category-card { min-height: 6.5rem; aspect-ratio: 1.65; gap: clamp(.5rem, 2vw, .75rem); font-size: clamp(.8125rem, 3.5vw, 1.1875rem); }
+  .sa-home .sa-category-card .sa-icon { width: clamp(1.75rem, 7vw, 2.5rem); height: clamp(1.75rem, 7vw, 2.5rem); }
+  .sa-home .sa-post-list a { flex-direction: column; gap: .625rem; }
 }

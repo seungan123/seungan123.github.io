@@ -2,14 +2,13 @@
   'use strict';
 
   const hero = document.querySelector('.sa-hero');
+  const world = document.querySelector('.sa-world');
   const aim = hero?.querySelector('.sa-aim');
-  const rifle = hero?.querySelector('.sa-rifle');
-  if (!hero || !aim || !rifle || hero.dataset.saInteractionInitialized) return;
+  const rifle = world?.querySelector('.sa-rifle');
+  if (!hero || !world || !aim || !rifle || hero.dataset.saInteractionInitialized) return;
   hero.dataset.saInteractionInitialized = 'true';
 
-  const world = document.querySelector('.sa-world');
-  const worldViewport = world?.querySelector('.sa-world-viewport');
-  const rifleLayer = hero.querySelector('.sa-rifle-layer');
+  const worldViewport = world.querySelector('.sa-world-viewport');
   const selectedCard = hero.querySelector('.sa-category-card.is-selected');
   const desktopMouse = window.matchMedia('(min-width: 801px) and (hover: hover) and (pointer: fine)');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -65,12 +64,8 @@
     const worldBounds = world?.getBoundingClientRect();
     const viewportHeight = Math.max(window.innerHeight || bounds.height, 1);
     const travel = worldBounds ? clamp(-worldBounds.top, 0, Math.max(worldBounds.height - viewportHeight, 0)) : 0;
-    const heroProgress = clamp(-bounds.top / Math.max(bounds.height, 1), 0, 1);
-    const farY = reduce ? 0 : -Math.min(travel * 0.06, viewportHeight * 0.035);
-    const fieldY = reduce ? 0 : -Math.min(travel * 0.16, viewportHeight * 0.065);
-    const fadeProgress = clamp(heroProgress / 0.32, 0, 1);
-    const rifleOpacity = reduce ? 1 : 1 - fadeProgress * fadeProgress * (3 - 2 * fadeProgress);
-    const rifleExitY = reduce ? 0 : heroProgress * bounds.height * 0.5;
+    const farY = reduce ? 0 : -Math.min(travel * 0.06, viewportHeight * 0.02);
+    const fieldY = reduce ? 0 : -Math.min(travel * 0.16, viewportHeight * 0.045);
     if (inside && pointer && (pointer.x < bounds.left || pointer.x > bounds.left + bounds.width ||
       pointer.y < bounds.top || pointer.y > bounds.top + bounds.height)) {
       inside = false;
@@ -117,6 +112,7 @@
     } else recoilStart = null;
 
     hero.classList.toggle('sa-interaction-enabled', enabled);
+    world.classList.toggle('sa-interaction-enabled', enabled);
     hero.classList.toggle('sa-aim-visible', aimVisible);
     aim.style.setProperty('--sa-aim-x', `${current.aimX.toFixed(3)}px`);
     aim.style.setProperty('--sa-aim-y', `${current.aimY.toFixed(3)}px`);
@@ -127,10 +123,6 @@
     if (worldViewport) {
       worldViewport.style.setProperty('--sa-far-y', `${farY.toFixed(3)}px`);
       worldViewport.style.setProperty('--sa-field-y', `${fieldY.toFixed(3)}px`);
-    }
-    if (rifleLayer) {
-      rifleLayer.style.setProperty('--sa-rifle-exit-y', `${rifleExitY.toFixed(3)}px`);
-      rifleLayer.style.setProperty('--sa-rifle-opacity', rifleOpacity.toFixed(3));
     }
 
     if (unsettled || recoilStart !== null) schedule();
