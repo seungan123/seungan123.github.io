@@ -6,171 +6,80 @@ layout: default
 {% assign visible_posts = current_page_posts | where_exp: "post", "post.hidden != true" %}
 
 {% if paginator.page == nil or paginator.page == 1 %}
-<section class="sa-fps-shell" id="sa-fps-hero" aria-labelledby="sa-welcome">
-  <nav class="sa-hero-nav" aria-label="홈 주요 메뉴">
-    <a class="sa-hero-brand" href="{{ '/' | relative_url }}" aria-label="S_A 홈">
-      <span class="sa-brand-reticle" aria-hidden="true"></span>
-      <span>S_A</span>
-    </a>
-    <div class="sa-hero-links">
-      <a class="is-active" href="{{ '/' | relative_url }}">홈</a>
-      <a href="{{ '/categories/' | relative_url }}">카테고리 <i class="fas fa-angle-down" aria-hidden="true"></i></a>
-      <a href="#sa-posts">연구노트</a>
-      <a href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener noreferrer">깃허브 <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
-    </div>
-    <button class="sa-theme-cycle" type="button" aria-label="시간대 테마 변경" title="시간대 테마 미리보기">
-      <i class="fas fa-gear" aria-hidden="true"></i>
-    </button>
-  </nav>
+<section
+  class="sa-reference-hero"
+  id="sa-reference-hero"
+  aria-label="픽셀 FPS 스타일의 S_A 보안 연구 블로그 홈 화면"
+>
+  <div class="sa-reference-loader" aria-live="polite">LOADING S_A...</div>
+  <img
+    id="sa-reference-image"
+    class="sa-reference-image"
+    alt="연보라색 픽셀 풍경, Learn it. Log it. 문구, 여섯 개 카테고리 타깃과 오른쪽 아래 총이 배치된 S_A 블로그 홈 화면"
+    width="1672"
+    height="941"
+    decoding="async"
+    draggable="false"
+  >
 
-  <div class="sa-scene" aria-hidden="true">
-    <svg viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" focusable="false" shape-rendering="crispEdges">
-      <defs>
-        <linearGradient id="sa-sky-gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="var(--sa-sky-top)"/>
-          <stop offset="1" stop-color="var(--sa-sky-bottom)"/>
-        </linearGradient>
-        <linearGradient id="sa-water-gradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="var(--sa-water-top)"/>
-          <stop offset="1" stop-color="var(--sa-water-bottom)"/>
-        </linearGradient>
-      </defs>
+  <a class="sa-hotspot sa-hotspot-home" href="{{ '/' | relative_url }}" aria-label="홈">홈</a>
+  <a class="sa-hotspot sa-hotspot-categories" href="{{ '/categories/' | relative_url }}" aria-label="카테고리">카테고리</a>
+  <a class="sa-hotspot sa-hotspot-notes" href="#sa-posts" aria-label="연구 노트와 전체 게시글 보기">연구노트</a>
+  <a class="sa-hotspot sa-hotspot-github" href="https://github.com/{{ site.github.username }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub 새 탭에서 열기">GitHub</a>
 
-      <rect width="1672" height="941" fill="url(#sa-sky-gradient)"/>
+  <a class="sa-hotspot sa-hotspot-cta" href="#sa-posts" aria-label="기록 보러가기">기록 보러가기</a>
 
-      <g class="sa-stars">
-        <rect x="92" y="122" width="5" height="5"/><rect x="180" y="174" width="4" height="4"/>
-        <rect x="308" y="94" width="6" height="6"/><rect x="408" y="142" width="4" height="4"/>
-        <rect x="590" y="90" width="5" height="5"/><rect x="742" y="136" width="4" height="4"/>
-        <rect x="955" y="96" width="6" height="6"/><rect x="1115" y="138" width="4" height="4"/>
-        <rect x="1290" y="92" width="5" height="5"/><rect x="1455" y="147" width="6" height="6"/>
-        <rect x="1540" y="94" width="4" height="4"/><rect x="1370" y="220" width="4" height="4"/>
-      </g>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-development" href="{{ '/topics/development/' | relative_url }}" aria-label="개발 카테고리">개발</a>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-ctf" href="{{ '/topics/ctf-wargame/' | relative_url }}" aria-label="CTF Wargame 카테고리">CTF/Wargame</a>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-bounty" href="{{ '/topics/bug-bounty/' | relative_url }}" aria-label="Bug Bounty 카테고리">Bug Bounty</a>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-blog" href="{{ '/topics/blog-docs/' | relative_url }}" aria-label="블로그 기술문서 카테고리">블로그/기술문서</a>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-paper" href="{{ '/topics/papers-conferences/' | relative_url }}" aria-label="논문 컨퍼런스 카테고리">논문/컨퍼런스</a>
+  <a class="sa-hotspot sa-hotspot-card sa-hotspot-contest" href="{{ '/topics/contests-certifications/' | relative_url }}" aria-label="공모전 자격증 카테고리">공모전/자격증</a>
 
-      <g class="sa-sun">
-        <rect x="806" y="675" width="88" height="88"/>
-        <rect x="820" y="661" width="60" height="116"/>
-        <rect x="792" y="689" width="116" height="60"/>
-      </g>
-      <g class="sa-moon">
-        <rect x="1400" y="120" width="72" height="96" rx="32"/>
-        <rect class="sa-moon-cut" x="1430" y="104" width="72" height="96" rx="32"/>
-      </g>
-
-      <g class="sa-cloud sa-cloud-a">
-        <rect x="395" y="142" width="150" height="24"/>
-        <rect x="425" y="119" width="64" height="47"/>
-        <rect x="480" y="128" width="92" height="38"/>
-      </g>
-      <g class="sa-cloud sa-cloud-b">
-        <rect x="1210" y="145" width="180" height="25"/>
-        <rect x="1240" y="116" width="76" height="54"/>
-        <rect x="1305" y="129" width="112" height="41"/>
-      </g>
-      <g class="sa-cloud sa-cloud-c">
-        <rect x="1460" y="300" width="144" height="23"/>
-        <rect x="1490" y="278" width="58" height="45"/>
-        <rect x="1538" y="288" width="86" height="35"/>
-      </g>
-      <g class="sa-cloud sa-cloud-d">
-        <rect x="720" y="214" width="114" height="20"/>
-        <rect x="744" y="194" width="46" height="40"/>
-      </g>
-
-      <polygon class="sa-mountain-far" points="0,720 160,620 300,690 465,575 625,696 820,610 980,702 1190,558 1370,685 1540,580 1672,650 1672,941 0,941"/>
-      <polygon class="sa-mountain-near" points="0,758 170,678 302,736 490,642 680,756 880,686 1060,760 1240,660 1400,744 1540,650 1672,718 1672,941 0,941"/>
-
-      <polygon class="sa-peak" points="1320,736 1505,462 1672,690 1672,825 1265,825"/>
-      <polygon class="sa-peak-snow" points="1505,462 1447,548 1480,537 1502,564 1530,532 1574,561"/>
-
-      <rect class="sa-water" x="0" y="744" width="1672" height="102"/>
-      <g class="sa-water-lines">
-        <rect x="720" y="760" width="250" height="8"/>
-        <rect x="665" y="782" width="360" height="7"/>
-        <rect x="604" y="806" width="480" height="6"/>
-        <rect x="815" y="828" width="225" height="5"/>
-      </g>
-
-      <g class="sa-bridge">
-        <rect x="590" y="704" width="300" height="18"/>
-        <rect x="610" y="722" width="20" height="48"/>
-        <rect x="850" y="722" width="20" height="48"/>
-        <path d="M630 736Q690 690 750 736Q810 690 850 736" fill="none" stroke="var(--sa-bridge)" stroke-width="14"/>
-      </g>
-
-      <rect class="sa-ground" x="0" y="820" width="1672" height="121"/>
-      <rect class="sa-ground-line" x="0" y="842" width="1672" height="10"/>
-
-      <g class="sa-tree">
-        <rect class="sa-tree-trunk" x="376" y="704" width="36" height="126"/>
-        <rect class="sa-tree-leaf" x="300" y="634" width="190" height="86"/>
-        <rect class="sa-tree-leaf" x="330" y="590" width="130" height="130"/>
-        <rect class="sa-tree-light" x="318" y="618" width="62" height="52"/>
-        <rect class="sa-tree-light" x="390" y="604" width="52" height="60"/>
-      </g>
-
-      <g class="sa-rocks">
-        <rect x="58" y="823" width="145" height="50"/>
-        <rect x="91" y="791" width="88" height="82"/>
-        <rect x="254" y="835" width="82" height="34"/>
-        <rect x="274" y="811" width="48" height="58"/>
-        <rect x="1500" y="834" width="110" height="38"/>
-        <rect x="1526" y="810" width="58" height="62"/>
-      </g>
-
-      <g class="sa-grass">
-        <rect x="18" y="873" width="10" height="42"/><rect x="38" y="858" width="9" height="57"/>
-        <rect x="213" y="876" width="9" height="36"/><rect x="232" y="863" width="10" height="49"/>
-        <rect x="520" y="878" width="9" height="35"/><rect x="540" y="863" width="9" height="50"/>
-        <rect x="1040" y="875" width="10" height="39"/><rect x="1061" y="860" width="9" height="54"/>
-        <rect x="1452" y="879" width="9" height="34"/><rect x="1473" y="865" width="10" height="48"/>
-      </g>
-      <g class="sa-flowers">
-        <rect x="118" y="884" width="7" height="7"/><rect x="140" y="898" width="7" height="7"/>
-        <rect x="455" y="890" width="7" height="7"/><rect x="480" y="904" width="7" height="7"/>
-        <rect x="1350" y="888" width="7" height="7"/><rect x="1385" y="900" width="7" height="7"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="sa-home-copy">
-    <h1 id="sa-welcome">Learn it.<br><span>Log it.</span></h1>
-    <p>보안 · CTF · 개발을 기록하고<br>연구하는 개인 스터디 블로그입니다.</p>
-    <a class="sa-home-cta" href="#sa-posts">기록 보러가기 <i class="fas fa-angle-right" aria-hidden="true"></i></a>
-  </div>
-
-  <div class="sa-home-targets">
-    {% include sa-category-grid.html %}
-  </div>
-
-  <svg class="sa-rifle" viewBox="0 0 780 455" aria-hidden="true" focusable="false">
-    <g stroke="var(--sa-gun-outline)" stroke-width="9" stroke-linejoin="miter">
-      <polygon class="sa-gun-dark" points="104,290 254,228 530,244 706,345 648,422 397,350 206,356"/>
-      <polygon class="sa-gun-main" points="205,240 540,260 690,341 628,378 390,328 222,338"/>
-      <rect class="sa-gun-main" x="276" y="184" width="292" height="88"/>
-      <rect class="sa-gun-light" x="345" y="126" width="152" height="82"/>
-      <rect class="sa-gun-screen" x="365" y="144" width="111" height="48"/>
-      <rect class="sa-gun-dark" x="238" y="208" width="68" height="139"/>
-      <polygon class="sa-gun-dark" points="544,260 652,284 755,347 697,369 603,316"/>
-      <polygon class="sa-gun-main" points="165,268 225,280 198,382 126,362"/>
-      <rect class="sa-gun-accent" x="298" y="266" width="96" height="17"/>
-      <rect class="sa-gun-accent" x="548" y="290" width="104" height="16"/>
-      <polygon class="sa-hand" points="123,351 205,345 246,397 162,444 80,404"/>
-      <polygon class="sa-hand" points="520,352 595,334 674,392 606,448 533,423"/>
-    </g>
-  </svg>
-
-  <div class="sa-live-aim" aria-hidden="true"><span></span></div>
-
-  <a class="sa-all-post-bar" href="#sa-posts">
-    <span>ALL POST</span>
-    <i class="fas fa-arrow-right" aria-hidden="true"></i>
-  </a>
+  <a class="sa-hotspot sa-hotspot-all-post" href="#sa-posts" aria-label="ALL POST로 이동">ALL POST</a>
 </section>
+
+<script>
+  (() => {
+    const hero = document.getElementById('sa-reference-hero');
+    const image = document.getElementById('sa-reference-image');
+    if (!hero || !image) return;
+
+    const chunkUrls = [
+      {% for index in (0..7) %}
+        "{{ '/assets/data/sa-fps-hero/' | append: index | append: '.txt' | relative_url }}"{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ];
+
+    image.addEventListener('load', () => hero.classList.add('is-ready'), { once: true });
+
+    Promise.all(
+      chunkUrls.map((url) =>
+        fetch(url, { cache: 'force-cache' }).then((response) => {
+          if (!response.ok) throw new Error(`Unable to load ${url}`);
+          return response.text();
+        })
+      )
+    )
+      .then((chunks) => {
+        const base64 = chunks.join('').replace(/\s+/g, '');
+        image.src = `data:image/webp;base64,${base64}`;
+      })
+      .catch((error) => {
+        console.error(error);
+        const loader = hero.querySelector('.sa-reference-loader');
+        if (loader) loader.textContent = 'IMAGE LOAD ERROR';
+      });
+  })();
+</script>
 {% endif %}
 
 <section id="sa-posts" class="sa-posts-section" aria-labelledby="sa-posts-heading">
-  <h2 id="sa-posts-heading" class="visually-hidden">ALL POST</h2>
+  <div class="sa-posts-heading">
+    <h2 id="sa-posts-heading">ALL POST</h2>
+    <span>{{ site.posts.size }}개의 기록</span>
+  </div>
+
   {% if visible_posts.size > 0 %}
     <div class="sa-post-list">
       {% for post in visible_posts %}
@@ -194,5 +103,6 @@ layout: default
   {% else %}
     <div class="sa-empty-posts"><p>아직 게시글이 없습니다.</p></div>
   {% endif %}
+
   {% if paginator.total_pages > 1 %}{% include post-paginator.html %}{% endif %}
 </section>
