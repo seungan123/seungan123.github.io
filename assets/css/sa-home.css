@@ -246,6 +246,28 @@
 .sa-home .sa-cta:hover span,
 .sa-home .sa-navigation a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
+/* The same posts cue and text metrics belong to both home designs. */
+.sa-home .sa-all-post-link {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  align-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: clamp(3.75rem, 8svh, 5rem);
+  margin-inline: calc(-1 * var(--sa-gutter));
+  padding: 1rem var(--sa-gutter);
+  border-top: 1px solid rgb(32 38 61 / .3);
+  background: rgb(241 222 206 / .2);
+  color: var(--sa-scene-ink, var(--sa-ink));
+  font-size: clamp(.875rem, 1.2vw, 1.125rem);
+  font-weight: 750;
+  letter-spacing: .065em;
+}
+.sa-home .sa-all-post-link:hover { background: rgb(255 239 204 / .3); }
+.sa-home .sa-all-post-link .sa-icon { width: 22px; height: 22px; }
+
 .sa-home .sa-posts-heading {
   display: flex;
   align-items: center;
@@ -343,9 +365,11 @@
   .sa-home .sa-rifle { width: min(46vw, 32svh); }
   .sa-home .sa-header { min-height: clamp(3.75rem, 9svh, 4.5rem); gap: clamp(.5rem, 3vw, 1rem); }
   .sa-home .sa-logo { font-size: clamp(1.5rem, 6vw, 2rem); }
-  .sa-home .sa-navigation { gap: clamp(.75rem, 4vw, 1.5rem); font-size: clamp(.75rem, 3.5vw, .9375rem); }
+  .sa-home .sa-navigation { gap: clamp(.65rem, 3vw, 1rem); font-size: clamp(.75rem, 3.5vw, .9375rem); }
   .sa-home .sa-navigation .sa-nav-home,
-  .sa-home .sa-navigation .sa-nav-github { display: none; }
+  .sa-home .sa-navigation .sa-nav-github { display: flex; }
+  .sa-home .sa-nav-github .sa-icon { display: none; }
+  .sa-home .sa-all-post-link { align-self: stretch; margin-top: auto; }
   .sa-home .sa-settings { width: clamp(2rem, 8vw, 2.5rem); height: clamp(2.5rem, 10vw, 2.75rem); padding: .3125rem; }
   .sa-home .sa-intro { padding: clamp(2rem, 6svh, 3rem) 0 0; }
   .sa-home .sa-intro h1 { font-size: clamp(2.75rem, 12vw, 4.5rem); }

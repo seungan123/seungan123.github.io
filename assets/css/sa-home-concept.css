@@ -1,4 +1,4 @@
-/* ver1 semi-2D art direction. Pointer, recoil and scroll transforms stay in sa-home.css. */
+/* ver1 changes artwork and decoration only. Typography and layout are shared in sa-home.css. */
 :root[data-home-version="ver1"] .sa-home {
   --sa-ink: #20263d;
   --sa-ivory: #fff9ef;
@@ -6,17 +6,11 @@
   --sa-pixel-corner: polygon(9px 0, calc(100% - 9px) 0, 100% 9px,
     100% calc(100% - 9px), calc(100% - 9px) 100%, 9px 100%,
     0 calc(100% - 9px), 0 9px);
-  font-family: "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
 }
 :root[data-home-version="ver1"] .sa-home .sa-world-distant,
 :root[data-home-version="ver1"] .sa-home .sa-world-field,
 :root[data-home-version="ver1"] .sa-home .sa-rifle { image-rendering: auto; }
-:root[data-home-version="ver1"] .sa-home .sa-header { border-bottom-width: 1px; }
-:root[data-home-version="ver1"] .sa-home .sa-logo { letter-spacing: -.045em; }
-:root[data-home-version="ver1"] .sa-home .sa-navigation { font-weight: 650; }
 :root[data-home-version="ver1"] .sa-home .sa-navigation [aria-current="page"] { text-decoration-thickness: 2px; }
-:root[data-home-version="ver1"] .sa-home .sa-description { font-size: clamp(.875rem, 1.25vw, 1.4rem); font-weight: 600; line-height: 1.75; letter-spacing: -.035em; }
-:root[data-home-version="ver1"] .sa-home .sa-owner { font-weight: 500; opacity: .85; }
 
 :root[data-home-version="ver1"] .sa-home .sa-cta,
 :root[data-home-version="ver1"] .sa-home .sa-category-card { filter: drop-shadow(3px 4px 0 rgb(32 38 61 / .28)); }
@@ -27,7 +21,6 @@
 }
 :root[data-home-version="ver1"] .sa-home .sa-cta::after,
 :root[data-home-version="ver1"] .sa-home .sa-category-card.is-selected::after { background: linear-gradient(145deg, #fff0ac, var(--sa-yellow)); }
-:root[data-home-version="ver1"] .sa-home .sa-category-card { font-weight: 700; letter-spacing: -.035em; gap: clamp(.7rem, 1vw, 1.1rem); }
 :root[data-home-version="ver1"] .sa-home .sa-category-card .sa-icon { stroke-width: 1.8; }
 :root[data-home-version="ver1"] .sa-home .sa-card-corners { position: absolute; inset: 9px; pointer-events: none; opacity: .22; }
 :root[data-home-version="ver1"] .sa-home .sa-card-corners::before,
@@ -43,35 +36,5 @@
 :root[data-home-version="ver1"] .sa-home .is-selected .sa-card-corners { opacity: .65; }
 :root[data-home-version="ver1"] .sa-home .sa-aim { width: 36px; height: 36px; stroke-width: 2px; }
 
-:root[data-home-version="ver1"] .sa-home .sa-all-post-link {
-  grid-column: 1 / -1;
-  grid-row: 3;
-  align-self: end;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: clamp(3.75rem, 8svh, 5rem);
-  margin-inline: calc(-1 * var(--sa-gutter));
-  padding: 1rem var(--sa-gutter);
-  border-top: 1px solid rgb(32 38 61 / .3);
-  background: rgb(241 222 206 / .2);
-  color: var(--sa-scene-ink, var(--sa-ink));
-  font-size: clamp(.875rem, 1.2vw, 1.125rem);
-  font-weight: 750;
-  letter-spacing: .065em;
-}
-:root[data-home-version="ver1"] .sa-home .sa-all-post-link:hover { background: rgb(255 239 204 / .3); }
-:root[data-home-version="ver1"] .sa-home .sa-all-post-link .sa-icon { width: 22px; height: 22px; }
-:root[data-home-version="ver1"] .sa-home .sa-posts-heading h2 { font-weight: 800; text-shadow: 1px 2px 0 rgb(32 38 61 / .6); }
+:root[data-home-version="ver1"] .sa-home .sa-posts-heading h2 { text-shadow: 1px 2px 0 rgb(32 38 61 / .6); }
 :root[data-home-version="ver1"] .sa-home .sa-empty-posts { text-shadow: 1px 1px 0 rgb(32 38 61 / .7); }
-:root[data-daypart="night"][data-home-version="ver1"] .sa-home .sa-all-post-link { background: rgb(14 22 48 / .25); border-top-color: rgb(234 235 251 / .25); }
-
-@media (max-width: 40rem) {
-  :root[data-home-version="ver1"] .sa-home .sa-navigation .sa-nav-home,
-  :root[data-home-version="ver1"] .sa-home .sa-navigation .sa-nav-github { display: flex; }
-  :root[data-home-version="ver1"] .sa-home .sa-navigation { gap: clamp(.65rem, 3vw, 1rem); }
-  :root[data-home-version="ver1"] .sa-home .sa-nav-github .sa-icon { display: none; }
-  :root[data-home-version="ver1"] .sa-home .sa-description { font-size: clamp(.875rem, 3.8vw, 1.1rem); }
-  :root[data-home-version="ver1"] .sa-home .sa-all-post-link { align-self: stretch; margin-top: auto; }
-}

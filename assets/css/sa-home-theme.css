@@ -6,8 +6,7 @@
 .sa-home .sa-rifle img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
 :root[data-home-version="ver1"] [data-rifle-version="ver1"],
 :root[data-home-version="ver2"] [data-rifle-version="ver2"] { opacity: 1; }
-:root[data-home-version="ver2"] .sa-card-corners,
-:root[data-home-version="ver2"] .sa-all-post-link { display: none; }
+:root[data-home-version="ver2"] .sa-card-corners { display: none; }
 .sa-home .sa-scene-frame { position: absolute; inset: 0; opacity: 0; }
 :root:not([data-daypart]) .sa-scene-frame[data-scene="evening"],
 :root[data-daypart="dawn"] .sa-scene-frame[data-scene="dawn"],
@@ -31,6 +30,8 @@
 .sa-home .sa-cta { color: var(--sa-ink); }
 :root[data-daypart="night"] .sa-home a:focus-visible,
 :root[data-daypart="night"] .sa-home button:focus-visible { outline-color: var(--sa-yellow); }
+
+:root[data-daypart="night"] .sa-home .sa-all-post-link { background: rgb(14 22 48 / .25); border-top-color: rgb(234 235 251 / .25); }
 
 /* Fade already-decoded images. Initial paint uses the selected palette directly. */
 :root[data-scene-ready] .sa-scene-frame,
