@@ -14,50 +14,42 @@
 :root[data-daypart="evening"] .sa-scene-frame[data-scene="evening"],
 :root[data-daypart="night"] .sa-scene-frame[data-scene="night"] { opacity: 1; --sa-cloud-motion: var(--sa-bank-motion, paused); }
 
-/* The sky crop uses the same cover dimensions and scroll depth as the scenery. */
+/* Share the range's scroll depth and fade into clear sky above the antenna. */
+.sa-home .sa-cloud-outlines { position: absolute; }
+.sa-home .sa-cloud-sky { display: none; }
 @supports (container-type: size) and (mask-image: linear-gradient(black, transparent)) {
   .sa-home .sa-scene-frame { container-type: size; }
   .sa-home .sa-cloud-sky {
-    --sa-art-width: max(100cqw, calc(100cqh * 1672 / 941));
-    --sa-art-height: calc(var(--sa-art-width) * 941 / 1672);
+    --sa-art-height: max(100cqh, calc(100cqw * 941 / 1672));
+    --sa-sky-height: max(0px, calc(50cqh - .118 * var(--sa-art-height)));
+    display: block;
     position: absolute;
     inset: 0;
     overflow: clip;
-    /* Rows 360–374 of the original are clear sky above the antenna. */
+    /* The left quarter of every scene has uninterrupted sky in these rows. */
+    background: var(--sa-scene-image) left center / 400% var(--sa-art-height) no-repeat;
     mask-image: linear-gradient(to bottom,
       black calc(50% - .118 * var(--sa-art-height)),
       transparent calc(50% - .102 * var(--sa-art-height)));
     transform: translate3d(0, var(--sa-far-y, 0px), 0) scale(1.1);
   }
-  .sa-home .sa-cloud-tile {
+  .sa-home .sa-cloud {
     position: absolute;
-    left: calc((100% - var(--sa-art-width)) / 2);
-    top: calc((100% - var(--sa-art-height)) / 2);
-    width: var(--sa-art-width);
-    height: calc(var(--sa-art-height) * .4);
-    background: var(--sa-scene-image) left top / 100% auto no-repeat;
+    left: 0;
+    top: calc(var(--sa-sky-height) * var(--cloud-altitude));
+    width: var(--cloud-width);
+    height: auto;
     image-rendering: pixelated;
-    animation: sa-cloud-drift 600s linear infinite;
+    animation: sa-cloud-pass var(--cloud-duration) linear var(--cloud-delay) infinite;
     animation-play-state: var(--sa-cloud-motion, paused);
   }
-  .sa-home .sa-scene-bank[data-version="ver1"] .sa-cloud-tile { image-rendering: auto; }
-
-  /* Mirroring the adjoining strip joins clouds cut by the edge of the artwork.
-     After two widths the leftmost copy exactly replaces the starting tile. */
-  .sa-home .sa-cloud-tile::before,
-  .sa-home .sa-cloud-tile::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: inherit;
-  }
-  .sa-home .sa-cloud-tile::before { transform: translateX(-100%) scaleX(-1); }
-  .sa-home .sa-cloud-tile::after { transform: translateX(-200%); }
+  .sa-home .sa-scene-bank[data-version="ver1"] .sa-cloud { image-rendering: auto; }
 }
 
-@keyframes sa-cloud-drift {
-  from { transform: translateX(0); }
-  to   { transform: translateX(200%); }
+/* Each silhouette wraps only after its trailing edge leaves the sky. */
+@keyframes sa-cloud-pass {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100cqw); }
 }
 
 :root[data-daypart="dawn"] .sa-home { --sa-lavender: #9aaee8; }
