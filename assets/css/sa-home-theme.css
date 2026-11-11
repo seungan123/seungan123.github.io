@@ -1,7 +1,7 @@
 /* Color/opacity only: the existing home owns every layout and motion rule. */
 .sa-home .sa-scene-bank { position: absolute; inset: 0; opacity: 0; }
 :root[data-home-version="ver1"] .sa-scene-bank[data-version="ver1"],
-:root[data-home-version="ver2"] .sa-scene-bank[data-version="ver2"] { opacity: 1; }
+:root[data-home-version="ver2"] .sa-scene-bank[data-version="ver2"] { opacity: 1; --sa-bank-motion: running; }
 .sa-home .sa-rifle { aspect-ratio: 3 / 2; }
 .sa-home .sa-rifle img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
 :root[data-home-version="ver1"] [data-rifle-version="ver1"],
@@ -12,7 +12,37 @@
 :root[data-daypart="dawn"] .sa-scene-frame[data-scene="dawn"],
 :root[data-daypart="day"] .sa-scene-frame[data-scene="day"],
 :root[data-daypart="evening"] .sa-scene-frame[data-scene="evening"],
-:root[data-daypart="night"] .sa-scene-frame[data-scene="night"] { opacity: 1; }
+:root[data-daypart="night"] .sa-scene-frame[data-scene="night"] { opacity: 1; --sa-cloud-motion: var(--sa-bank-motion, paused); }
+
+/* Reuse the scene texture so the cloud artwork also follows the daypart crossfade. */
+@supports (container-type: size) and (mask-image: linear-gradient(black, transparent)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sa-home .sa-scene-frame { container-type: size; }
+    .sa-home .sa-scene-frame::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--sa-scene-image) var(--sa-scene-focus) / cover no-repeat;
+      image-rendering: pixelated;
+      /* For a centered 1672×941 cover image, rows 360–374 are clear sky
+         between the large clouds and the highest point of the antenna. */
+      --sa-art-height: max(100cqh, calc(100cqw * 941 / 1672));
+      mask-image: linear-gradient(to bottom,
+        black calc(50% - .118 * var(--sa-art-height)),
+        transparent calc(50% - .102 * var(--sa-art-height)));
+      transform: translate3d(0, var(--sa-far-y, 0px), 0) scale(1.1);
+      animation: sa-cloud-drift 24s ease-in-out -12s infinite alternate;
+      animation-play-state: var(--sa-cloud-motion, paused);
+    }
+    :root[data-home-version="ver1"] .sa-scene-bank[data-version="ver1"] .sa-scene-frame::after { image-rendering: auto; }
+  }
+}
+
+/* Stay inside the distant layer's 5% overscan on each side. */
+@keyframes sa-cloud-drift {
+  from { translate: -3.5% 0; }
+  to { translate: 3.5% 0; }
+}
 
 :root[data-daypart="dawn"] .sa-home { --sa-lavender: #9aaee8; }
 :root[data-daypart="day"] .sa-home { --sa-lavender: #90c2fb; }

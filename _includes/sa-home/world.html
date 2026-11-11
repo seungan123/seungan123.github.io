@@ -7,10 +7,11 @@
     {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
     <div class="sa-scene-bank" data-version="{{ version }}">
     {% for part in scene_parts %}
-      <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}">
+      {% assign scene_url = scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url %}
+      <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}" style="--sa-scene-image: url('{{ scene_url }}')">
         <img
           class="sa-world-distant"
-          src="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}"
+          src="{{ scene_url }}"
           alt=""
           width="1672"
           height="941"
@@ -19,7 +20,7 @@
         >
         <img
           class="sa-world-field"
-          src="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}"
+          src="{{ scene_url }}"
           alt=""
           width="1672"
           height="941"
