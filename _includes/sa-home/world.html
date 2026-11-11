@@ -1,11 +1,4 @@
 <div class="sa-world-backdrop" aria-hidden="true">
-  <svg class="sa-cloud-outlines" width="0" height="0" aria-hidden="true" focusable="false">
-    <defs>
-      {% for cloud in site.data.sa_home_clouds %}
-        <clipPath id="sa-cloud-{{ cloud.id }}"><polygon points="{{ cloud.outline }}"/></clipPath>
-      {% endfor %}
-    </defs>
-  </svg>
   <div class="sa-world-viewport">
     {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
     {% assign home_versions = 'ver1,ver2' | split: ',' %}
@@ -25,12 +18,10 @@
           decoding="async"
           draggable="false"
         >
-        <div class="sa-cloud-sky">
+        {% assign cloud_sheet = scene_path | append: 'clouds-' | append: part | append: '.webp' | relative_url %}
+        <div class="sa-cloud-sky" style="--cloud-sheet: url('{{ cloud_sheet }}')">
           {% for cloud in site.data.sa_home_clouds %}
-            <svg class="sa-cloud" viewBox="{{ cloud.view_box }}" aria-hidden="true" focusable="false"
-              style="--cloud-width: {{ cloud.width }}; --cloud-altitude: {{ cloud.altitude }}; --cloud-duration: {{ cloud.duration }}; --cloud-delay: {{ cloud.delay }}">
-              <image href="{{ scene_url }}" width="1672" height="941" clip-path="url(#sa-cloud-{{ cloud.id }})"/>
-            </svg>
+            <span class="sa-cloud" style="--cloud-sprite-x: {{ cloud.sprite_x }}; --cloud-width: {{ cloud.width }}; --cloud-altitude: {{ cloud.altitude }}; --cloud-duration: {{ cloud.duration }}; --cloud-delay: {{ cloud.delay }}"></span>
           {% endfor %}
         </div>
         <img

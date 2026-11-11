@@ -15,7 +15,6 @@
 :root[data-daypart="night"] .sa-scene-frame[data-scene="night"] { opacity: 1; --sa-cloud-motion: var(--sa-bank-motion, paused); }
 
 /* Share the range's scroll depth and fade into clear sky above the antenna. */
-.sa-home .sa-cloud-outlines { position: absolute; }
 .sa-home .sa-cloud-sky { display: none; }
 @supports (container-type: size) and (mask-image: linear-gradient(black, transparent)) {
   .sa-home .sa-scene-frame { container-type: size; }
@@ -36,9 +35,10 @@
   .sa-home .sa-cloud {
     position: absolute;
     left: 0;
-    top: calc(var(--sa-sky-height) * var(--cloud-altitude));
+    top: calc(max(0px, var(--sa-sky-height) - var(--cloud-width) / 2) * var(--cloud-altitude));
     width: var(--cloud-width);
-    height: auto;
+    aspect-ratio: 2 / 1;
+    background: var(--cloud-sheet) var(--cloud-sprite-x) center / 500% 100% no-repeat;
     image-rendering: pixelated;
     animation: sa-cloud-pass var(--cloud-duration) linear var(--cloud-delay) infinite;
     animation-play-state: var(--sa-cloud-motion, paused);

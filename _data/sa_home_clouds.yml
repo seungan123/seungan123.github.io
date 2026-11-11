@@ -1,42 +1,27 @@
-# Silhouettes and view boxes use the 1672 x 941 scene artwork coordinates.
-# Altitude is a fraction of the exposed sky. Negative delays distribute the clouds at first paint.
-
-- id: tower
-  view_box: "607 47 317 80"
-  outline: "607,121 625,119 631,114 643,115 649,107 659,102 671,102 678,105 680,104 684,90 698,78 716,77 720,79 721,82 728,83 729,74 737,63 741,60 745,60 757,50 767,47 782,47 786,52 797,52 798,57 803,57 805,62 809,62 814,72 817,72 818,82 822,83 823,86 826,86 830,81 838,77 854,77 867,85 871,93 872,105 878,106 882,103 890,103 894,105 900,113 913,113 915,117 924,117 924,119 869,120 868,124 864,125 804,127 649,127 648,123 607,122"
-  width: clamp(6rem, 17cqw, 18rem)
-  altitude: 0.16
+# Five equal cells in the transparent cloud sheet, from left to right.
+# Altitude places the entire cell inside the visible upper sky.
+- sprite_x: 0%
+  width: clamp(6.5rem, 16cqw, 18rem)
+  altitude: 0.26
   duration: 158s
   delay: -92s
-
-- id: double-bank
-  view_box: "946 548 135 17"
-  outline: "946,563 949,563 953,560 959,560 962,557 971,553 980,553 985,557 989,557 993,560 998,560 1004,557 1008,557 1012,559 1019,552 1030,548 1037,549 1048,553 1056,559 1061,557 1066,557 1070,560 1081,560 1081,562 1080,564 1074,563 1072,565 1007,565 1005,563 999,564 998,561 993,561 992,564 984,563 982,565 946,564"
-  width: clamp(6rem, 16cqw, 17rem)
-  altitude: 0.5
+- sprite_x: 25%
+  width: clamp(5rem, 12.5cqw, 14rem)
+  altitude: 0.59
   duration: 213s
   delay: -58s
-
-- id: shelf
-  view_box: "548 544 112 21"
-  outline: "548,560 550,558 553,558 561,552 566,552 570,555 573,554 584,545 598,544 605,547 610,551 614,551 618,558 625,555 633,555 637,557 638,559 643,559 646,562 655,561 660,563 660,564 576,565 573,563 558,563 556,560 548,561"
-  width: clamp(5rem, 13cqw, 14rem)
-  altitude: 0.3
+- sprite_x: 50%
+  width: clamp(3.25rem, 8.5cqw, 9rem)
+  altitude: 0.35
   duration: 147s
   delay: -128s
-
-- id: tuft
-  view_box: "27 540 85 16"
-  outline: "27,555 35,554 38,555 42,550 48,547 59,549 64,543 71,540 81,540 89,543 95,549 99,548 102,549 105,553 112,553 112,556 27,556"
-  width: clamp(3rem, 8cqw, 8.5rem)
-  altitude: 0.76
+- sprite_x: 75%
+  width: clamp(5rem, 13cqw, 14rem)
+  altitude: 0.77
   duration: 181s
   delay: -84s
-
-- id: trail
-  view_box: "1149 585 123 22"
-  outline: "1149,606 1158,606 1164,602 1168,602 1172,604 1179,596 1185,594 1191,595 1195,598 1199,597 1200,593 1203,590 1209,587 1218,585 1233,589 1238,592 1244,599 1251,595 1259,595 1268,601 1272,600 1272,602 1247,603 1240,599 1235,600 1231,598 1228,600 1227,604 1225,604 1223,601 1214,605 1210,603 1204,603 1200,605 1197,603 1190,603 1185,607 1149,607"
-  width: clamp(7rem, 20cqw, 19rem)
-  altitude: 0.88
+- sprite_x: 100%
+  width: clamp(4rem, 10.5cqw, 11.75rem)
+  altitude: 0.9
   duration: 239s
   delay: -191s
