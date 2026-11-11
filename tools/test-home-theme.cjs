@@ -18,15 +18,22 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   const delayed = new Promise((resolve) => { resolveDecode = resolve; });
   const image = (key, broken) => ({ complete: true, naturalWidth: broken ? 0 : 1672,
     decode() { decodeCount++; return key === deferred ? delayed : Promise.resolve(); } });
+  const slot = (dataset, imgs) => {
+    let mounted = false;
+    const template = { content: {}, replaceWith() { mounted = true; } };
+    return { dataset, querySelector: () => mounted ? null : template, querySelectorAll: () => mounted ? imgs : [] };
+  };
   const scenes = versions.flatMap((version) => parts.map((part) => {
     const key = `${version}:${part}`;
     const imgs = [image(key, failed === key), image(key, failed === key)];
-    return { dataset: { version, scene: part }, querySelectorAll: () => imgs };
+    return slot({ version, scene: part }, imgs);
   }));
-  const rifles = versions.map((version) => ({ ...image(`${version}:rifle`, failedRifle === version), dataset: { rifleVersion: version } }));
-  const preloads = versions.flatMap((version) => parts.map((part) => ({ dataset: { version, scenePreload: part } })));
+  const rifles = versions.map(version => slot({ rifleSlot: version }, [image(`${version}:rifle`, failedRifle === version)]));
+  const preloads = [];
+  const preloadTemplate = { content: { querySelector: selector => selector } };
   const doc = { ...events(), documentElement: root, hidden: false, readyState: 'loading',
-    querySelectorAll: (s) => ({ '[data-scene]': scenes, '[data-rifle-version]': rifles, '[data-scene-preload]': preloads })[s],
+    head: { append(link) { preloads.push(link); } }, getElementById: () => preloadTemplate,
+    querySelectorAll: (s) => ({ '[data-scene]': scenes, '[data-rifle-slot]': rifles })[s],
     querySelector: (s) => ({ '.sa-version-toggle': button, '.sa-time-toggle': timeButton, '#sa-theme-status': status })[s] };
   const win = events(), timers = new Map(), rafs = [];
   let nextTimer = 0;
@@ -54,8 +61,7 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   ]) {
     const h = setup({ at: `2026-11-11T${time}+09:00` });
     assert.equal(h.root.dataset.daypart, expected, `${time} Seoul before paint`);
-    assert.equal(h.preloads.filter((l) => l.fetchPriority === 'high').length, 1);
-    assert.equal(h.preloads.find((l) => l.fetchPriority === 'high').dataset.scenePreload, expected);
+    assert.deepEqual(h.preloads, [`[data-version="ver1"][data-scene-preload="${expected}"]`]);
   }
   assert.equal(setup({ at: '2026-11-10T20:00:00Z' }).root.dataset.daypart, 'dawn');
   for (const saved of parts) assert.equal(setup({ saved }).root.dataset.daypart, saved);
@@ -66,12 +72,14 @@ function setup({ at = '2026-11-11T12:00:00+09:00', saved = null, savedVersion = 
   assert.equal(setup({ preview: 'evening', saved: 'day' }).root.dataset.daypart, 'day');
 
   const h = setup(); await h.boot();
-  assert.equal(h.decodes(), 18, 'Eight scenes and both independent rifles decode in advance');
+  assert.equal(h.decodes(), 3, 'Only the selected scene layers and rifle decode at startup');
   assert.equal(h.root.dataset.sceneReady, 'true'); assert.equal(h.button.disabled, false);
   assert.equal(h.timeButton.disabled, false);
   h.button.emit('click'); await h.flush(); assert.equal(h.root.dataset.homeVersion, 'ver2', 'One gear click changes the design immediately');
+  assert.equal(h.decodes(), 6, 'Switching designs only loads the newly selected art');
   assert.equal(h.root.dataset.themeMode, 'auto', 'Gear never changes the time');
   h.button.emit('click'); await h.flush(); assert.equal(h.root.dataset.homeVersion, 'ver1', 'Second gear click returns to ver1');
+  assert.equal(h.decodes(), 6, 'Revisiting an already loaded design reuses its images');
   for (const expected of ['dawn', 'day', 'evening', 'night', 'auto']) {
     h.timeButton.emit('click'); await h.flush();
     assert.equal(h.root.dataset.homeVersion, 'ver1', 'Time cycle never changes the design');

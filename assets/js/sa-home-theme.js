@@ -32,22 +32,29 @@
   root.dataset.homeVersion = version;
   root.dataset.themeMode = mode;
   root.dataset.daypart = mode === 'auto' ? automaticPart() : mode;
-  for (const link of document.querySelectorAll('[data-scene-preload]')) {
-    link.fetchPriority = link.dataset.version === version && link.dataset.scenePreload === root.dataset.daypart ? 'high' : 'low';
-  }
+  const preloads = document.getElementById('sa-scene-preloads').content;
+  const firstScene = preloads.querySelector(`[data-version="${version}"][data-scene-preload="${root.dataset.daypart}"]`);
+  document.head.append(firstScene);
 
   const initialize = () => {
     const button = document.querySelector('.sa-version-toggle');
     const timeButton = document.querySelector('.sa-time-toggle');
     const status = document.querySelector('#sa-theme-status');
     const scenes = new Map([...document.querySelectorAll('[data-scene]')].map((scene) => [`${scene.dataset.version}:${scene.dataset.scene}`, scene]));
-    const rifles = new Map([...document.querySelectorAll('[data-rifle-version]')].map((img) => [img.dataset.rifleVersion, img]));
+    const rifles = new Map([...document.querySelectorAll('[data-rifle-slot]')].map((slot) => [slot.dataset.rifleSlot, slot]));
     if (!button || !timeButton || !status || scenes.size !== 8 || rifles.size !== 2) return;
     let revision = 0;
     let displayed = false;
     let timer = null;
     const loading = new Map();
     const images = new WeakMap();
+
+    // URLs inside a template stay inert until this particular artwork is needed.
+    const mountArt = (slot) => {
+      const template = slot.querySelector('template');
+      if (template) template.replaceWith(template.content);
+      return [...slot.querySelectorAll('img')];
+    };
 
     const decode = (img) => {
       if (images.has(img)) return images.get(img);
@@ -67,7 +74,7 @@
     const preload = (design, part) => {
       const key = `${design}:${part}`;
       if (loading.has(key)) return loading.get(key);
-      const promise = Promise.all([...scenes.get(key).querySelectorAll('img'), rifles.get(design)].map(decode));
+      const promise = Promise.all([...mountArt(scenes.get(key)), ...mountArt(rifles.get(design))].map(decode));
       loading.set(key, promise);
       promise.catch(() => loading.delete(key));
       return promise;
@@ -149,8 +156,6 @@
     });
     window.addEventListener('pagehide', () => { clearTimeout(timer); timer = null; });
     window.addEventListener('pageshow', () => { if (mode === 'auto') void apply(); scheduleClock(); });
-    // Preload every daypart of both designs without changing the interaction loop.
-    for (const design of versions) for (const part of modes.slice(1)) void preload(design, part).catch(() => {});
     void apply();
     scheduleClock();
   };

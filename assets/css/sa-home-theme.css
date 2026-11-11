@@ -44,6 +44,10 @@
   .sa-home .sa-scene-bank[data-version="ver1"] .sa-cloud { image-rendering: auto; }
 }
 
+@media (max-width: 800px), (pointer: coarse) {
+  .sa-home .sa-cloud { animation-play-state: paused; }
+}
+
 /* Each silhouette wraps only after its trailing edge leaves the sky. */
 @keyframes sa-cloud-pass {
   from { transform: translateX(-100%); }

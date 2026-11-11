@@ -116,6 +116,27 @@ assert.equal(h.value(h.rifle, '--sa-rifle-y'), 0);
 assert.equal(h.value(h.rifle, '--sa-recoil'), 0);
 
 const reduced = setup({ reduce: true });
+const phone = setup({ desktop: false, touchPoints: 1 });
+const shots = [];
+phone.rifle.animate = (frames, options) => {
+  const shot = { frames, options, cancel() { this.cancelled = true; } };
+  shots.push(shot);
+  return shot;
+};
+phone.world.emit('pointerdown', { pointerType: 'touch' });
+phone.win.emit('scroll');
+phone.world.emit('pointercancel');
+assert.equal(shots.length, 0, 'A touch scroll must not fire');
+phone.world.emit('click', { detail: 1 });
+phone.world.emit('click', { detail: 1 });
+assert.equal(shots.length, 2);
+assert.equal(shots[0].cancelled, true, 'Repeated taps restart the recoil');
+assert.equal(shots[1].options.duration, 135);
+assert.equal(shots[1].frames.at(-1).transform, 'none');
+phone.reducedMedia.matches = true;
+phone.world.emit('click', { detail: 1 });
+assert.equal(shots.length, 2, 'Respect reduced motion on touch devices');
+
 reduced.world.emit('pointermove', reduced.mouse(800, 450));
 reduced.step();
 assert.equal(reduced.value(reduced.aim, '--sa-aim-x'), 800, 'Reduced-motion aim must snap without easing');

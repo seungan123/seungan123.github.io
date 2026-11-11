@@ -181,6 +181,17 @@
     }
     // Native anchor navigation is never prevented or delayed.
   }, { passive: true });
+  // A native touch click follows a completed tap, so scrolling never fires the rifle.
+  let tapRecoil = null;
+  world.addEventListener('click', (event) => {
+    if (enabled || event.detail === 0 || reducedMotion.matches) return;
+    tapRecoil?.cancel();
+    tapRecoil = rifle.animate([
+      { transform: 'none' },
+      { transform: 'translate3d(6px, 8px, 0) rotate(-1.5deg)', offset: .18 },
+      { transform: 'none' }
+    ], { duration: 135, easing: 'ease-out' });
+  }, { passive: true });
   world.addEventListener('focusin', () => {
     if (document.activeElement?.matches(':focus-visible')) leave();
   });

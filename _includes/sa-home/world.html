@@ -9,6 +9,7 @@
     {% for part in scene_parts %}
       {% assign scene_url = scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url | append: scene_art_revision %}
       <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}">
+        {% capture frame_art %}
         <img
           class="sa-world-distant"
           src="{{ scene_url }}"
@@ -33,10 +34,12 @@
           decoding="async"
           draggable="false"
         >
+        {% endcapture %}
+        <template>{{ frame_art }}</template>
+        {% if version == 'ver1' and part == 'evening' %}<noscript>{{ frame_art }}</noscript>{% endif %}
       </div>
     {% endfor %}
     </div>
     {% endfor %}
-    {% include sa-home/scene.html %}
   </div>
 </div>
