@@ -7,8 +7,8 @@
     {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
     <div class="sa-scene-bank" data-version="{{ version }}">
     {% for part in scene_parts %}
-      {% assign scene_url = scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url %}
-      <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}" style="--sa-scene-image: url('{{ scene_url }}')">
+      {% assign scene_url = scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url | append: scene_art_revision %}
+      <div class="sa-scene-frame" data-scene="{{ part }}" data-version="{{ version }}">
         <img
           class="sa-world-distant"
           src="{{ scene_url }}"

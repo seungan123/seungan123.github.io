@@ -8,13 +8,14 @@ layout: compress
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% seo %}
     {% assign home_asset_version = site.time | date: '%s' %}
+    {% assign scene_art_revision = '?v=clear-sky' %}
     {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
     {% assign home_versions = 'ver1,ver2' | split: ',' %}
     {% for version in home_versions %}
       {% assign scene_path = '/assets/img/sa-home/' %}
       {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
       {% for part in scene_parts %}
-        <link rel="preload" as="image" href="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}" data-scene-preload="{{ part }}" data-version="{{ version }}">
+        <link rel="preload" as="image" href="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}{{ scene_art_revision }}" data-scene-preload="{{ part }}" data-version="{{ version }}">
       {% endfor %}
     {% endfor %}
     <script src="{{ '/assets/js/sa-home-theme.js' | relative_url }}?v={{ home_asset_version }}"></script>

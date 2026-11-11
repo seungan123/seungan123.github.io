@@ -25,8 +25,6 @@
     position: absolute;
     inset: 0;
     overflow: clip;
-    /* The left quarter of every scene has uninterrupted sky in these rows. */
-    background: var(--sa-scene-image) left center / 400% var(--sa-art-height) no-repeat;
     mask-image: linear-gradient(to bottom,
       black calc(50% - .118 * var(--sa-art-height)),
       transparent calc(50% - .102 * var(--sa-art-height)));
