@@ -63,7 +63,6 @@
 .sa-home .sa-pagination { color: var(--sa-scene-ink, var(--sa-ink)); }
 .sa-home .sa-header { border-color: var(--sa-scene-ink, var(--sa-ink)); }
 .sa-home .sa-settings { position: relative; color: inherit; }
-.sa-home .sa-cta { color: var(--sa-ink); }
 :root[data-daypart="night"] .sa-home a:focus-visible,
 :root[data-daypart="night"] .sa-home button:focus-visible { outline-color: var(--sa-yellow); }
 

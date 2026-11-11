@@ -5,10 +5,12 @@ layout: default
 {% assign topic = site.pages | where: 'layout', 'topic' | where: 'category', subject | first %}
 {% assign icon = topic.symbol | default: 'folder' %}
 {% assign kicker = topic.kicker | default: 'SUBJECT LOG' %}
-<a class="sa-inner-back" href="{{ '/categories/' | relative_url }}"><span aria-hidden="true">←</span> 전체 카테고리</a>
 {% include sa-inner/heading.html icon=icon kicker=kicker title=subject description=topic.description %}
 {% assign source_posts = page.posts | default: site.categories[subject] %}
 {% assign records = source_posts | where_exp: 'post', 'post.hidden != true' %}
+<p class="sa-inner-record-count">
+  {% include sa-inner/icon.html name="list" %} 총 {{ records | size }}개의 게시글
+</p>
 {% if records.size > 0 %}
   {% include sa-inner/list.html records=records %}
 {% else %}

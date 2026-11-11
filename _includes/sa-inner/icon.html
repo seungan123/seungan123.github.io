@@ -1,8 +1,8 @@
 {% case include.name %}
-  {% when 'grid', 'search', 'menu', 'folder', 'external' %}
+  {% when 'list', 'search', 'menu', 'folder', 'external' %}
     <svg class="sa-inner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
       {% case include.name %}
-        {% when 'grid' %}<path d="M3.5 3.5h6.7v6.7H3.5zM13.8 3.5h6.7v6.7h-6.7zM3.5 13.8h6.7v6.7H3.5zM13.8 13.8h6.7v6.7h-6.7z"/>
+        {% when 'list' %}<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.1M3 12h.1M3 18h.1" stroke-width="3"/>
         {% when 'search' %}<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/>
         {% when 'menu' %}<path d="M3 6h18M3 12h18M3 18h18"/>
         {% when 'folder' %}<path d="M3 6h6l2 2h10v11H3z"/>

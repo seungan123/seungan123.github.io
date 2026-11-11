@@ -177,16 +177,13 @@
 .sa-home .sa-description { margin: clamp(1.25rem, 2.5vw, 3rem) 0 0; font-size: clamp(.875rem, 1.35vw, 1.5rem); font-weight: 700; line-height: 1.65; letter-spacing: -.045em; word-break: keep-all; overflow-wrap: anywhere; }
 .sa-home .sa-owner { margin: clamp(.5rem, .8vw, 1rem) 0 0; font-size: clamp(.75rem, .95vw, 1.0625rem); font-weight: 600; letter-spacing: -.035em; line-height: 1.6; word-break: keep-all; }
 
-.sa-home .sa-cta,
 .sa-home .sa-category-card {
   position: relative;
   isolation: isolate;
   filter: drop-shadow(4px 4px 0 var(--sa-ink));
 }
 
-.sa-home .sa-cta::before,
 .sa-home .sa-category-card::before,
-.sa-home .sa-cta::after,
 .sa-home .sa-category-card::after {
   content: "";
   position: absolute;
@@ -196,23 +193,9 @@
   clip-path: var(--sa-pixel-corner);
 }
 
-.sa-home .sa-cta::after,
 .sa-home .sa-category-card::after { inset: 3px; background: var(--sa-ivory); }
-.sa-home .sa-cta::after,
 .sa-home .sa-category-card.is-selected::after { background: var(--sa-yellow); }
 
-.sa-home .sa-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: clamp(.5rem, 1.5vw, 1.5rem);
-  margin-top: clamp(22px, 2vw, 36px);
-  max-width: 100%;
-  padding: clamp(.75rem, 1vw, 1rem) clamp(.875rem, 1.65vw, 1.75rem);
-  font-size: clamp(14px, 1.35vw, 23px);
-  font-weight: 800;
-}
-
-.sa-home .sa-cta .sa-icon { width: 20px; height: 20px; }
 .sa-home .sa-categories {
   grid-column: 2;
   grid-row: 2;
@@ -243,7 +226,6 @@
 
 .sa-home .sa-category-card .sa-icon { width: clamp(28px, 2.7vw, 48px); height: clamp(28px, 2.7vw, 48px); }
 .sa-home .sa-category-card:hover span,
-.sa-home .sa-cta:hover span,
 .sa-home .sa-navigation a:hover { text-decoration: underline; text-underline-offset: 4px; }
 
 /* The same posts cue and text metrics belong to both home designs. */
@@ -375,7 +357,6 @@
   .sa-home .sa-intro h1 { font-size: clamp(2.75rem, 12vw, 4.5rem); }
   .sa-home .sa-description { margin-top: clamp(1.25rem, 4vw, 1.875rem); font-size: clamp(.875rem, 3.8vw, 1.125rem); }
   .sa-home .sa-owner { font-size: clamp(.75rem, 2.8vw, .875rem); }
-  .sa-home .sa-cta { font-size: clamp(.875rem, 3.8vw, 1.125rem); }
   .sa-home .sa-categories { align-self: stretch; margin: clamp(2rem, 6svh, 3rem) 0 0; padding-bottom: clamp(6rem, 26vw, 10rem); gap: clamp(.75rem, 3.5vw, 1.25rem); scroll-margin-top: 1.25rem; }
   .sa-home .sa-category-card { min-height: 6.5rem; aspect-ratio: 1.65; gap: clamp(.5rem, 2vw, .75rem); font-size: clamp(.8125rem, 3.5vw, 1.1875rem); }
   .sa-home .sa-category-card .sa-icon { width: clamp(1.75rem, 7vw, 2.5rem); height: clamp(1.75rem, 7vw, 2.5rem); }

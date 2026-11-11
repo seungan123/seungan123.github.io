@@ -12,14 +12,11 @@
 :root[data-home-version="ver1"] .sa-home .sa-rifle { image-rendering: auto; }
 :root[data-home-version="ver1"] .sa-home .sa-navigation [aria-current="page"] { text-decoration-thickness: 2px; }
 
-:root[data-home-version="ver1"] .sa-home .sa-cta,
 :root[data-home-version="ver1"] .sa-home .sa-category-card { filter: drop-shadow(3px 4px 0 rgb(32 38 61 / .28)); }
-:root[data-home-version="ver1"] .sa-home .sa-cta::after,
 :root[data-home-version="ver1"] .sa-home .sa-category-card::after {
   inset: 2px;
   background: linear-gradient(145deg, #fffcf5, var(--sa-ivory));
 }
-:root[data-home-version="ver1"] .sa-home .sa-cta::after,
 :root[data-home-version="ver1"] .sa-home .sa-category-card.is-selected::after { background: linear-gradient(145deg, #fff0ac, var(--sa-yellow)); }
 :root[data-home-version="ver1"] .sa-home .sa-category-card .sa-icon { stroke-width: 1.8; }
 :root[data-home-version="ver1"] .sa-home .sa-card-corners { position: absolute; inset: 9px; pointer-events: none; opacity: .22; }
