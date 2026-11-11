@@ -1,32 +1,12 @@
-<nav class="sa-categories" id="sa-categories" aria-label="주제별 기록">
-  <a class="sa-category-card" href="{{ '/topics/development/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="code" %}
-    <span>개발</span>
-  </a>
-  <a class="sa-category-card is-selected" href="{{ '/topics/ctf-wargame/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="flag" %}
-    <span>CTF · Wargame</span>
-  </a>
-  <a class="sa-category-card" href="{{ '/topics/bug-bounty/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="bug" %}
-    <span>Bug Bounty</span>
-  </a>
-  <a class="sa-category-card" href="{{ '/topics/blog-docs/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="file" %}
-    <span>블로그 · 기술문서</span>
-  </a>
-  <a class="sa-category-card" href="{{ '/topics/papers-conferences/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="book" %}
-    <span>논문 · 컨퍼런스</span>
-  </a>
-  <a class="sa-category-card" href="{{ '/topics/contests-certifications/' | relative_url }}">
-    <span class="sa-card-corners" aria-hidden="true"></span>
-    {% include sa-home/icon.html name="trophy" %}
-    <span>공모전 · 자격증</span>
-  </a>
+<nav class="sa-categories" id="sa-categories" aria-label="주제별 기록" tabindex="-1">
+  {% for symbol in include.symbols %}
+    {% assign topic = include.topics | where: 'symbol', symbol | first %}
+    {% if topic %}
+      <a class="sa-category-card{% if symbol == 'flag' %} is-selected{% endif %}" href="#log-{{ topic.url | split: '/' | last | escape }}">
+        <span class="sa-card-corners" aria-hidden="true"></span>
+        {% include sa-home/icon.html name=symbol %}
+        <span>{{ topic.title | replace: ' / ', ' · ' | escape }}</span>
+      </a>
+    {% endif %}
+  {% endfor %}
 </nav>

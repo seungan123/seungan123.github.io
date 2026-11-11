@@ -32,6 +32,3 @@
 :root[data-home-version="ver1"] .sa-home .sa-card-corners::after { right: 0; bottom: 0; border-width: 0 2px 2px 0; box-shadow: 3px 3px 0 -2px currentColor; }
 :root[data-home-version="ver1"] .sa-home .is-selected .sa-card-corners { opacity: .65; }
 :root[data-home-version="ver1"] .sa-home .sa-aim { width: 36px; height: 36px; stroke-width: 2px; }
-
-:root[data-home-version="ver1"] .sa-home .sa-posts-heading h2 { text-shadow: 1px 2px 0 rgb(32 38 61 / .6); }
-:root[data-home-version="ver1"] .sa-home .sa-empty-posts { text-shadow: 1px 1px 0 rgb(32 38 61 / .7); }

@@ -206,3 +206,22 @@
   });
   configure();
 })();
+
+// Fragment navigation itself is native. Mirror its current topic on the hero cards.
+(() => {
+  const categories = document.querySelector('.sa-categories');
+  if (!categories || categories.dataset.locationReady) return;
+  categories.dataset.locationReady = 'true';
+  const cards = Array.from(categories.querySelectorAll('.sa-category-card'));
+  const defaultCard = categories.querySelector('.is-selected');
+  function syncSelection() {
+    const selected = cards.find(card => card.hash === window.location.hash);
+    for (const card of cards) {
+      card.classList.toggle('is-selected', card === (selected || defaultCard));
+      if (card === selected) card.setAttribute('aria-current', 'location');
+      else card.removeAttribute('aria-current');
+    }
+  }
+  window.addEventListener('hashchange', syncSelection);
+  syncSelection();
+})();

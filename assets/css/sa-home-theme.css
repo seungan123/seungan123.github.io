@@ -58,9 +58,7 @@
   --sa-ivory: #e9ecf5;
 }
 .sa-home .sa-header,
-.sa-home .sa-intro,
-.sa-home .sa-posts-heading > .sa-icon,
-.sa-home .sa-pagination { color: var(--sa-scene-ink, var(--sa-ink)); }
+.sa-home .sa-intro { color: var(--sa-scene-ink, var(--sa-ink)); }
 .sa-home .sa-header { border-color: var(--sa-scene-ink, var(--sa-ink)); }
 .sa-home .sa-settings { position: relative; color: inherit; }
 :root[data-daypart="night"] .sa-home a:focus-visible,
@@ -75,9 +73,7 @@
 :root[data-scene-ready] .sa-home,
 :root[data-scene-ready] .sa-world { transition: background-color 1s ease; }
 :root[data-scene-ready] .sa-header,
-:root[data-scene-ready] .sa-intro,
-:root[data-scene-ready] .sa-posts-heading > .sa-icon,
-:root[data-scene-ready] .sa-pagination { transition: color 1s ease, border-color 1s ease; }
+:root[data-scene-ready] .sa-intro { transition: color 1s ease, border-color 1s ease; }
 
 /* Two independent one-click controls retain the header's existing icon sizing. */
 .sa-home .sa-header { z-index: 2; }
@@ -107,7 +103,5 @@
   :root[data-scene-ready] .sa-home,
   :root[data-scene-ready] .sa-world,
   :root[data-scene-ready] .sa-header,
-  :root[data-scene-ready] .sa-intro,
-  :root[data-scene-ready] .sa-posts-heading > .sa-icon,
-  :root[data-scene-ready] .sa-pagination { transition: none; }
+  :root[data-scene-ready] .sa-intro { transition: none; }
 }

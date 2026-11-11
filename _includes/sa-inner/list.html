@@ -11,7 +11,6 @@
             {% if include.search and post.categories.size > 0 %}<span class="sa-inner-row-category">{{ post.categories | join: ' · ' | escape }}</span>{% endif %}
           </span>
           <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>
-          <span class="sa-inner-row-arrow">{% include sa-inner/icon.html name="arrow-right" %}</span>
         </a>
       </li>
     {% endfor %}

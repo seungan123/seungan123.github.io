@@ -1,4 +1,5 @@
 <header class="sa-inner-heading">
+  {% if include.map %}{% include sa-inner/contours.html %}{% endif %}
   <span class="sa-inner-mark">{% include sa-inner/icon.html name=include.icon %}</span>
   <div>
     <p class="sa-inner-kicker">{{ include.kicker | escape }}</p>

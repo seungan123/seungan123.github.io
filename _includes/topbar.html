@@ -6,7 +6,7 @@
     </button>
     <nav id="sa-inner-navigation" class="sa-inner-navigation" aria-label="주요 메뉴">
       <a href="{{ '/' | relative_url }}">홈</a>
-      <a href="https://github.com/{{ site.github.username | escape }}">GitHub {% include sa-inner/icon.html name="external" %}</a>
+      <a href="https://github.com/{{ site.github.username | escape }}">GitHub {% include sa-inner/icon.html name="github" %}</a>
       <a class="sa-inner-search-link" href="{{ '/search/' | relative_url }}"{% if page.url == '/search/' %} aria-current="page"{% endif %}>{% include sa-inner/icon.html name="search" %} 검색</a>
     </nav>
   </div>

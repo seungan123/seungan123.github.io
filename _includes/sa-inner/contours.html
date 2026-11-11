@@ -1,0 +1,29 @@
+<svg class="sa-inner-contours" viewBox="0 0 560 240" preserveAspectRatio="xMaxYMid slice" fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="sa-survey-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" stroke="#d6e7fe" stroke-opacity=".12"/>
+      <path d="M18 20h4m-2-2v4" stroke="#d6e7fe" stroke-opacity=".24"/>
+    </pattern>
+    <path id="sa-summit" d="M-118-19c13-31 49-32 71-51s37-38 68-32 24 28 44 41 51 11 58 37-12 56-40 69-33 37-68 42-43-10-62-14-50 2-64-17-23-46-7-75Z"/>
+    <g id="sa-ridges">
+      <use href="#sa-summit" transform="scale(1.85)"/>
+      <use href="#sa-summit" transform="scale(1.55)"/>
+      <use href="#sa-summit" transform="scale(1.28)"/>
+      <use href="#sa-summit"/>
+      <use href="#sa-summit" transform="scale(.76)"/>
+      <use href="#sa-summit" transform="scale(.53)"/>
+      <use href="#sa-summit" transform="scale(.32)"/>
+      <use href="#sa-summit" transform="scale(.14)"/>
+    </g>
+  </defs>
+  <path fill="url(#sa-survey-grid)" d="M0 0h560v240H0z"/>
+  <g stroke="currentColor" stroke-opacity=".38">
+    <use href="#sa-ridges" transform="translate(345 65) rotate(-16)"/>
+    <use href="#sa-ridges" transform="translate(548 264) rotate(-52) scale(.68)"/>
+  </g>
+  <path d="m110 205 70-34h61l62-50 51-58h61" stroke="currentColor" stroke-opacity=".85" stroke-dasharray="4 6"/>
+  <g stroke="currentColor" stroke-width="1.5">
+    <circle cx="180" cy="171" r="4" fill="#27364b"/>
+    <circle cx="354" cy="63" r="7"/><circle cx="354" cy="63" r="2" fill="currentColor"/>
+  </g>
+</svg>

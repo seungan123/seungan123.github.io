@@ -5,5 +5,5 @@ category: 블로그/기술문서
 symbol: file
 kicker: DOCUMENTATION LOG
 permalink: /topics/blog-docs/
-description: 블로그 구축 과정과 기술문서를 정리합니다.
+description: 블로그 구축 기록과 기술 문서
 ---
