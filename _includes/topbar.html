@@ -1,35 +1,18 @@
-<header id="topbar-wrapper" class="flex-shrink-0" aria-label="상단 메뉴">
-  <div id="topbar" class="d-flex align-items-center justify-content-between px-lg-3 h-100">
-    {% comment %}Hidden compatibility target for Chirpy's existing search controls.{% endcomment %}
-    <button id="sidebar-trigger" type="button" hidden tabindex="-1" aria-hidden="true"></button>
-
-    <nav id="topbar-title" class="sa-page-nav" aria-label="주요 메뉴">
+{% assign in_categories = false %}
+{% if page.url == '/categories/' or page.layout == 'topic' or page.layout == 'category' or page.layout == 'post' %}
+  {% assign in_categories = true %}
+{% endif %}
+<header class="sa-inner-header">
+  <div class="sa-inner-header-bar">
+    <a class="sa-inner-brand" href="{{ '/' | relative_url }}" aria-label="S_A 홈">S_A</a>
+    <button class="sa-inner-menu" type="button" aria-expanded="false" aria-controls="sa-inner-navigation" aria-label="주요 메뉴" hidden>
+      {% include sa-inner/icon.html name="menu" %}
+    </button>
+    <nav id="sa-inner-navigation" class="sa-inner-navigation" aria-label="주요 메뉴">
       <a href="{{ '/' | relative_url }}">홈</a>
-      {% assign ordered_tabs = site.tabs | sort: 'order' %}
-      {% for tab in ordered_tabs %}
-        {% assign tab_key = tab.title | downcase %}
-        <a href="{{ tab.url | relative_url }}"{% if page.url == tab.url %} aria-current="page"{% endif %}>
-          {{- site.data.locales[include.lang].tabs[tab_key] | default: tab.title -}}
-        </a>
-      {% endfor %}
+      <a href="{{ '/categories/' | relative_url }}"{% if in_categories %} aria-current="{% if page.url == '/categories/' %}page{% else %}location{% endif %}"{% endif %}>카테고리</a>
+      <a href="https://github.com/{{ site.github.username | escape }}">GitHub {% include sa-inner/icon.html name="external" %}</a>
+      <a class="sa-inner-search-link" href="{{ '/search/' | relative_url }}"{% if page.url == '/search/' %} aria-current="page"{% endif %}>{% include sa-inner/icon.html name="search" %} 검색</a>
     </nav>
-
-    <button type="button" id="search-trigger" class="btn btn-link" aria-label="검색">
-      <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-    </button>
-    <search id="search" class="align-items-center ms-3 ms-lg-0">
-      <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-      <input
-        class="form-control"
-        id="search-input"
-        type="search"
-        aria-label="검색"
-        autocomplete="off"
-        placeholder="{{ site.data.locales[include.lang].search.hint | capitalize }}..."
-      >
-    </search>
-    <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">
-      {{- site.data.locales[include.lang].search.cancel -}}
-    </button>
   </div>
 </header>

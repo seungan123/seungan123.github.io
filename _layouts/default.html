@@ -1,0 +1,25 @@
+---
+---
+<!doctype html>
+<html lang="{{ page.lang | default: site.lang | escape }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% seo %}
+    {% if page.robots %}<meta name="robots" content="{{ page.robots | escape }}">{% endif %}
+    {% if page.layout == 'archives' or page.layout == 'tags' or page.layout == 'tag' or page.layout == 'page' %}
+      <link rel="stylesheet" href="{{ '/assets/css/jekyll-theme-chirpy.css' | relative_url }}">
+    {% endif %}
+    <link rel="stylesheet" href="{{ '/assets/css/sa-inner-pages.css' | relative_url }}">
+    <script defer src="{{ '/assets/js/sa-inner-pages.js' | relative_url }}"></script>
+  </head>
+  <body class="sa-inner-page">
+    <a class="sa-inner-skip" href="#sa-inner-main">본문으로 이동</a>
+    {% include topbar.html %}
+    <main class="sa-inner-main" id="sa-inner-main">{{ content }}</main>
+    <footer class="sa-inner-footer">
+      <span>© {{ site.time | date: '%Y' }} {{ site.title | escape }}</span>
+      <span>SECURITY STUDY LOG</span>
+    </footer>
+  </body>
+</html>

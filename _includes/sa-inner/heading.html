@@ -1,0 +1,8 @@
+<header class="sa-inner-heading">
+  <div class="sa-inner-eyebrow">
+    <span class="sa-inner-mark">{% include sa-inner/icon.html name=include.icon %}</span>
+    <span>{{ include.kicker | escape }}</span>
+  </div>
+  <h1 class="sa-inner-title">{{ include.title | escape }}</h1>
+  {% if include.description %}<p>{{ include.description | escape }}</p>{% endif %}
+</header>

@@ -1,27 +1,16 @@
 ---
-layout: page
+layout: default
 ---
-{% assign category_posts = site.posts | where_exp: "post", "post.categories contains page.category" %}
-<section class="sa-topic-page">
-  <header>
-    <span class="sa-topic-icon"><i class="{{ page.icon }}" aria-hidden="true"></i></span>
-    <div>
-      <p>SUBJECT LOG</p>
-      <h1>{{ page.title }}</h1>
-      <span>{{ page.description }}</span>
-    </div>
-  </header>
-
-  {% if category_posts.size > 0 %}
-  <div class="sa-topic-posts">
-    {% for post in category_posts %}
-    <a href="{{ post.url | relative_url }}">
-      <div><h2>{{ post.title }}</h2><p>{{ post.description | default: post.excerpt | strip_html | truncate: 120 }}</p></div>
-      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>
-    </a>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="sa-topic-empty">아직 이 카테고리의 게시글이 없습니다.</div>
-  {% endif %}
-</section>
+{% assign subject = page.category | default: page.title %}
+{% assign topic = site.pages | where: 'layout', 'topic' | where: 'category', subject | first %}
+{% assign icon = topic.symbol | default: 'folder' %}
+{% assign kicker = topic.kicker | default: 'SUBJECT LOG' %}
+<a class="sa-inner-back" href="{{ '/categories/' | relative_url }}"><span aria-hidden="true">←</span> 전체 카테고리</a>
+{% include sa-inner/heading.html icon=icon kicker=kicker title=subject description=topic.description %}
+{% assign source_posts = page.posts | default: site.categories[subject] %}
+{% assign records = source_posts | where_exp: 'post', 'post.hidden != true' %}
+{% if records.size > 0 %}
+  {% include sa-inner/list.html records=records %}
+{% else %}
+  {% include sa-inner/empty.html icon="folder" kicker="NO RECORDS FOUND" message="아직 이 카테고리의 기록이 없습니다." %}
+{% endif %}

@@ -1,15 +1,24 @@
 ---
-layout: page
+layout: default
+title: 카테고리
 icon: fas fa-stream
 order: 1
-title: 카테고리
 ---
 
-<div class="sa-topic-directory">
-  <a href="{{ '/topics/development/' | relative_url }}"><i class="fas fa-code"></i><strong>개발</strong><span>Build & Code</span></a>
-  <a href="{{ '/topics/ctf-wargame/' | relative_url }}"><i class="fas fa-flag"></i><strong>CTF / Wargame</strong><span>Security Challenges</span></a>
-  <a href="{{ '/topics/bug-bounty/' | relative_url }}"><i class="fas fa-bug"></i><strong>Bug Bounty</strong><span>Vulnerability Research</span></a>
-  <a href="{{ '/topics/blog-docs/' | relative_url }}"><i class="fas fa-file-alt"></i><strong>블로그 / 기술문서</strong><span>Writing & Documentation</span></a>
-  <a href="{{ '/topics/papers-conferences/' | relative_url }}"><i class="fas fa-book-open"></i><strong>논문 / 컨퍼런스</strong><span>Research Notes</span></a>
-  <a href="{{ '/topics/contests-certifications/' | relative_url }}"><i class="fas fa-trophy"></i><strong>공모전 / 자격증</strong><span>Competition & Career</span></a>
+{% include sa-inner/heading.html icon="grid" kicker="SUBJECT SELECT" title=page.title description="분야별 기록을 확인할 수 있습니다." %}
+<div class="sa-inner-directory">
+{% assign topics = site.pages | where: 'layout', 'topic' | sort: 'topic_order' %}
+{% for topic in topics %}
+  {% assign records = site.categories[topic.category] | where_exp: 'post', 'post.hidden != true' %}
+  <a class="sa-inner-card" href="{{ topic.url | relative_url }}">
+    <span class="sa-inner-card-top">
+      <span class="sa-inner-card-icon">{% include sa-inner/icon.html name=topic.symbol %}</span>
+      <span class="sa-inner-card-count">기록 <span><b>{{ records.size | default: 0 }}</b>건</span></span>
+    </span>
+    <span class="sa-inner-card-bottom">
+      <strong>{{ topic.category | escape }}</strong>
+      <span class="sa-inner-card-arrow">{% include sa-inner/icon.html name="arrow-right" %}</span>
+    </span>
+  </a>
+{% endfor %}
 </div>
