@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="{{ '/assets/css/space.css' | relative_url }}">
+<script>
+  // Set before paint. With no JavaScript, the overlay stays hidden.
+  try {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+        !sessionStorage.getItem('sa-intro-seen')) {
+      document.documentElement.classList.add('sa-intro-active');
+      sessionStorage.setItem('sa-intro-seen', '1');
+      // A failed deferred script must never trap the visitor behind the intro.
+      window.setTimeout(function () {
+        document.documentElement.classList.remove('sa-intro-active');
+      }, 2900);
+    }
+  } catch (error) { /* Storage blocked: show the blog immediately. */ }
+</script>
+<script defer src="{{ '/assets/js/space.js' | relative_url }}"></script>
