@@ -1,7 +1,6 @@
 (() => {
   'use strict';
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const root = document.documentElement;
   const hero = document.querySelector('.sa-hero');
   const meteor = document.querySelector('.sa-shooting-star');
   let meteorTimer;
@@ -34,21 +33,12 @@
 
   function onMotionChange() {
     if (motion.matches) {
-      root.classList.remove('sa-intro-active');
       if (hero) hero.style.removeProperty('--sa-parallax');
       if (meteor) meteor.classList.remove('sa-shoot');
     }
     scheduleMeteor();
   }
 
-  // CSS also dismisses the intro, even if this file fails to load.
-  const intro = document.querySelector('.sa-intro');
-  if (intro) intro.addEventListener('animationend', (event) => {
-    if (event.target === intro) root.classList.remove('sa-intro-active');
-  });
-  window.addEventListener('pageshow', (event) => {
-    if (event.persisted) root.classList.remove('sa-intro-active');
-  });
   if (motion.addEventListener) motion.addEventListener('change', onMotionChange);
   if (hero) {
     window.addEventListener('scroll', onScroll, { passive: true });
