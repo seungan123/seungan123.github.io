@@ -1,0 +1,29 @@
+<div class="journal-grid">
+  <aside class="journal-profile" aria-label="소개와 카테고리">
+    <h1 class="journal-intro"><span>안녕하세요.</span><strong>보안과 개발</strong>을 공부하며<br>기록하는 블로그입니다.<span class="journal-cursor" aria-hidden="true">_</span></h1>
+    <div class="journal-status"><span>STATUS :</span> <b>ACTIVE</b><i aria-hidden="true"></i></div>
+    <nav class="journal-topics" aria-label="게시글 카테고리">
+      <a href="{{ '/' | relative_url }}"{% unless page.journal_topic %} aria-current="page"{% endunless %}><span>전체</span><span>{{ site.data.journal_total }}</span></a>
+      {% for topic in site.data.journal_topics %}
+        <a href="{{ topic.url | relative_url }}"{% if page.journal_topic.slug == topic.slug %} aria-current="page"{% endif %}><span>{{ topic.name }}</span><span>{{ topic.count }}</span></a>
+      {% endfor %}
+    </nav>
+    <span class="journal-dots" aria-hidden="true">{% for dot in (1..20) %}<i></i>{% endfor %}</span>
+  </aside>
+  <section class="journal-log" aria-labelledby="recent-heading">
+    <header class="journal-heading">
+      <h2 id="recent-heading">{% if page.journal_topic %}{{ page.journal_topic.name }}{% else %}최근 게시글{% endif %}</h2>
+      <span>[ {{ include.count }} POSTS ]</span>
+    </header>
+    {% for entry in include.posts %}
+      {% assign entry_number = include.offset | plus: forloop.index %}
+      {% include journal-post.html post=entry number=entry_number lang=include.lang %}
+    {% else %}
+      <p class="journal-empty">{% if page.journal_topic %}이 카테고리에 게시된 글이 없습니다.{% else %}아직 게시된 글이 없습니다.{% endif %}</p>
+    {% endfor %}
+    <nav class="journal-paging" aria-label="게시글 목록 이동">
+      {% if include.previous %}<a href="{{ include.previous | relative_url }}">← 이전 글 목록</a>{% endif %}
+      {% if include.next %}<a href="{{ include.next | relative_url }}">더 많은 글 보기 →</a>{% else %}<a href="{{ '/archives/' | relative_url }}">아카이브 보기 →</a>{% endif %}
+    </nav>
+  </section>
+</div>

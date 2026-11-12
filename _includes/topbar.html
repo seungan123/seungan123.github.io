@@ -1,0 +1,21 @@
+<header class="journal-header">
+  <a id="topbar-title" class="journal-wordmark" href="{{ '/' | relative_url }}" aria-label="S_A 홈">S_A</a>
+  <nav class="journal-nav" aria-label="주 메뉴">{% include journal-links.html %}</nav>
+  <div class="journal-tools">
+    <button id="sidebar-trigger" type="button" class="journal-tool" aria-label="메뉴 열기"><i class="fas fa-bars" aria-hidden="true"></i></button>
+    <button id="search-trigger" type="button" class="journal-tool" aria-label="검색 열기"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
+    <search id="search">
+      <label class="visually-hidden" for="search-input">게시글 검색</label>
+      <input id="search-input" class="form-control" type="search" placeholder="게시글 검색" autocomplete="off">
+    </search>
+    <button id="search-cancel" type="button" class="journal-tool" aria-label="검색 닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button>
+    <div class="dropdown">
+      <button id="mode-toggle" class="journal-tool" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="화면 테마 선택"><i class="fa-regular fa-moon" aria-hidden="true"></i></button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><button class="dropdown-item" type="button" data-theme-mode="light">라이트</button></li>
+        <li><button class="dropdown-item" type="button" data-theme-mode="dark">다크</button></li>
+        <li><button class="dropdown-item" type="button" data-theme-mode="system">시스템 설정</button></li>
+      </ul>
+    </div>
+  </div>
+</header>

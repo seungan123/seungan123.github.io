@@ -1,0 +1,10 @@
+{% assign segments = page.url | split: '/' %}
+{% assign current_tab = segments[1] %}
+{% if page.journal_topic or page.layout == 'category' %}{% assign current_tab = 'categories' %}{% elsif page.layout == 'tag' %}{% assign current_tab = 'tags' %}{% elsif page.layout == 'home' %}{% assign current_tab = 'home' %}{% endif %}
+{% assign items = 'Home,Categories,Tags,Archives,About' | split: ',' %}
+{% for label in items %}
+  {% assign key = label | downcase %}
+  {% assign url = '/' | append: key | append: '/' %}
+  {% if key == 'home' %}{% assign url = '/' %}{% endif %}
+  <a href="{{ url | relative_url }}"{% if current_tab == key %} aria-current="page"{% endif %}>{{ label }}</a>
+{% endfor %}
