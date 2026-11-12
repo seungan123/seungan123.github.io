@@ -1,38 +1,27 @@
 ---
-layout: compress
+layout: default
 ---
-<!doctype html>
-<html lang="{{ site.lang | default: 'en' | escape }}" data-home-version="ver1"{% if site.sa_scene_preview %} data-scene-preview="{{ site.sa_scene_preview | escape }}"{% endif %}>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% seo %}
-    {% assign home_asset_version = site.time | date: '%s' %}
-    {% assign scene_art_revision = '?v=clear-sky' %}
-    {% assign scene_parts = 'dawn,day,evening,night' | split: ',' %}
-    {% assign home_versions = 'ver1,ver2' | split: ',' %}
-    <template id="sa-scene-preloads">
-    {% for version in home_versions %}
-      {% assign scene_path = '/assets/img/sa-home/' %}
-      {% if version == 'ver1' %}{% assign scene_path = scene_path | append: 'semi-2d/' %}{% endif %}
-      {% for part in scene_parts %}
-        <link rel="preload" as="image" fetchpriority="high" href="{{ scene_path | append: 'scene-' | append: part | append: '.webp' | relative_url }}{{ scene_art_revision }}" data-scene-preload="{{ part }}" data-version="{{ version }}">
-      {% endfor %}
-    {% endfor %}
-    </template>
-    <script src="{{ '/assets/js/sa-home-theme.js' | relative_url }}?v={{ home_asset_version }}"></script>
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home.css' | relative_url }}?v={{ home_asset_version }}">
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home-theme.css' | relative_url }}?v={{ home_asset_version }}">
-    <link rel="stylesheet" href="{{ '/assets/css/sa-home-concept.css' | relative_url }}?v={{ home_asset_version }}">
-  </head>
-  <body class="sa-home">
-    <main id="sa-home-main" class="sa-world">
-      {% include sa-home/world.html %}
-      {% include sa-home/scene.html %}
-      {% include sa-home/content.html %}
-      {{ content }}
-      {% include sa-home/aim.html %}
-    </main>
-    <script src="{{ '/assets/js/sa-home.js' | relative_url }}?v={{ home_asset_version }}" defer></script>
-  </body>
-</html>
+<header class="masthead">
+  <h1>신승안의 스터디 노트</h1>
+  <p class="tagline">{{ site.tagline | escape }}</p>
+  <p class="byline">조선대학교 정보보안학과 · 신승안</p>
+</header>
+<div class="home-columns">
+  <section aria-labelledby="latest-title" id="all-posts">
+    <h2 class="section-title" id="latest-title">최근 글</h2>
+    {% assign records = paginator.posts | default: site.posts | where_exp: 'post', 'post.hidden != true' %}
+    {% include notebook/records.html records=records %}
+    {% if paginator.total_pages > 1 %}
+      <nav class="paging" aria-label="게시글 페이지">
+        {% if paginator.previous_page %}<a href="{{ paginator.previous_page_path | relative_url }}#all-posts">이전</a>{% endif %}
+        <span>{{ paginator.page }} / {{ paginator.total_pages }}</span>
+        {% if paginator.next_page %}<a href="{{ paginator.next_page_path | relative_url }}#all-posts">다음</a>{% endif %}
+      </nav>
+    {% endif %}
+  </section>
+  <aside id="sa-categories" aria-labelledby="category-title">
+    <h2 class="section-title" id="category-title">카테고리</h2>
+    {% include notebook/topics.html compact=true %}
+  </aside>
+</div>
+<script defer src="{{ '/assets/js/notebook-fragments.js' | relative_url }}"></script>

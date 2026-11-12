@@ -3,18 +3,12 @@ layout: default
 ---
 {% assign subject = page.category | default: page.title %}
 {% assign topic = site.pages | where: 'layout', 'topic' | where: 'category', subject | first %}
-{% assign icon = topic.symbol | default: 'folder' %}
-{% assign kicker = topic.kicker | default: 'SUBJECT LOG' %}
 {% assign source_posts = page.posts | default: site.categories[subject] %}
 {% assign records = source_posts | where_exp: 'post', 'post.hidden != true' %}
-<div class="sa-inner-topic" data-symbol="{{ icon | escape }}">
-  {% include sa-inner/heading.html icon=icon kicker=kicker title=subject description=topic.description map=true %}
-  <p class="sa-inner-record-count">
-    {% include sa-inner/icon.html name="list" %} 총 {{ records | size }}개의 게시글
-  </p>
-  {% if records.size > 0 %}
-    {% include sa-inner/list.html records=records %}
-  {% else %}
-    {% include sa-inner/empty.html icon="folder" kicker="NO RECORDS FOUND" message="아직 이 카테고리의 기록이 없습니다." %}
-  {% endif %}
-</div>
+<section class="reading">
+  <a class="back-link" href="{{ '/categories/' | relative_url }}">전체 카테고리</a>
+  <h1>{{ subject | escape }}</h1>
+  {% if topic.description %}<p class="deck">{{ topic.description | escape }}</p>{% endif %}
+  <h2 class="section-title">게시글 <span class="count">{{ records | size }}</span></h2>
+  {% include notebook/records.html records=records %}
+</section>

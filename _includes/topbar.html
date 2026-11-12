@@ -1,13 +1,9 @@
-<header class="sa-inner-header">
-  <div class="sa-inner-header-bar">
-    <a class="sa-inner-brand" href="{{ '/' | relative_url }}" aria-label="S_A 홈">S_A</a>
-    <button class="sa-inner-menu" type="button" aria-expanded="false" aria-controls="sa-inner-navigation" aria-label="주요 메뉴" hidden>
-      {% include sa-inner/icon.html name="menu" %}
-    </button>
-    <nav id="sa-inner-navigation" class="sa-inner-navigation" aria-label="주요 메뉴">
-      <a href="{{ '/' | relative_url }}">홈</a>
-      <a href="https://github.com/{{ site.github.username | escape }}">GitHub {% include sa-inner/icon.html name="github" %}</a>
-      <a class="sa-inner-search-link" href="{{ '/search/' | relative_url }}"{% if page.url == '/search/' %} aria-current="page"{% endif %}>{% include sa-inner/icon.html name="search" %} 검색</a>
-    </nav>
-  </div>
+<header class="shell site-bar">
+  <a class="wordmark" href="{{ '/' | relative_url }}" aria-label="S_A 홈">{{ site.title | escape }}</a>
+  <nav aria-label="주요 메뉴">
+    <a href="{{ '/' | relative_url }}"{% if page.layout == 'home' %} aria-current="page"{% endif %}>홈</a>
+    <a href="{{ '/categories/' | relative_url }}"{% if page.url == '/categories/' %} aria-current="page"{% elsif page.layout == 'topic' or page.layout == 'category' %} aria-current="location"{% endif %}>카테고리</a>
+    <a href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>소개</a>
+    <a class="search-link" href="{{ '/search/' | relative_url }}"{% if page.url == '/search/' %} aria-current="page"{% endif %}>{% include sa-inner/icon.html name='search' %}검색</a>
+  </nav>
 </header>

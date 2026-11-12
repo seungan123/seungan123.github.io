@@ -1,0 +1,8 @@
+---
+layout: default
+---
+<section class="reading">
+  <h1>아카이브</h1>
+  {% assign records = site.posts | where_exp: 'post', 'post.hidden != true' %}
+  {% include notebook/records.html records=records %}
+</section>

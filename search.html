@@ -3,17 +3,15 @@ layout: default
 permalink: /search/
 title: 검색
 ---
-{% include sa-inner/heading.html icon="search" kicker="SEARCH LOG" title=page.title %}
-<section class="sa-inner-search" aria-label="게시글 검색" data-search-index="{{ '/assets/js/data/search.json' | relative_url }}">
-  <form class="sa-inner-search-form" action="{{ page.url | relative_url }}" role="search">
-    {% include sa-inner/icon.html name="search" %}
-    <input type="search" name="q" aria-label="검색어" placeholder="제목, 내용, 카테고리 검색" autocomplete="off">
-    <button type="submit">검색</button>
+<section class="reading" id="search-page" data-index="{{ '/assets/js/data/search.json' | relative_url }}">
+  <h1>검색</h1>
+  <form class="search-form" action="{{ '/search/' | relative_url }}" role="search">
+    <label class="sr-only" for="query">검색어</label>
+    <input id="query" name="q" type="search" placeholder="제목, 본문, 카테고리 검색">
+    <button>검색</button>
   </form>
   {% assign records = site.posts | where_exp: 'post', 'post.hidden != true' %}
-  <div class="sa-inner-results" hidden>{% include sa-inner/list.html records=records search=true %}</div>
-  <div class="sa-inner-no-results" aria-live="polite"{% if records.size > 0 %} hidden{% endif %}>
-    {% include sa-inner/empty.html icon="search" kicker="NO RESULTS FOUND" message="검색 결과가 없습니다." %}
-  </div>
-  <output class="sa-inner-visually-hidden" aria-live="polite"></output>
+  <p class="search-status" role="status"></p>
+  {% include notebook/records.html records=records %}
 </section>
+<script defer src="{{ '/assets/js/notebook-search.js' | relative_url }}"></script>

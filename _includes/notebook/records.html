@@ -1,0 +1,15 @@
+{% if include.records.size > 0 %}
+  <ul class="records">
+    {% for post in include.records %}
+      <li><a href="{{ post.url | relative_url }}">
+        <span class="meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%Y.%m.%d' }}</time>{% if post.categories.size > 0 %} · {{ post.categories | join: ' · ' | escape }}{% endif %}</span>
+        <strong>{{ post.title | escape }}</strong>
+        {% capture summary %}{% include post-summary.html max_length=135 %}{% endcapture %}
+        {% assign summary = summary | strip_html | strip %}
+        {% if summary != empty %}<span class="summary">{{ summary | escape }}</span>{% endif %}
+      </a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty">아직 게시글이 없습니다.</p>
+{% endif %}

@@ -1,15 +1,9 @@
 ---
-layout: null
-sitemap: false
+layout: default
+title: 카테고리
+permalink: /categories/
 ---
-<!doctype html>
-<html lang="{{ site.lang }}">
-  <head>
-    <meta charset="utf-8">
-    <meta name="robots" content="noindex">
-    <meta http-equiv="refresh" content="0; url={{ '/' | relative_url }}#sa-categories">
-    <link rel="canonical" href="{{ '/' | absolute_url }}">
-    <title>홈의 주제별 기록 | {{ site.title | escape }}</title>
-  </head>
-  <body><a href="{{ '/' | relative_url }}#sa-categories">홈의 주제별 기록으로 이동</a></body>
-</html>
+<section class="reading">
+  <h1>카테고리</h1>
+  {% include notebook/topics.html %}
+</section>

@@ -14,9 +14,6 @@ baseurl: ""
 github:
   username: seungan123
 
-twitter:
-  username:
-
 social:
   name: "S_A"
   email:
@@ -143,6 +140,10 @@ compress_html:
     envs: [development]
 
 exclude:
+  - codex-assets
+  - assets/img/sa-home
+  - assets/css/sa-*.css
+  - assets/js/sa-*.js
   - "*.gem"
   - "*.gemspec"
   - docs
