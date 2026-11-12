@@ -1,6 +1,6 @@
 <div class="journal-grid">
   <aside class="journal-profile" aria-label="소개와 카테고리">
-    <h1 class="journal-intro"><span>안녕하세요.</span><strong>보안과 개발</strong>을 공부하며<br>기록하는 블로그입니다.<span class="journal-cursor" aria-hidden="true">_</span></h1>
+    <h1 class="journal-intro"><span>안녕하세요.</span><strong>보안</strong>을 공부하며<br>기록하는 블로그입니다.<span class="journal-cursor" aria-hidden="true">_</span></h1>
     <div class="journal-status"><span class="status-badge">&gt; STATUS : <b>ACTIVE</b></span><i aria-hidden="true"></i></div>
     <nav class="journal-topics" aria-label="게시글 카테고리">
       <a href="{{ '/' | relative_url }}"{% unless page.journal_topic %} aria-current="page"{% endunless %}><span class="topic-name">{% include journal-icon.html name="all" %}전체</span><span>{{ site.data.journal_total }}</span></a>
