@@ -1,9 +1,0 @@
-<header class="sa-inner-heading">
-  {% if include.map %}{% include sa-inner/contours.html %}{% endif %}
-  <span class="sa-inner-mark">{% include sa-inner/icon.html name=include.icon %}</span>
-  <div>
-    <p class="sa-inner-kicker">{{ include.kicker | escape }}</p>
-    <h1 class="sa-inner-title">{{ include.title | escape }}</h1>
-    {% if include.description %}<p class="sa-inner-description">{{ include.description | escape }}</p>{% endif %}
-  </div>
-</header>
