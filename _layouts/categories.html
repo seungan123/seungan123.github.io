@@ -4,6 +4,6 @@ layout: page
 
 <nav class="journal-topics category-directory" aria-label="카테고리 목록">
   {% for topic in site.data.journal_topics %}
-    <a href="{{ topic.url | relative_url }}"><span>{{ topic.name }}</span><span>{{ topic.count }}</span></a>
+    <a href="{{ topic.url | relative_url }}"><span class="topic-name">{% include journal-icon.html name=topic.slug %}{{ topic.name }}</span><span>{{ topic.count }}</span></a>
   {% endfor %}
 </nav>
