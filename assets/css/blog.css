@@ -4,10 +4,10 @@
   --journal-muted: #656565;
   --journal-rule: #c7cbd0;
   --journal-strong-rule: #262626;
-  --journal-accent: #35b8ee;
-  --journal-accent-text: #0878a5;
+  --journal-accent: #35866b;
+  --journal-accent-text: #23664e;
   --journal-chip: #f0f1f2;
-  --journal-wash: #ddf3ff;
+  --journal-wash: #e4f2ea;
   --journal-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 :root[data-bs-theme="dark"] {
@@ -16,10 +16,10 @@
   --journal-muted: #aaa;
   --journal-rule: #333;
   --journal-strong-rule: #888;
-  --journal-accent: #6ccfff;
-  --journal-accent-text: #87dbff;
+  --journal-accent: #79c9a7;
+  --journal-accent-text: #a3dfc1;
   --journal-chip: #2a2c2d;
-  --journal-wash: #17313e;
+  --journal-wash: #1c3028;
 }
 body {
   --main-bg: var(--journal-paper);
