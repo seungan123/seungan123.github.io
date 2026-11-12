@@ -7,7 +7,7 @@
       {% assign records_for_topic = site.categories[topic.category] | where_exp: 'post', 'post.hidden != true' %}
       <li>
         <a href="{{ topic.url | relative_url }}"{% if include.compact %} data-old-log="log-{{ topic.url | split: '/' | last | escape }}"{% endif %}>
-          <span>{{ topic.title | replace: ' / ', ' · ' | escape }}</span>
+          <span>{{ topic.title | escape }}</span>
           <span class="count">{{ records_for_topic | size }}<span class="sr-only">개의 글</span></span>
           {% unless include.compact %}<small>{{ topic.description | escape }}</small>{% endunless %}
         </a>

@@ -1,6 +1,6 @@
 ---
 layout: topic
-title: 공모전 / 자격증
+title: 공모전/자격증
 category: 공모전/자격증
 symbol: trophy
 kicker: COMPETITION LOG

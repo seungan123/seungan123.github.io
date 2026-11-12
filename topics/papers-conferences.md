@@ -1,6 +1,6 @@
 ---
 layout: topic
-title: 논문 / 컨퍼런스
+title: 논문/컨퍼런스
 category: 논문/컨퍼런스
 symbol: book
 kicker: RESEARCH LOG

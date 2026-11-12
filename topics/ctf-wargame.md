@@ -1,6 +1,6 @@
 ---
 layout: topic
-title: CTF / Wargame
+title: CTF/Wargame
 category: CTF/Wargame
 symbol: flag
 kicker: CTF / WARGAME LOG

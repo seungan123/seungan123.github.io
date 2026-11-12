@@ -1,6 +1,6 @@
 ---
 layout: topic
-title: 블로그 / 기술문서
+title: 블로그/기술문서
 category: 블로그/기술문서
 symbol: file
 kicker: DOCUMENTATION LOG
