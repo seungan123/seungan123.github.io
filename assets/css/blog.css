@@ -1,0 +1,61 @@
+#sidebar #avatar:empty {
+  display: none;
+}
+
+#sidebar .site-subtitle {
+  font-style: normal !important;
+}
+
+/* Use one reading column on the index; article pages use Chirpy's own layout. */
+#main-wrapper .row:has(.blog-index) > #panel-wrapper {
+  display: none;
+}
+
+#main-wrapper .row > main:has(.blog-index) {
+  width: 100%;
+  max-width: 48rem;
+  flex: 0 1 48rem;
+  margin-inline: auto;
+}
+
+.blog-index {
+  padding-block: clamp(1.75rem, 5vw, 4rem);
+  overflow-wrap: anywhere;
+}
+
+.blog-index h1 {
+  margin: 0 0 1.5rem;
+  font-size: 1.75rem;
+}
+
+.blog-index article {
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--btn-border-color);
+}
+
+.blog-index time {
+  color: var(--text-muted-color);
+  font-size: .875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.blog-index h2 {
+  margin: .4rem 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.blog-index h2 a {
+  color: var(--heading-color);
+}
+
+.blog-index h2 a:hover,
+.blog-index h2 a:focus-visible {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.blog-index p {
+  margin: 0;
+  line-height: 1.8;
+}

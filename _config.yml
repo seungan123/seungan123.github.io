@@ -17,7 +17,7 @@ timezone: Asia/Seoul
 
 title: S_A Blog
 
-tagline: 개발과 보안, 작은 호기심을 기록하는 공간
+tagline: 개발과 보안 기록
 
 description: >- # used by seo meta and the atom feed
   개발과 보안을 탐구하며 배우고 발견한 순간들을 기록합니다.
@@ -99,7 +99,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/img/robot-avatar.svg
+avatar:
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
