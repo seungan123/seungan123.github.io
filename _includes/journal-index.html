@@ -16,8 +16,7 @@
       <span>[ {{ include.count }} POSTS ]</span>
     </header>
     {% for entry in include.posts %}
-      {% assign entry_number = include.offset | plus: forloop.index %}
-      {% include journal-post.html post=entry number=entry_number lang=include.lang %}
+      {% include journal-post.html post=entry lang=include.lang %}
     {% else %}
       <p class="journal-empty">{% if page.journal_topic %}이 카테고리에 게시된 글이 없습니다.{% else %}아직 게시된 글이 없습니다.{% endif %}</p>
     {% endfor %}

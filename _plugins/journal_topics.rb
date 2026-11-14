@@ -5,8 +5,9 @@ module Journal
     priority :lowest
 
     def generate(site)
-      posts = site.posts.docs.sort.reverse.reject { |post| post.data["hidden"] }
-      pinned, ordinary = posts.partition { |post| post.data["pin"] }
+      posts = site.posts.docs.reject { |post| post.data["hidden"] }.sort
+      posts.each_with_index { |post, index| post.data["journal_number"] = format("%03d", index + 1) }
+      pinned, ordinary = posts.reverse.partition { |post| post.data["pin"] }
       posts = pinned + ordinary
       site.data["journal_total"] = posts.size
       page_size = site.config.fetch("paginate", 10)

@@ -1,7 +1,7 @@
 {% assign post = include.post %}
 <article class="journal-entry">
   <div class="entry-heading">
-    <span class="entry-number">{% if include.number < 100 %}0{% endif %}{% if include.number < 10 %}0{% endif %}{{ include.number }}</span>
+    <span class="entry-number">{{ post.journal_number }}</span>
     {% if post.categories.size > 0 %}<span class="entry-category">{{ post.categories | join: ' · ' | escape }}</span>{% endif %}
   </div>
   <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}<span class="entry-arrow" aria-hidden="true">↗</span></a></h3>

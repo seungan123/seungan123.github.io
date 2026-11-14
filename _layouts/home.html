@@ -4,7 +4,7 @@ layout: default
 
 {% include lang.html %}
 {% if page.journal_topic %}
-  {% include journal-index.html posts=page.journal_posts count=page.journal_topic.count offset=page.journal_offset previous=page.journal_previous next=page.journal_next lang=lang %}
+  {% include journal-index.html posts=page.journal_posts count=page.journal_topic.count previous=page.journal_previous next=page.journal_next lang=lang %}
 {% else %}
   {% assign visible = site.posts | where_exp: 'post', 'post.hidden != true' %}
   {% assign pinned = visible | where: 'pin', true %}
@@ -12,5 +12,5 @@ layout: default
   {% assign page_size = paginator.per_page | default: site.paginate %}
   {% assign offset = paginator.page | default: 1 | minus: 1 | times: page_size %}
   {% assign entries = pinned | concat: ordinary | slice: offset, page_size %}
-  {% include journal-index.html posts=entries count=site.data.journal_total offset=offset previous=paginator.previous_page_path next=paginator.next_page_path lang=lang %}
+  {% include journal-index.html posts=entries count=site.data.journal_total previous=paginator.previous_page_path next=paginator.next_page_path lang=lang %}
 {% endif %}
