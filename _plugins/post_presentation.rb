@@ -9,6 +9,10 @@ Jekyll::Hooks.register :posts, :post_render do |post|
   body = document.at_css("main article > .content")
   next unless body
 
+  # Chirpy prints the publication date first, followed by the optional update date.
+  dates = document.css("main article > header .post-meta > span > time")
+  dates.drop(1).each { |time| time.parent.remove }
+
   counters = Array.new(7, 0)
   body.css("h2, h3, h4, h5, h6").each do |heading|
     # Chirpy adds a permalink icon. Keep the heading ID for the table of contents.
