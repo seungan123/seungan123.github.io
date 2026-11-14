@@ -9,13 +9,13 @@
       <input id="search-input" class="form-control" type="search" placeholder="게시글 검색" autocomplete="off">
     </search>
     <button id="search-cancel" type="button" class="journal-tool" aria-label="검색 닫기">{% include journal-icon.html name="close" %}</button>
-    <div class="dropdown">
-      <button id="mode-toggle" class="journal-tool" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="화면 테마 선택">{% include journal-icon.html name="moon" %}</button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><button class="dropdown-item" type="button" data-theme-mode="light">라이트</button></li>
-        <li><button class="dropdown-item" type="button" data-theme-mode="dark">다크</button></li>
-        <li><button class="dropdown-item" type="button" data-theme-mode="system">시스템 설정</button></li>
-      </ul>
-    </div>
+    {% unless site.theme_mode %}
+      <button id="mode-toggle" class="journal-tool" type="button" aria-label="라이트·다크 모드 전환" onclick="Theme.update(Theme.isDark ? Theme.Mode.LIGHT : Theme.Mode.DARK)">
+        <span class="switch-to-dark">{% include journal-icon.html name="moon" %}</span>
+        <span class="switch-to-light">{% include journal-icon.html name="sun" %}</span>
+      </button>
+      {% comment %}Chirpy 7 initializes other controls after binding its theme listener to this sibling.{% endcomment %}
+      <span class="dropdown-menu" hidden></span>
+    {% endunless %}
   </div>
 </header>
