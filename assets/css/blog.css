@@ -241,13 +241,11 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .entry-category::before { content: ""; position: absolute; left: -11px; top: .15em; width: 1px; height: 1em; background: var(--journal-rule); }
 .entry-number { color: var(--journal-accent-text); font: 750 1.35rem/1.1 var(--journal-mono); }
 .journal-entry h3 { margin: 5px 0 7px var(--number-width); font-weight: 700; font-size: clamp(1.17rem, 1.7vw, 1.58rem); line-height: 1.45; letter-spacing: -.015em; overflow-wrap: anywhere; }
-.journal-entry h3 a { display: block; padding-right: 32px; color: var(--journal-ink); text-decoration: none; }
-.entry-arrow { position: absolute; right: 3px; bottom: 26px; color: var(--journal-ink); font: 400 1.45rem/1 sans-serif; transition: transform 180ms, color 180ms; }
-.journal-entry:hover .entry-arrow, .journal-entry:focus-within .entry-arrow { transform: translate(2px, -2px); color: var(--journal-ink); }
+.journal-entry h3 a { display: block; color: var(--journal-ink); text-decoration: none; }
 .journal-entry h3 a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
 .journal-entry p, .journal-empty { color: var(--journal-muted); font-size: .94rem; line-height: 1.85; overflow-wrap: anywhere; }
 .journal-entry p { margin: 0 0 17px var(--number-width); max-width: 64ch; }
-.entry-meta { gap: .45rem .8rem; margin-left: var(--number-width); padding-right: 27px; }
+.entry-meta { gap: .45rem .8rem; margin-left: var(--number-width); }
 .entry-meta time { display: inline-flex; align-items: center; gap: .36rem; }
 .entry-meta a { background: var(--journal-chip); border-radius: 99px; padding: 2px 8px; text-decoration: none; }
 .entry-meta a, .journal-footer a { color: inherit; }
@@ -334,7 +332,6 @@ main .categories.card, main .categories .card-header, main .tag { border-radius:
 @media (prefers-reduced-motion: reduce) {
   .journal-cursor { animation: none; }
   .journal-grid *, .journal-nav a { transition: none; }
-  .journal-entry .entry-arrow { transform: none; }
 }
 .category-directory { max-width: 40rem; }
 .category-directory a {

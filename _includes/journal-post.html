@@ -4,7 +4,7 @@
     <span class="entry-number">{{ post.journal_number }}</span>
     {% if post.categories.size > 0 %}<span class="entry-category">{{ post.categories | join: ' · ' | escape }}</span>{% endif %}
   </div>
-  <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}<span class="entry-arrow" aria-hidden="true">↗</span></a></h3>
+  <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
   <p>{% include post-summary.html max_length=140 %}</p>
   <div class="entry-meta">
     <time datetime="{{ post.date | date_to_xmlschema }}">{% include journal-icon.html name="calendar" %}{{ post.date | date: '%Y.%m.%d' }}</time>
