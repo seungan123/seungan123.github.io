@@ -29,7 +29,8 @@ Jekyll::Hooks.register :posts, :post_render do |post|
     next unless first_text
 
     first_text.content = first_text.text.sub(/\A\s*\d+[.)]\s+/, "")
-    heading.prepend_child(Nokogiri::XML::Text.new("#{counters[level]}) ", document))
+    suffix = level == 2 ? "." : ")"
+    heading.prepend_child(Nokogiri::XML::Text.new("#{counters[level]}#{suffix} ", document))
   end
 
   post.output = document.to_html
