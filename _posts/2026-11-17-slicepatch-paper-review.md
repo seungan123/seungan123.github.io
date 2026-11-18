@@ -1,5 +1,5 @@
 ---
-title: "AI가 만든 보안 패치를 어떻게 검증할까? — SlicePatch 논문 리뷰"
+title: "논문 - Web Application Vulnerability Repair via Context-Aware Fault Localization and Directed Differential Fuzzing"
 lang: ko-KR
 date: 2026-11-17 00:00:00 +0900
 categories: ["논문/컨퍼런스"]

@@ -1,0 +1,10 @@
+{% assign df_strftime = site.data.locales[include.lang].df.post.strftime | default: '%d/%m/%Y' %}
+
+<time
+  {% if include.class %}
+    class="{{ include.class }}"
+  {% endif %}
+  datetime="{{ include.date | date: '%Y-%m-%d' }}"
+>
+  {{ include.date | date: df_strftime }}
+</time>
