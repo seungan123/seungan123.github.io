@@ -285,6 +285,16 @@ article[data-toc] > .content {
   overflow-wrap: anywhere;
 }
 article[data-toc] > .content > p { margin-bottom: 1.15em; }
+article[data-toc] > .content > p.paper-figure { margin-bottom: .5rem; }
+article[data-toc] > .content > p.paper-caption {
+  margin-block: .5rem 1.75rem;
+  color: var(--journal-muted);
+  font-size: .8125rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: center;
+}
 article[data-toc] > .content > h2 {
   font-size: clamp(1.625rem, 1.4rem + .8vw, 2rem);
   line-height: 1.4;
@@ -297,7 +307,80 @@ article[data-toc] > .content > h3 {
   line-height: 1.45;
   margin-block: 2.25rem 1rem;
 }
+article[data-toc] > .content > h4 {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  margin-block: 1.75rem .75rem;
+}
 .content :is(h2, h3, h4, h5) > .anchor { display: none; }
+.content table.glossary-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.content table.glossary-table :is(th, td) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.content table.glossary-table th { font-weight: 400; }
+.content table.glossary-table th:first-child { width: 36%; }
+.content a[href^="#term-"] { border-bottom-style: dotted; }
+.content .glossary-term {
+  display: block;
+  scroll-margin-top: 6rem;
+}
+.content .glossary-table tr:has(.glossary-term:target) > td {
+  background-color: var(--journal-wash);
+}
+.content a[aria-controls="glossary-popover"][aria-expanded="true"] {
+  background-color: var(--journal-wash);
+}
+.glossary-popover {
+  position: fixed;
+  inset: auto;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--journal-rule);
+  border-radius: .65rem;
+  background-color: var(--journal-paper);
+  color: var(--journal-ink);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 12%);
+  font-family: var(--journal-sans);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.glossary-popover-title {
+  margin: 0 1.75rem .4rem 0;
+  color: var(--journal-accent-text);
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.glossary-popover-description {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.glossary-popover-close {
+  position: absolute;
+  top: .25rem;
+  right: .25rem;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: .4rem;
+  background: transparent;
+  color: var(--journal-muted);
+  font: 1.25rem/1 var(--journal-sans);
+  cursor: pointer;
+}
+.glossary-popover-close:hover { background: var(--journal-wash); }
 .content .study-goal {
   margin-block: 1.8em;
   padding: 1em 1.25em;

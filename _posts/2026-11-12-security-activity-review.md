@@ -1,7 +1,7 @@
 ---
 title: "지금까지의 활동 정리"
 lang: ko-KR
-date: 2026-11-12 00:00:00 +0900
+date: 2026-11-12 07:52:36 +0900
 categories: ["블로그/기술문서"]
 tags: [공부기록, CTF, Dreamhack]
 ---

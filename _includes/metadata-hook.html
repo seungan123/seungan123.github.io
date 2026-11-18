@@ -1,1 +1,4 @@
-<link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/blog.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+{% if page.layout == 'post' %}
+  <script defer src="{{ '/assets/js/glossary-navigation.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
+{% endif %}
