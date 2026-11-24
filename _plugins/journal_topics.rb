@@ -13,8 +13,11 @@ module Journal
       page_size = site.config.fetch("paginate", 10)
 
       site.data.fetch("journal_topics").each do |topic|
+        names = [topic.fetch("name"), *Array(topic["aliases"])]
         entries = posts.select do |post|
-          Array(post.data["categories"]).any? { |name| name.to_s.casecmp?(topic.fetch("name")) }
+          Array(post.data["categories"]).any? do |category|
+            names.any? { |name| category.to_s.casecmp?(name) }
+          end
         end
         topic["count"] = entries.size
         base = "topics/#{topic.fetch('slug')}"

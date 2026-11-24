@@ -196,7 +196,10 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 .journal-topics a > span:last-child {
   color: var(--journal-muted);
-  font: .76rem var(--journal-mono);
+  font: 500 .875rem/1.4 var(--journal-sans);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.5ch;
+  text-align: right;
 }
 .journal-topics a:is(:hover, [aria-current]) { background: var(--journal-wash); color: var(--journal-ink); }
 .journal-topics a[aria-current] { font-weight: 700; }
@@ -227,14 +230,14 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   letter-spacing: -.025em;
 }
 .journal-heading h2::before { content: ""; flex: none; width: 4px; height: .94em; background: var(--journal-accent); }
-.journal-heading > span, .entry-meta time, .journal-footer { font-family: var(--journal-mono); }
-.journal-heading > span { font-size: .72rem; color: var(--journal-muted); white-space: nowrap; }
+.journal-heading > span, .entry-meta time, .journal-footer { font-family: var(--journal-sans); font-variant-numeric: tabular-nums; }
+.journal-heading > span { font-size: .8125rem; color: var(--journal-muted); white-space: nowrap; }
 .journal-entry { --number-width: clamp(54px, 7.4vw, 82px); position: relative; padding: 28px 0; border-bottom: 1px solid var(--journal-rule); }
 .entry-heading, .entry-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; font-size: .73rem; color: var(--journal-muted); }
 .entry-heading { display: grid; grid-template-columns: var(--number-width) 1fr; gap: 0; }
 .entry-category { position: relative; }
 .entry-category::before { content: ""; position: absolute; left: -11px; top: .15em; width: 1px; height: 1em; background: var(--journal-rule); }
-.entry-number { color: var(--journal-accent-text); font: 750 1.35rem/1.1 var(--journal-mono); }
+.entry-number { color: var(--journal-accent-text); font: 700 1.35rem/1.1 var(--journal-sans); font-variant-numeric: tabular-nums; }
 .journal-entry h3 { margin: 5px 0 7px var(--number-width); font-weight: 700; font-size: clamp(1.17rem, 1.7vw, 1.58rem); line-height: 1.45; letter-spacing: -.015em; overflow-wrap: anywhere; }
 .journal-entry h3 a { display: block; color: var(--journal-ink); text-decoration: none; }
 .journal-entry h3 a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }

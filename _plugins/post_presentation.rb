@@ -6,6 +6,7 @@ Jekyll::Hooks.register :posts, :post_render do |post|
   next unless post.output_ext == ".html"
 
   document = Nokogiri::HTML5(post.output)
+  document.css(".post-tags").remove
   body = document.at_css("main article > .content")
   next unless body
 

@@ -2,7 +2,7 @@
 title: "fuzzer 와 fuzzing"
 lang: ko-KR
 date: 2026-11-19 00:00:00 +0900
-categories: ["시스템해킹"]
+categories: ["블로그/기술문서/리서치", "BugBounty"]
 tags: [Fuzzing, Fuzzer, AFL++, libFuzzer, Jackalope]
 ---
 
@@ -10,8 +10,6 @@ tags: [Fuzzing, Fuzzer, AFL++, libFuzzer, Jackalope]
 
 | 용어 | 설명 |
 | --- | --- |
-| <span id="term-fuzzing" class="glossary-term" tabindex="-1">Fuzzing(퍼징)</span> | 프로그램에 다양한 입력을 자동으로 넣어 오류나 예상하지 못한 동작을 찾는 테스트 방법이다. |
-| <span id="term-fuzzer" class="glossary-term" tabindex="-1">Fuzzer(퍼저)</span> | 입력을 만들거나 바꾸고, 프로그램 실행과 결과 확인을 자동으로 수행하는 도구이다. |
 | <span id="term-seed" class="glossary-term" tabindex="-1">시드(Seed)</span> | 퍼징을 시작할 때 사용하는 초기 입력이다. |
 | <span id="term-corpus" class="glossary-term" tabindex="-1">코퍼스(Corpus)</span> | 퍼징에 사용하는 입력들의 모음이다. 시드와 테스트 중 새로 추가된 입력 등이 포함된다. |
 | <span id="term-mutation" class="glossary-term" tabindex="-1">변이(Mutation)</span> | 기존 입력의 값을 바꾸거나 데이터를 추가·삭제해 새로운 입력을 만드는 작업이다. |
@@ -32,9 +30,9 @@ tags: [Fuzzing, Fuzzer, AFL++, libFuzzer, Jackalope]
 
 ### 1) Fuzzing과 Fuzzer란?
 
-[Fuzzing(퍼징)](#term-fuzzing)은 프로그램에 여러 값을 자동으로 넣어 보면서 문제가 생기는지 확인하는 테스트 방법이다. 여기서 프로그램에 넣는 값을 입력이라고 한다.
+Fuzzing(퍼징)은 프로그램에 여러 값을 자동으로 넣어 보면서 문제가 생기는지 확인하는 테스트 방법이다. 여기서 프로그램에 넣는 값을 입력이라고 한다.
 
-[Fuzzer(퍼저)](#term-fuzzer)는 이 작업을 대신 해 주는 도구이다. 사람이 입력을 하나씩 만들어 넣는 대신, 퍼저가 입력을 계속 바꿔 가며 프로그램을 수없이 반복해서 실행한다.
+Fuzzer(퍼저)는 이 작업을 대신 해 주는 도구이다. 사람이 입력을 하나씩 만들어 넣는 대신, 퍼저가 입력을 계속 바꿔 가며 프로그램을 수없이 반복해서 실행한다.
 
 문제가 생기면 그때 사용한 입력을 저장해 두기 때문에, 나중에 같은 상황을 다시 만들어 원인을 찾을 수 있다.
 
@@ -100,11 +98,11 @@ tags: [Fuzzing, Fuzzer, AFL++, libFuzzer, Jackalope]
 
 [Sanitizer](#term-sanitizer)는 빌드 과정에서 검사 코드를 추가하고, 실행 중 문제가 감지되면 오류 종류와 발생 위치를 알려 준다. 도구마다 검사하는 대상은 다르다.
 
-- [ASan](#term-asan)(Address[Sanitizer](#term-sanitizer)): 할당된 범위를 벗어난 메모리 접근이나 해제된 메모리를 다시 사용하는 오류를 탐지한다.
+- [ASan(AddressSanitizer)](#term-asan): 할당된 범위를 벗어난 메모리 접근이나 해제된 메모리를 다시 사용하는 오류를 탐지한다.
 
-- [UBSan](#term-ubsan)(UndefinedBehavior[Sanitizer](#term-sanitizer)): 부호 있는 정수의 오버플로처럼 언어에서 결과를 정의하지 않은 동작 중 일부를 탐지한다.
+- [UBSan(UndefinedBehaviorSanitizer)](#term-ubsan): 부호 있는 정수의 오버플로처럼 언어에서 결과를 정의하지 않은 동작 중 일부를 탐지한다.
 
-- [MSan](#term-msan)(Memory[Sanitizer](#term-sanitizer)): 초기화하지 않은 값의 사용을 탐지한다.
+- [MSan(MemorySanitizer)](#term-msan): 초기화하지 않은 값의 사용을 탐지한다.
 
 #### (4) 결과를 다음 입력에 활용한다
 

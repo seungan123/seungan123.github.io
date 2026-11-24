@@ -106,7 +106,7 @@ avatar:
 social_preview_image: # string, local or CORS resources
 
 # boolean type, the global switch for TOC in posts.
-toc: false
+toc: true
 
 actions:
   # Display "Edit this post" action on each post page to encourage contributions.
@@ -189,7 +189,7 @@ defaults:
     values:
       layout: post
       comments: true # Enable comments in posts.
-      toc: false # Hide the table of contents by default.
+      toc: true # Show the table of contents by default.
       # DO NOT modify the following parameter unless you are confident enough
       # to update the code of all other post links in this project.
       permalink: /posts/:title/
