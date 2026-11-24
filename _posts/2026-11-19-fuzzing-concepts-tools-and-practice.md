@@ -1,5 +1,5 @@
 ---
-title: "fuzzer 와 fuzzing"
+title: "Fuzzer 와 Fuzzing"
 lang: ko-KR
 date: 2026-11-19 00:00:00 +0900
 categories: ["블로그/기술문서", "BugBounty"]
