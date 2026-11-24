@@ -464,75 +464,24 @@ article[data-toc] > .content > h2:first-child {
 .content table.comparison-table thead th {
   border-bottom: 1px solid var(--journal-rule);
 }
-.content a[href^="#term-"] { border-bottom-style: dotted; }
-.content .glossary-term {
-  display: block;
-  scroll-margin-top: 6rem;
+.content .glossary-details {
+  margin-block: 1.5rem 2rem;
+  border-block: 1px solid var(--journal-rule);
 }
-.content .glossary-table tr:has(.glossary-term:target) > td {
-  background-color: var(--journal-wash);
-}
-.content a[aria-controls="glossary-popover"][aria-expanded="true"] {
-  background-color: var(--journal-wash);
-}
-.content .glossary-trigger {
-  padding: 0;
-  border: 0;
-  border-bottom: 1px dotted currentColor;
-  background: transparent;
-  color: var(--journal-accent-text);
-  font: inherit;
-  text-align: start;
-  cursor: pointer;
-}
-.glossary-popover[hidden] { display: none; }
-.glossary-popover {
-  position: fixed;
-  z-index: 1080;
-  inset: auto;
-  width: min(22rem, calc(100vw - 2rem));
-  max-height: calc(100dvh - 2rem);
-  overflow: auto;
-  margin: 0;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--journal-rule);
-  border-radius: .65rem;
-  background-color: var(--journal-paper);
+.content .glossary-details > summary {
+  padding-block: .9rem;
   color: var(--journal-ink);
-  box-shadow: 0 8px 32px rgb(0 0 0 / 12%);
-  font-family: var(--journal-sans);
-  word-break: keep-all;
-  overflow-wrap: anywhere;
-}
-.glossary-popover-title {
-  margin: 0 1.75rem .4rem 0;
-  color: var(--journal-accent-text);
-  font-size: .875rem;
-  font-weight: 500;
-  line-height: 1.5;
-}
-.glossary-popover-description {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.7;
-}
-.glossary-popover-close {
-  position: absolute;
-  top: .25rem;
-  right: .25rem;
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  padding: 0;
-  border: 0;
-  border-radius: .4rem;
-  background: transparent;
-  color: var(--journal-muted);
-  font: 1.25rem/1 var(--journal-sans);
+  font-size: 1.125rem;
+  font-weight: 600;
   cursor: pointer;
 }
-.glossary-popover-close:hover { background: var(--journal-wash); }
+.content .glossary-details > summary::marker { color: var(--journal-muted); }
+.content .glossary-details > summary:focus-visible {
+  outline: 2px solid var(--journal-accent);
+  outline-offset: 4px;
+}
+.content .glossary-details[open] { padding-bottom: 1rem; }
+.content .glossary-details .table-wrapper { margin-block: .5rem 0; }
 .content .study-goal {
   margin-block: 1.8em;
   padding: 1em 1.25em;
