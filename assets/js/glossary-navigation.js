@@ -1,12 +1,11 @@
 (() => {
   const content = document.querySelector('article > .content');
-  if (!content?.querySelector('.glossary-table') ||
-      !('showPopover' in HTMLElement.prototype)) return;
+  if (!content?.querySelector('.glossary-table')) return;
 
   const popover = document.createElement('div');
   popover.id = 'glossary-popover';
   popover.className = 'glossary-popover';
-  popover.setAttribute('popover', 'auto');
+  popover.hidden = true;
   popover.setAttribute('role', 'dialog');
   popover.setAttribute('aria-labelledby', 'glossary-popover-title');
   popover.setAttribute('aria-describedby', 'glossary-popover-description');
@@ -26,16 +25,15 @@
   document.body.append(popover);
 
   let source = null;
-  const isOpen = () => popover.matches(':popover-open');
   const dismiss = (restoreFocus = false) => {
-    if (!isOpen()) return;
-    popover.hidePopover();
+    if (popover.hidden) return;
+    popover.hidden = true;
     source?.setAttribute('aria-expanded', 'false');
     if (restoreFocus) source?.focus({ preventScroll: true });
   };
 
   const position = () => {
-    if (!source || !isOpen()) return;
+    if (!source || popover.hidden) return;
     const anchor = source.getBoundingClientRect();
     const box = popover.getBoundingClientRect();
     const margin = 12;
@@ -56,43 +54,59 @@
     !event.defaultPrevented && event.button === 0 &&
     !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 
-  content.querySelectorAll('a[href^="#term-"]').forEach((link) => {
-    const term = document.getElementById(link.hash.slice(1));
-    const table = term?.closest('.glossary-table');
-    const cell = term?.closest('tr')?.querySelector('td:last-child');
-    if (!table || !content.contains(table) || !cell) return;
-    link.setAttribute('aria-haspopup', 'dialog');
-    link.setAttribute('aria-controls', popover.id);
-    link.setAttribute('aria-expanded', 'false');
+  const bind = (trigger, term, cell) => {
+    trigger.setAttribute('aria-haspopup', 'dialog');
+    trigger.setAttribute('aria-controls', popover.id);
+    trigger.setAttribute('aria-expanded', 'false');
 
-    link.addEventListener('click', (event) => {
+    trigger.addEventListener('click', (event) => {
       if (!isPlainClick(event)) return;
       event.preventDefault();
-      if (source === link && isOpen()) {
+      if (source === trigger && !popover.hidden) {
         dismiss(true);
         return;
       }
       source?.setAttribute('aria-expanded', 'false');
-      source = link;
-      title.textContent = link.textContent.trim();
+      source = trigger;
+      title.textContent = term.textContent.trim();
       description.textContent = cell.textContent.trim();
-      link.setAttribute('aria-expanded', 'true');
-      if (!isOpen()) popover.showPopover();
+      trigger.setAttribute('aria-expanded', 'true');
+      popover.hidden = false;
       position();
       closeButton.focus({ preventScroll: true });
     });
+  };
+
+  content.querySelectorAll('.glossary-table .glossary-term[id]').forEach((term) => {
+    const cell = term.closest('tr')?.querySelector('td:last-child');
+    if (!cell) return;
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'glossary-trigger';
+    trigger.textContent = term.textContent;
+    term.replaceChildren(trigger);
+    bind(trigger, term, cell);
+  });
+
+  content.querySelectorAll('a[href^="#term-"]').forEach((link) => {
+    const term = document.getElementById(link.hash.slice(1));
+    const table = term?.closest('.glossary-table');
+    const cell = term?.closest('tr')?.querySelector('td:last-child');
+    if (table && content.contains(table) && cell) bind(link, term, cell);
   });
 
   closeButton.addEventListener('click', () => dismiss(true));
-  popover.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || popover.hidden) return;
     event.preventDefault();
     event.stopPropagation();
     dismiss(true);
   });
-  popover.addEventListener('toggle', (event) => {
-    if (event.newState === 'closed') source?.setAttribute('aria-expanded', 'false');
+  document.addEventListener('click', (event) => {
+    if (!popover.hidden && !popover.contains(event.target) && !source?.contains(event.target)) {
+      dismiss();
+    }
   });
-  window.addEventListener('scroll', () => dismiss(), { passive: true });
+  window.addEventListener('scroll', position, { passive: true });
   window.addEventListener('resize', position);
 })();

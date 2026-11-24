@@ -433,8 +433,20 @@ article[data-toc] > .content > h2:first-child {
 .content a[aria-controls="glossary-popover"][aria-expanded="true"] {
   background-color: var(--journal-wash);
 }
+.content .glossary-trigger {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dotted currentColor;
+  background: transparent;
+  color: var(--journal-accent-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.glossary-popover[hidden] { display: none; }
 .glossary-popover {
   position: fixed;
+  z-index: 1080;
   inset: auto;
   width: min(22rem, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
