@@ -24,8 +24,9 @@
   --journal-accent-text: #23664e;
   --journal-chip: #f0f1f2;
   --journal-wash: #e4f2ea;
-  --journal-sans: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --journal-body: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --journal-display: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --journal-sans: "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --journal-body: var(--journal-sans);
   --journal-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 }
 :root[data-bs-theme="dark"] {
@@ -147,6 +148,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .journal-intro {
   margin: 0;
   color: var(--journal-ink);
+  font-family: var(--journal-display);
   position: relative;
   padding-top: 24px;
   font-size: clamp(1.38rem, 2.9vw, 2.15rem);
@@ -270,11 +272,20 @@ article[data-toc] > .content {
   max-width: 42rem;
   font-family: var(--journal-body);
   font-size: clamp(1.0625rem, 1rem + .2vw, 1.125rem);
-  line-height: 1.9;
+  line-height: 1.8;
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
 article[data-toc] > .content > p { margin-bottom: 1.15em; }
+article[data-toc] > .content :is(p, li) { text-wrap: pretty; }
+article[data-toc] > header > h1,
+article[data-toc] > .content > :is(h2, h3, h4) { text-wrap: balance; word-break: keep-all; }
+article[data-toc] > .content .table-wrapper > table :is(th, td) {
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
 article[data-toc] > .content > p.paper-figure { margin-bottom: .5rem; }
 article[data-toc] > .content > p.paper-caption {
   margin-block: .5rem 1.75rem;
