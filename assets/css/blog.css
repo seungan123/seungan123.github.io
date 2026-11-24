@@ -268,6 +268,48 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 .journal-prompt { color: var(--journal-ink); }
 main > article { max-width: 49rem; }
+
+/* Keep the reading column at the center, with the TOC in the right gutter. */
+#main-wrapper .row > main:has(> article[data-toc]) {
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 49rem;
+  min-width: 0;
+  margin-inline: auto;
+  padding-inline: 0 !important;
+}
+main > article[data-toc] { margin-inline: auto; }
+#main-wrapper > .container:has(main > article[data-toc]) #tail-wrapper > :not(footer) {
+  width: 100%;
+  max-width: 49rem;
+  min-width: 0;
+}
+@media (min-width: 1200px) {
+  #main-wrapper > .container > .row:has(> main > article[data-toc]),
+  #main-wrapper > .container:has(main > article[data-toc]) #tail-wrapper {
+    display: grid;
+    grid-template-columns: minmax(12rem, 1fr) minmax(0, 49rem) minmax(12rem, 1fr);
+    column-gap: 1.5rem;
+  }
+  #main-wrapper .row > main:has(> article[data-toc]) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  #main-wrapper .row:has(> main > article[data-toc]) > #panel-wrapper {
+    grid-column: 3;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+    padding-inline: 0 !important;
+  }
+  #main-wrapper > .container:has(main > article[data-toc]) #tail-wrapper > :not(footer) {
+    grid-column: 2;
+    max-width: 100%;
+  }
+  #main-wrapper > .container:has(main > article[data-toc]) #tail-wrapper > footer {
+    grid-column: 1 / -1;
+  }
+}
 main .content { line-height: 1.85; }
 article[data-toc] > header > h1 {
   font-family: var(--journal-body);
