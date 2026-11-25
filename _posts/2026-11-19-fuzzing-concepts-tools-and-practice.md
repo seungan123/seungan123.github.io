@@ -295,7 +295,16 @@ afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 
 크래시는 4727번 났지만 원인이 `abort()` 한 곳뿐이라 입력은 1개만 저장됐다.
 
-큐에 저장된 입력을 열어 보니 `aaaaaaaa`가 `f`, `fo`, `foo`, `foo!` 순서로 한 글자씩 바뀌어 있었다. 새로운 분기를 실행한 입력을 다음 변이에 활용한다는 것을 확인할 수 있었다.
+큐에 저장된 입력도 열어 봤다.
+
+```sh
+for f in out/default/queue/id:*; do echo "== $f"; xxd "$f" | head -1; done
+```
+
+![큐에 저장된 입력. aaaaaaaa에서 시작해 f, fo, foo, foo!, foo!! 순서로 바뀌었다.](/assets/img/posts/fuzzing-persistent-demo/queue-xxd.png)
+{: .paper-figure }
+
+시드 `aaaaaaaa`가 `f`, `fo`, `foo`, `foo!` 순서로 한 글자씩 바뀌어 있었다. 새로운 분기를 실행한 입력을 다음 변이에 활용한다는 것을 확인할 수 있었다.
 
 ### 저장된 입력으로 크래시 재현
 
@@ -386,10 +395,8 @@ int main(int argc, char **argv) {
 xxd out/default/crashes/id:*
 ```
 
-```text
-00000000: 666f 6f21 2121 2121 2121 2121 2121 2121  foo!!!!!!!!!!!!!
-00000010: 2153 5353 37                             !SSS7
-```
+![크래시 입력을 xxd로 연 결과. foo!!!로 시작한다.](/assets/img/posts/fuzzing-persistent-demo/crash-xxd.png)
+{: .paper-figure }
 
 저장된 크래시 입력도 `foo!!!`로 시작했다. 코드는 앞의 6바이트만 검사하므로 뒤에 붙은 값은 크래시와 관계가 없다.
 
