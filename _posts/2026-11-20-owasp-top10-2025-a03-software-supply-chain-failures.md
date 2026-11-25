@@ -1,5 +1,6 @@
 ---
 title: "OWASP Top 10 - A03 Software Supply Chain Failures"
+permalink: /posts/5/
 lang: ko-KR
 date: 2026-11-20 00:00:00 +0900
 categories: ["블로그/기술문서"]

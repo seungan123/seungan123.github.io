@@ -1,5 +1,6 @@
 ---
 title: "지금까지의 활동 정리"
+permalink: /posts/2/
 lang: ko-KR
 date: 2026-11-12 07:52:36 +0900
 categories: ["블로그/기술문서"]

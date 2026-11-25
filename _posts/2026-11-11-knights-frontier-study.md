@@ -1,5 +1,6 @@
 ---
 title: "'나'에 대해 기록하기"
+permalink: /posts/1/
 lang: ko-KR
 date: 2026-11-11 18:26:58 +0900
 categories: ["블로그/기술문서"]

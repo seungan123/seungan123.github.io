@@ -1,5 +1,6 @@
 ---
 title: "논문 - Web Application Vulnerability Repair via Context-Aware Fault Localization and Directed Differential Fuzzing"
+permalink: /posts/3/
 lang: ko-KR
 date: 2026-11-17 00:00:00 +0900
 categories: ["논문/컨퍼런스"]
