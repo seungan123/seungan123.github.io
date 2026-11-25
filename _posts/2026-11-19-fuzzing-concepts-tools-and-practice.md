@@ -229,107 +229,88 @@ Sanitizer는 빌드 과정에서 검사 코드를 추가하고, 실행 중 문�
 
 ## Fuzzing 실습과 결과 분석
 
-글로만 읽을 때는 퍼징을 입력을 많이 넣어 보는 작업 정도로 이해했다. 직접 해보면 시드와 계측, 크래시 파일이 어떻게 이어지는지 더 잘 알 수 있을 것 같아, GitHub에 공개된 [문제](https://github.com/mykter/afl-training/blob/main/quickstart/README.md)를 따라 AFL++로 퍼징을 진행해 보았다.
+글로만 읽을 때는 퍼징을 입력을 많이 넣어 보는 작업 정도로 이해했다. 직접 해보면 시드와 계측, 크래시 파일이 어떻게 이어지는지 더 잘 알 수 있을 것 같아, GitHub에 공개된 [문제](https://github.com/AFLplusplus/AFLplusplus/tree/stable/utils/persistent_mode)를 따라 AFL++로 퍼징을 진행해 보았다.
 
 ### 실습 자료와 시드 확인
 
 먼저 실습 폴더 안에 어떤 파일이 있는지 확인했다.
 
-![quickstart 폴더에서 ls로 확인한 파일 목록.](/assets/img/posts/fuzzing-practice/quickstart-file-list.png)
+![persistent_mode 폴더에서 ls로 확인한 파일 목록.](/assets/img/posts/fuzzing-persistent-demo/file-list.png)
 {: .paper-figure }
 
-`vulnerable.c`는 검사할 프로그램의 소스 코드이고, `Makefile`에는 이를 실행 파일로 만드는 규칙이 적혀 있었다.
+`persistent_demo.c`는 검사할 프로그램의 소스 코드이고, 입력이 `foo!!!`로 시작하면 `abort()`로 프로그램을 종료한다.
 
-검사할 때 넣을 시드는 `inputs/`에 들어 있다. 이 폴더의 `u`와 `head` 두 파일을 초기 코퍼스로 사용했다.
+이 폴더에는 시드가 없어서 직접 만들었다. 코드에 8바이트보다 짧은 입력은 검사하지 않는 조건이 있어 8글자로 만들었다.
 
-`inputs/u`의 내용은 다음과 같다.
-
-```text
-u 4 capsme
+```sh
+mkdir inputs
+echo "aaaaaaaa" > inputs/seed
 ```
 
-`inputs/head`에는 다음 입력이 들어 있다.
-
-```text
-head 20 This string is going to be truncated at the 20th position.
-```
-
-처음에는 시드도 실행할 코드인지 헷갈렸는데, 파일을 열어 보니 프로그램에 넣을 데이터였다. 첫 입력은 `capsme`의 앞 4글자를 대문자로 바꾸고, 두 번째는 뒤에 있는 문자열의 앞 20글자를 출력하라는 뜻이다. AFL++는 이 입력을 조금씩 바꾸며 검사한다.
+정답과 관계없는 입력을 시드로 넣어, 퍼저가 스스로 조건을 찾아가는지 보기로 했다.
 
 ### 대상 프로그램 계측 빌드
 
 ```sh
-CC=afl-clang-fast AFL_HARDEN=1 make
+AFL_HARDEN=1 afl-clang-fast -o persistent_demo persistent_demo.c
 ```
 
-컴파일러를 `afl-clang-fast`로 지정해 실행 파일에 계측을 넣었다. `make`는 `Makefile`의 규칙대로 `vulnerable.c`를 컴파일해 `vulnerable`을 만든다. `AFL_HARDEN=1`은 그냥 지나갈 수도 있는 일부 메모리 오류를 감지하면 프로그램을 중단하도록 돕는 옵션이다.
+`afl-clang-fast`로 컴파일해 실행 파일에 계측을 넣었다. 폴더의 `Makefile`은 다른 경로를 기준으로 작성되어 있어 직접 컴파일했다. `AFL_HARDEN=1`은 그냥 지나갈 수도 있는 일부 메모리 오류를 감지하면 프로그램을 중단하도록 돕는 옵션이다.
 
 ### 시드 입력과 정상 동작 확인
 
 ```sh
-./vulnerable < inputs/u
+./persistent_demo < inputs/seed
+echo 'foo!!!aa' | ./persistent_demo
 ```
 
-퍼징하기 전에 준비된 입력을 한 번 넣어 봤다.
+퍼징하기 전에 시드와 정답 입력을 한 번씩 넣어 봤다.
 
-출력은 `CAPSme`였다. 정상 작동하는걸 알 수 있다.
+![시드는 정상 종료하고, foo!!!aa는 six까지 출력한 뒤 Aborted로 종료됐다.](/assets/img/posts/fuzzing-persistent-demo/seed-check.png)
+{: .paper-figure }
+
+시드는 아무 출력 없이 종료됐고, `foo!!!aa`는 `one`부터 `six`까지 출력한 뒤 `Aborted`로 종료됐다. 정상 작동하는걸 알 수 있다.
 
 ### 60초 퍼징 실행
 
-정상 입력이 처리되는 것을 확인한 뒤 README의 안내에 따라 퍼저를 실행했다. 이번 실행에서는 시간을 60초로 제한하기 위해 `-V 60`을 추가했다.
-
 ```sh
-afl-fuzz -i inputs -o out -V 60 -- ./vulnerable
+afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 ```
 
-`-i inputs`로 시드가 있는 폴더를, `-o out`으로 결과를 저장할 폴더를 지정했다. `--` 뒤에는 검사할 실행 파일인 `./vulnerable`을 적었다.
-
-이때부터 AFL++가 입력을 바꾸며 프로그램을 반복 실행했다. 새로운 실행 흔적을 만든 입력은 다음 변이에 활용하고, 크래시를 일으킨 입력은 따로 저장했다.
+`-i inputs`로 시드가 있는 폴더를, `-o out`으로 결과를 저장할 폴더를 지정했다. `--` 뒤에는 검사할 실행 파일인 `./persistent_demo`를 적었다.
 
 ### 검사 결과 확인
 
-![60초 퍼징 결과. 약 33만 회 실행했고 크래시 451회 중 입력 4개가 저장됐다.](/assets/img/posts/fuzzing-practice/afl-out-60s-result.png)
+![60초 퍼징 결과. 약 283만 회 실행했고 크래시 4727회 중 입력 1개가 저장됐다.](/assets/img/posts/fuzzing-persistent-demo/afl-out-60s-result.png)
 {: .paper-figure }
 
 | 화면 항목 | 결과 | 의미 |
 | --- | --- | --- |
 | `run time` | 1분 0초 | 퍼징한 시간 |
-| `total execs` | `330k` | 프로그램 실행 횟수. 약 33만 회 |
-| `total crashes` | 451회 | 비정상 종료를 감지한 횟수 |
-| `saved crashes` | 4개 | 중복 판별을 거쳐 저장한 크래시 입력 |
-| `corpus count` | 20개 | 다음 변이에 활용하도록 큐에 보관한 입력 |
+| `total execs` | `2.83M` | 프로그램 실행 횟수. 약 283만 회 |
+| `total crashes` | 4727회 | 비정상 종료를 감지한 횟수 |
+| `saved crashes` | 1개 | 중복 판별을 거쳐 저장한 크래시 입력 |
+| `corpus count` | 7개 | 다음 변이에 활용하도록 큐에 보관한 입력 |
 {: .reading-table .table-cols-3 .comparison-table }
 
-같은 문제가 여러 입력에서 반복될 수 있어서 이 수치만으로 버그 개수를 알 수는 없었다. `map density`도 소스 코드 전체를 검사한 비율이 아니라 계측 맵이 채워진 비율이었다.
+크래시는 4727번 났지만 원인이 `abort()` 한 곳뿐이라 입력은 1개만 저장됐다.
 
-크래시 입력은 `out/default/crashes/`에 저장됐다. 화면 아래의 `Time limit was reached` 메시지로 설정한 60초를 채워 종료된 것을 확인했다.
+큐에 저장된 입력을 열어 보니 `aaaaaaaa`가 `f`, `fo`, `foo`, `foo!` 순서로 한 글자씩 바뀌어 있었다. 새로운 분기를 실행한 입력을 다음 변이에 활용한다는 것을 확인할 수 있었다.
 
 ### 저장된 입력으로 크래시 재현
-
-저장된 크래시 입력을 하나씩 다시 넣어 같은 문제가 발생하는지 확인했다.
 
 ```sh
 for f in out/default/crashes/id:*; do
   echo "== $f"
-  ./vulnerable < "$f"
+  ./persistent_demo < "$f"
   echo "exit=$?"
 done
 ```
 
-이 반복문은 `id:`로 시작하는 파일을 하나씩 넣어 실행하고, `$?`로 종료 코드를 출력한다.
-
-![네 입력의 크래시 재현 결과. 두 입력은 exit=139, 두 입력은 exit=134로 종료됐다.](/assets/img/posts/fuzzing-practice/crash-replay.png)
+![크래시 재현 결과. six까지 출력한 뒤 exit=134로 종료됐다.](/assets/img/posts/fuzzing-persistent-demo/crash-replay.png)
 {: .paper-figure }
 
-| 입력 파일 ID | 재현 메시지 | 신호 → 종료 코드 |
-| --- | --- | --- |
-| `000000` | `Segmentation fault` | `sig:11` → `139` |
-| `000001` | `Segmentation fault` | `sig:11` → `139` |
-| `000002` | `malloc(): corrupted top size` → `Aborted` | `sig:06` → `134` |
-| `000003` | `malloc(): corrupted top size` → `Aborted` | `sig:06` → `134` |
-{: .reading-table .table-cols-3 .comparison-table }
-
-같은 입력을 다시 넣었을 때 네 개 모두 비정상 종료됐다. 퍼저가 저장한 입력으로 크래시를 재현할 수 있다는 것을 확인했다.
+저장된 입력을 다시 넣자 `six`까지 출력한 뒤 `exit=134`로 종료됐다. 퍼저가 저장한 입력으로 크래시를 재현할 수 있다는 것을 확인했다.
 
 ## Fuzzing의 장점과 한계 및 마무리
 
