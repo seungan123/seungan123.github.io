@@ -1,10 +1,10 @@
 ---
-title: "OWASP Top 10 보안 동향 분석"
+title: "OWASP Top 10 - A03 Software Supply Chain Failures"
 lang: ko-KR
 date: 2026-11-20 00:00:00 +0900
 categories: ["블로그/기술문서"]
 tags: [OWASP, OWASP-Top10, SupplyChain, SBOM, CICD]
-toc: false
+toc: true
 ---
 
 <details class="glossary-details" markdown="1">
@@ -66,7 +66,7 @@ OWASP의 A03은 소프트웨어를 만들고 배포·업데이트하는 과정�
 
 ### 점수표와 실제 위험은 같은 의미가 아니다
 
-OWASP A03 영문 페이지의 점수표에서 주요 항목을 옮기면 다음과 같다. 아래 값은 2026년 11월 25일 확인한 표를 기준으로 했다.
+OWASP A03 영문 페이지의 점수표에서 주요 항목을 옮기면 다음과 같다.
 
 | 지표 | 값 |
 | --- | --- |
