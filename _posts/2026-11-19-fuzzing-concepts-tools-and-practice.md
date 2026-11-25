@@ -229,7 +229,7 @@ Sanitizer는 빌드 과정에서 검사 코드를 추가하고, 실행 중 문�
 
 ## Fuzzing 실습과 결과 분석
 
-글로만 읽을 때는 퍼징을 입력을 많이 넣어 보는 작업 정도로 이해했다. 직접 해보면 시드와 계측, 크래시 파일이 어떻게 이어지는지 더 잘 알 수 있을 것 같아, GitHub에 공개된 [문제](https://github.com/AFLplusplus/AFLplusplus/tree/stable/utils/persistent_mode)를 따라 AFL++로 퍼징을 진행해 보았다.
+글로만 읽을 때는 퍼징을 입력을 많이 넣어 보는 작업 정도로 이해했다. 직접 해보면 시드와 계측, 크래시 파일이 어떻게 이어지는지 더 잘 알 수 있을 것 같아, GitHub에 공개된 [예제](https://github.com/AFLplusplus/AFLplusplus/tree/stable/utils/persistent_mode)를 따라 AFL++로 퍼징을 진행해 보았다.
 
 ### 실습 자료와 코드 확인
 
@@ -237,8 +237,6 @@ Sanitizer는 빌드 과정에서 검사 코드를 추가하고, 실행 중 문�
 
 ![persistent_mode 폴더에서 ls로 확인한 파일 목록.](/assets/img/posts/fuzzing-persistent-demo/file-list.png)
 {: .paper-figure }
-
-`persistent_demo.c`는 검사할 프로그램의 소스 코드이다. 8바이트 이상의 입력을 받아 앞의 6바이트가 `foo!!!`인지 차례로 확인하고, 조건을 모두 만족하면 `abort()`로 프로그램을 종료한다.
 
 `persistent_demo.c` 코드
 
@@ -283,6 +281,8 @@ int main(int argc, char **argv) {
 }
 ```
 
+`persistent_demo.c`는 검사할 프로그램의 소스 코드이다. 8바이트 이상의 입력을 받아 앞의 6바이트가 `foo!!!`인지 차례로 확인하고, 조건을 모두 만족하면 `abort()`로 프로그램을 종료한다.
+
 ### 시드 준비
 
 이 폴더에는 시드가 없어서 직접 만들었다. 코드에 8바이트보다 짧은 입력은 건너뛰는 조건이 있어, `a` 8개를 초기 입력으로 준비했다.
@@ -292,7 +292,7 @@ mkdir inputs
 printf 'aaaaaaaa' > inputs/seed
 ```
 
-정답과 관계없는 입력을 시드로 넣어, 퍼저가 스스로 조건을 찾아가는지 보기로 했다.
+크래시를 일으키는 문자열이 포함되지 않은 입력을 시드로 넣어, 퍼저가 입력을 바꾸며 해당 조건에 도달하는지 보기로 했다.
 
 ### 대상 프로그램 계측 빌드
 
@@ -302,14 +302,14 @@ AFL_HARDEN=1 afl-clang-fast -o persistent_demo persistent_demo.c
 
 `afl-clang-fast`로 컴파일해 실행 파일에 계측을 넣었다. 폴더의 `Makefile`은 다른 경로를 기준으로 작성되어 있어 직접 컴파일했다. `AFL_HARDEN=1`은 그냥 지나갈 수도 있는 일부 메모리 오류를 감지하면 프로그램을 중단하도록 돕는 옵션이다.
 
-### 시드 입력과 정상 동작 확인
+### 시드와 크래시 조건 확인
 
 ```sh
 ./persistent_demo < inputs/seed
 echo 'foo!!!aa' | ./persistent_demo
 ```
 
-퍼징하기 전에 시드와 정답 입력을 한 번씩 넣어 봤다.
+퍼징하기 전에 시드와 크래시 조건을 만족하는 입력을 한 번씩 넣어 봤다.
 
 ![시드는 정상 종료하고, foo!!!aa는 six까지 출력한 뒤 Aborted로 종료됐다.](/assets/img/posts/fuzzing-persistent-demo/seed-check.png)
 {: .paper-figure }
@@ -322,7 +322,7 @@ echo 'foo!!!aa' | ./persistent_demo
 afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 ```
 
-`-i inputs`로 시드가 있는 폴더를, `-o out`으로 결과를 저장할 폴더를 지정했다. `--` 뒤에는 검사할 실행 파일인 `./persistent_demo`를 적었다.
+`-i inputs`로 시드가 있는 폴더를, `-o out`으로 결과를 저장할 폴더를 지정했다. `-V 60`은 실행 시간을 60초로 제한하는 옵션이다. `--` 뒤에는 검사할 실행 파일인 `./persistent_demo`를 적었다.
 
 ### 검사 결과 확인
 
@@ -338,7 +338,7 @@ afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 | `corpus count` | 7개 | 다음 변이에 활용하도록 큐에 보관한 입력 |
 {: .reading-table .table-cols-3 .comparison-table }
 
-비정상 종료는 4727번 감지됐고, 중복 판별을 거쳐 크래시 입력 1개가 저장됐다.
+비정상 종료 횟수와 저장된 입력 수는 달랐다. 같은 크래시가 반복해서 발생할 수 있으므로, 감지 횟수를 서로 다른 오류의 개수로 볼 수는 없다.
 
 큐에 저장된 입력도 열어 봤다.
 
@@ -368,7 +368,7 @@ done
 
 ### 크래시 원인 확인
 
-앞에서 확인한 코드에서는 길이가 8바이트 이상이고 앞의 6바이트가 `foo!!!`이면 `abort()`를 호출한다. 재현할 때 `one`부터 `six`까지 출력된 것은 여섯 조건을 모두 통과했다는 뜻이다. 마지막에 `abort()`가 실행되면서 `Aborted`와 종료 코드 134가 나타났다.
+재현 결과를 앞의 코드와 비교해 봤다. 실행 중 `one`부터 `six`까지 출력된 것은 여섯 조건을 모두 통과했다는 뜻이다. 마지막에 `abort()`가 실행되면서 `Aborted`와 종료 코드 134가 나타났다.
 
 ```sh
 xxd out/default/crashes/id:*
