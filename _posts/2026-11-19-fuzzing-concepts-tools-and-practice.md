@@ -312,6 +312,82 @@ done
 
 저장된 입력을 다시 넣자 `six`까지 출력한 뒤 `exit=134`로 종료됐다. 퍼저가 저장한 입력으로 크래시를 재현할 수 있다는 것을 확인했다.
 
+### 크래시 원인 확인
+
+`persistent_demo.c`에서 주석을 제외한 코드는 다음과 같다.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
+#include <limits.h>
+
+#pragma clang optimize off
+#pragma GCC optimize("O0")
+
+int main(int argc, char **argv) {
+
+  ssize_t len;
+  char buf[100];
+
+  __AFL_INIT();
+  while (__AFL_LOOP(UINT_MAX)) {
+
+    memset(buf, 0, 100);
+
+    len = read(0, buf, 100);
+
+    if (len < 8) continue;
+
+    if (buf[0] == 'f') {
+
+      printf("one\n");
+      if (buf[1] == 'o') {
+
+        printf("two\n");
+        if (buf[2] == 'o') {
+
+          printf("three\n");
+          if (buf[3] == '!') {
+
+            printf("four\n");
+            if (buf[4] == '!') {
+
+              printf("five\n");
+              if (buf[5] == '!') {
+
+                printf("six\n");
+                abort();
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  return 0;
+
+}
+```
+
+입력을 최대 100바이트 읽은 뒤, 8바이트보다 짧으면 검사하지 않고 넘어간다. 그다음 앞의 6글자를 한 글자씩 비교해 모두 `foo!!!`와 같으면 `abort()`를 호출한다. 재현할 때 `one`부터 `six`까지 출력된 것도 이 조건을 하나씩 통과했기 때문이다.
+
+종료 코드 134는 `128 + 6`으로, 6번 신호인 `SIGABRT`로 종료됐다는 뜻이다. 크래시 파일 이름의 `sig:06`도 같은 의미다.
+
+`if`문이 한 글자씩 나뉘어 있어서 글자를 하나 맞힐 때마다 새로운 분기가 실행된다. 퍼저는 이 분기를 새로운 커버리지로 보고 입력을 큐에 저장하기 때문에, 큐에서 `f`, `fo`, `foo`, `foo!` 순서로 입력이 바뀌어 간 것이다.
+
+`while (__AFL_LOOP(...))` 반복문은 persistent mode를 위한 코드다. 입력마다 프로그램을 새로 실행하지 않고 한 프로세스 안에서 반복해 검사하기 때문에 초당 4만 번 넘게 실행할 수 있었다. 매 회차 `memset`으로 버퍼를 비우는 것은 이전 입력이 다음 검사에 영향을 주지 않게 하기 위해서다.
+
 ## Fuzzing의 장점과 한계 및 마무리
 
 ### 장점과 한계
