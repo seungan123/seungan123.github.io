@@ -231,20 +231,65 @@ Sanitizer는 빌드 과정에서 검사 코드를 추가하고, 실행 중 문�
 
 글로만 읽을 때는 퍼징을 입력을 많이 넣어 보는 작업 정도로 이해했다. 직접 해보면 시드와 계측, 크래시 파일이 어떻게 이어지는지 더 잘 알 수 있을 것 같아, GitHub에 공개된 [문제](https://github.com/AFLplusplus/AFLplusplus/tree/stable/utils/persistent_mode)를 따라 AFL++로 퍼징을 진행해 보았다.
 
-### 실습 자료와 시드 확인
+### 실습 자료와 코드 확인
 
 먼저 실습 폴더 안에 어떤 파일이 있는지 확인했다.
 
 ![persistent_mode 폴더에서 ls로 확인한 파일 목록.](/assets/img/posts/fuzzing-persistent-demo/file-list.png)
 {: .paper-figure }
 
-`persistent_demo.c`는 검사할 프로그램의 소스 코드이고, 입력이 `foo!!!`로 시작하면 `abort()`로 프로그램을 종료한다.
+`persistent_demo.c`는 검사할 프로그램의 소스 코드이다. 8바이트 이상의 입력을 받아 앞의 6바이트가 `foo!!!`인지 차례로 확인하고, 조건을 모두 만족하면 `abort()`로 프로그램을 종료한다.
 
-이 폴더에는 시드가 없어서 직접 만들었다. 코드에 8바이트보다 짧은 입력은 검사하지 않는 조건이 있어 8글자로 만들었다.
+`persistent_demo.c` 코드
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
+#include <limits.h>
+#pragma clang optimize off
+#pragma GCC optimize("O0")
+int main(int argc, char **argv) {
+  ssize_t len;
+  char buf[100];
+  __AFL_INIT();
+  while (__AFL_LOOP(UINT_MAX)) {
+    memset(buf, 0, 100);
+    len = read(0, buf, 100);
+    if (len < 8) continue;
+    if (buf[0] == 'f') {
+      printf("one\n");
+      if (buf[1] == 'o') {
+        printf("two\n");
+        if (buf[2] == 'o') {
+          printf("three\n");
+          if (buf[3] == '!') {
+            printf("four\n");
+            if (buf[4] == '!') {
+              printf("five\n");
+              if (buf[5] == '!') {
+                printf("six\n");
+                abort();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+```
+
+### 시드 준비
+
+이 폴더에는 시드가 없어서 직접 만들었다. 코드에 8바이트보다 짧은 입력은 건너뛰는 조건이 있어, `a` 8개를 초기 입력으로 준비했다.
 
 ```sh
 mkdir inputs
-echo "aaaaaaaa" > inputs/seed
+printf 'aaaaaaaa' > inputs/seed
 ```
 
 정답과 관계없는 입력을 시드로 넣어, 퍼저가 스스로 조건을 찾아가는지 보기로 했다.
@@ -269,7 +314,7 @@ echo 'foo!!!aa' | ./persistent_demo
 ![시드는 정상 종료하고, foo!!!aa는 six까지 출력한 뒤 Aborted로 종료됐다.](/assets/img/posts/fuzzing-persistent-demo/seed-check.png)
 {: .paper-figure }
 
-시드는 아무 출력 없이 종료됐고, `foo!!!aa`는 `one`부터 `six`까지 출력한 뒤 `Aborted`로 종료됐다. 정상 작동하는걸 알 수 있다.
+시드는 아무 출력 없이 종료됐고, `foo!!!aa`는 `one`부터 `six`까지 출력한 뒤 `Aborted`로 종료됐다. 코드에 작성된 조건대로 동작하는 것을 확인했다.
 
 ### 60초 퍼징 실행
 
@@ -293,7 +338,7 @@ afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 | `corpus count` | 7개 | 다음 변이에 활용하도록 큐에 보관한 입력 |
 {: .reading-table .table-cols-3 .comparison-table }
 
-크래시는 4727번 났지만 원인이 `abort()` 한 곳뿐이라 입력은 1개만 저장됐다.
+비정상 종료는 4727번 감지됐고, 중복 판별을 거쳐 크래시 입력 1개가 저장됐다.
 
 큐에 저장된 입력도 열어 봤다.
 
@@ -301,10 +346,10 @@ afl-fuzz -i inputs -o out -V 60 -- ./persistent_demo
 for f in out/default/queue/id:*; do echo "== $f"; xxd "$f" | head -1; done
 ```
 
-![큐에 저장된 입력. aaaaaaaa에서 시작해 f, fo, foo, foo!, foo!! 순서로 바뀌었다.](/assets/img/posts/fuzzing-persistent-demo/queue-xxd.png)
+![큐에 저장된 입력의 첫 줄. 초기 시드 aaaaaaaa와 f, fo, foo, foo!, foo!!로 시작하는 입력이 보인다.](/assets/img/posts/fuzzing-persistent-demo/queue-xxd.png)
 {: .paper-figure }
 
-시드 `aaaaaaaa`가 `f`, `fo`, `foo`, `foo!` 순서로 한 글자씩 바뀌어 있었다. 새로운 분기를 실행한 입력을 다음 변이에 활용한다는 것을 확인할 수 있었다.
+큐에는 초기 시드 `aaaaaaaa` 외에 `f`, `fo`, `foo`, `foo!`, `foo!!`로 시작하는 입력이 저장돼 있었다. 앞부분의 조건을 더 많이 만족하는 입력이 차례로 남은 것을 보며, 새로운 분기를 실행한 입력을 다음 변이에 활용하는 흐름을 확인할 수 있었다.
 
 ### 저장된 입력으로 크래시 재현
 
@@ -323,73 +368,7 @@ done
 
 ### 크래시 원인 확인
 
-`persistent_demo.c`에서 주석을 제외한 코드는 다음과 같다.
-
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <string.h>
-#include <limits.h>
-
-#pragma clang optimize off
-#pragma GCC optimize("O0")
-
-int main(int argc, char **argv) {
-
-  ssize_t len;
-  char buf[100];
-
-  __AFL_INIT();
-  while (__AFL_LOOP(UINT_MAX)) {
-
-    memset(buf, 0, 100);
-
-    len = read(0, buf, 100);
-
-    if (len < 8) continue;
-
-    if (buf[0] == 'f') {
-
-      printf("one\n");
-      if (buf[1] == 'o') {
-
-        printf("two\n");
-        if (buf[2] == 'o') {
-
-          printf("three\n");
-          if (buf[3] == '!') {
-
-            printf("four\n");
-            if (buf[4] == '!') {
-
-              printf("five\n");
-              if (buf[5] == '!') {
-
-                printf("six\n");
-                abort();
-
-              }
-
-            }
-
-          }
-
-        }
-
-      }
-
-    }
-
-  }
-
-  return 0;
-
-}
-```
-
-앞의 6글자가 `foo!!!`이면 `abort()`를 호출한다. 그래서 재현할 때 `one`부터 `six`까지 출력된 뒤 종료 코드 134(`128 + 6`, `SIGABRT`)로 종료됐다.
+앞에서 확인한 코드에서는 길이가 8바이트 이상이고 앞의 6바이트가 `foo!!!`이면 `abort()`를 호출한다. 재현할 때 `one`부터 `six`까지 출력된 것은 여섯 조건을 모두 통과했다는 뜻이다. 마지막에 `abort()`가 실행되면서 `Aborted`와 종료 코드 134가 나타났다.
 
 ```sh
 xxd out/default/crashes/id:*
@@ -398,9 +377,9 @@ xxd out/default/crashes/id:*
 ![크래시 입력을 xxd로 연 결과. foo!!!로 시작한다.](/assets/img/posts/fuzzing-persistent-demo/crash-xxd.png)
 {: .paper-figure }
 
-저장된 크래시 입력도 `foo!!!`로 시작했다. 코드는 앞의 6바이트만 검사하므로 뒤에 붙은 값은 크래시와 관계가 없다.
+저장된 크래시 입력도 `foo!!!`로 시작했다. 입력이 8바이트 이상이라는 조건을 만족하면, 뒤에 붙은 값이 달라도 앞의 6바이트가 같을 때 `abort()`에 도달한다.
 
-`if`문이 한 글자씩 나뉘어 있어서 글자를 맞힐 때마다 새로운 분기가 실행된다. 그래서 큐에 `f`, `fo`, `foo`, `foo!` 순서로 입력이 저장됐다.
+`if`문이 한 바이트씩 나뉘어 있어 앞부분의 조건을 하나 더 만족할 때마다 다음 분기가 실행된다. 큐에 남은 입력과 크래시 입력을 함께 보니, 입력을 바꾸며 더 안쪽 조건까지 도달하는 과정을 이해할 수 있었다.
 
 ## Fuzzing의 장점과 한계 및 마무리
 
